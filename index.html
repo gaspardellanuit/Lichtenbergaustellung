@@ -19,16 +19,17 @@
             /* Colors */
             --bg-color: #050505;
             --text-main: #ffffff;
-            --c-erinnerung: #D4AF37;   
-            --c-gedenken: #A0A0A0;     
-            --c-widerstand: #00E676;   
-            --c-heute: #FF3D00;        
-            --c-path: #00FFFF;         
+            --c-erinnerung: #D4AF37;   /* Gold */
+            --c-gedenken: #A0A0A0;     /* Silver */
+            --c-widerstand: #00E676;   /* Neon Green */
+            --c-heute: #FF3D00;        /* Neon Red */
+            --c-path: #00FFFF;         /* Cyan Path */
 
             /* Fonts */
             --font-head: 'Space Grotesk', sans-serif;
             --font-body: 'Inter', sans-serif;
             
+            /* Dimensions */
             --sidebar-width: 500px;
         }
 
@@ -36,7 +37,7 @@
 
         #map { position: absolute; top: 0; bottom: 0; width: 100%; }
 
-        /* VIGNETTE */
+        /* VIGNETTE (Focus Effect) */
         .vignette-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5;
             background: radial-gradient(circle at center, transparent 30%, rgba(0,0,0,0.8) 60%, rgba(0,0,0,1) 90%);
@@ -59,25 +60,14 @@
             color: white; letter-spacing: -1px;
         }
         
-        /* QR SCANNER PREVIEW (KIOSK MODE) */
+        /* INVISIBLE SCANNER CONTAINER (Background Process) */
         #qr-container {
-            position: absolute; top: 30px; left: 50%; transform: translateX(-50%);
-            width: 250px; height: 180px; 
-            background: rgba(0,0,0,0.8); border: 2px solid var(--c-widerstand); border-radius: 10px;
-            pointer-events: auto; overflow: hidden; z-index: 50;
-            box-shadow: 0 0 20px rgba(0, 230, 118, 0.2);
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            position: absolute; top: -1000px; left: -1000px; /* Hide off-screen */
+            width: 1px; height: 1px; opacity: 0; pointer-events: none; overflow: hidden;
         }
-        #reader { width: 100%; height: 100%; object-fit: cover; }
-        .scan-instruction {
-            position: absolute; bottom: 5px; width: 100%; text-align: center;
-            font-size: 0.7rem; color: var(--c-widerstand); text-transform: uppercase; letter-spacing: 1px;
-            text-shadow: 0 0 5px black; z-index: 51;
-        }
-        /* Hide HTML5-QRCode default buttons */
-        #reader__dashboard_section_csr span, #reader__dashboard_section_swaplink { display: none !important; }
+        #reader { width: 100%; height: 100%; }
 
-        /* TIMELINE */
+        /* TIMELINE (Spaced Out) */
         #timeline-ui {
             position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
             width: 80%; max-width: 900px; min-width: 320px; 
@@ -90,8 +80,12 @@
             font-family: var(--font-head); font-size: 2.5rem; font-weight: 700; display: block; 
             margin-bottom: 5px; line-height: 1; color: white;
         }
-        input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; cursor: pointer; }
-        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; background: #444; border-radius: 2px; }
+        input[type=range] {
+            -webkit-appearance: none; width: 100%; background: transparent; cursor: pointer;
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%; height: 4px; background: #444; border-radius: 2px;
+        }
         input[type=range]::-webkit-slider-thumb {
             -webkit-appearance: none; height: 20px; width: 20px; border-radius: 50%;
             background: #fff; border: 2px solid #000; margin-top: -8px; transition: transform 0.1s;
@@ -99,11 +93,16 @@
         input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.3); background: var(--c-path); }
 
         .ticks { 
-            display: flex; justify-content: space-between; width: 100%; margin-top: 10px;
-            font-size: 0.8rem; color: #ccc; text-transform: uppercase; letter-spacing: 1px; font-family: var(--font-head);
+            display: flex; justify-content: space-between; 
+            width: 100%; margin-top: 10px;
+            font-size: 0.8rem; color: #ccc; 
+            text-transform: uppercase; letter-spacing: 1px; font-family: var(--font-head);
         }
+        .ticks span { text-align: center; flex: 1; }
+        .ticks span:first-child { text-align: left; }
+        .ticks span:last-child { text-align: right; }
 
-        /* STATUS */
+        /* STATUS / GAMIFICATION */
         #status-panel {
             position: absolute; top: 30px; right: 30px; width: 240px; pointer-events: auto;
             background: rgba(0,0,0,0.6); padding: 15px; border-radius: 8px; border: 1px solid #333;
@@ -163,8 +162,6 @@
             :root { --sidebar-width: 100%; }
             #timeline-ui { width: 90%; bottom: 20px; padding: 15px 20px; }
             .sidebar-content { padding: 25px; }
-            /* Mobile adjustment for scanner */
-            #qr-container { width: 200px; height: 150px; top: 100px; }
         }
 
         .mapboxgl-popup-content { background: #000; color: #fff; border: 1px solid #444; font-family: var(--font-body); padding: 10px 14px; }
@@ -185,7 +182,6 @@
 
         <div id="qr-container">
             <div id="reader"></div>
-            <div class="scan-instruction">Scan Zone</div>
         </div>
 
         <div id="status-panel">
@@ -197,7 +193,7 @@
         <div id="legend">
             <div class="legend-item"><div class="dot" style="background:var(--c-erinnerung)"></div> Orte der Erinnerung</div>
             <div class="legend-item"><div class="dot" style="background:var(--c-gedenken)"></div> Gedenken</div>
-            <div class="legend-item"><div class="dot" style="background:var(--c-widerstand)"></div> Widerstand</div>
+            <div class="legend-item"><div class="dot" style="background:var(--c-widerstand)"></div> Orte des Widerstands</div>
             <div class="legend-item"><div class="dot" style="background:var(--c-heute)"></div> Gegen Rechts Heute</div>
         </div>
 
@@ -369,51 +365,49 @@
         });
 
         // ------------------------------------------------------------------
-        // 3. QR & MAP LOGIC
+        // 3. LOGIC & SCANNER
         // ------------------------------------------------------------------
         
-        // --- QR SCANNER STARTUP ---
-        function onScanSuccess(decodedText, decodedResult) {
-            // Check if URL contains "event="
+        // --- INVISIBLE HEADLESS SCANNER ---
+        function onScanSuccess(decodedText) {
+            // Check for URL param "event=" or just raw ID "g1"
+            let eventId = null;
             try {
-                // If it's a full URL
-                let url = new URL(decodedText);
-                let eventId = url.searchParams.get("event");
-                
-                // Or if the QR code IS just the ID (e.g., "g1")
-                if (!eventId) eventId = decodedText; 
-
-                if (eventId) {
-                    triggerEventFromScan(eventId);
-                }
+                const url = new URL(decodedText);
+                eventId = url.searchParams.get("event");
             } catch (e) {
-                // If text is just "g1"
-                triggerEventFromScan(decodedText);
+                eventId = decodedText; // Assume text is just ID
+            }
+
+            if (eventId) {
+                const target = geoData.features.find(f => f.properties.id === eventId);
+                if (target) {
+                    // Unlock Logic
+                    if (!state.discovered.includes(eventId)) {
+                        state.discovered.push(eventId);
+                        updateProgress();
+                    }
+                    if (target.properties.locked) {
+                        unlockAll(); // Force unlock if they scanned a future event
+                    } else {
+                        updateMap(target.properties.year);
+                    }
+                    handleMarker(target.properties, target.geometry.coordinates, true);
+                }
             }
         }
 
-        function triggerEventFromScan(id) {
-            const target = geoData.features.find(f => f.properties.id === id);
-            if (target) {
-                // Force unlock logic
-                if (!state.discovered.includes(id)) {
-                    state.discovered.push(id);
-                    updateProgress();
-                }
-                // If locked event, auto-unlock whole game
-                if (target.properties.locked && !state.unlocked) {
-                    unlockAll();
-                }
-                
-                // Go to marker
-                handleMarker(target.properties, target.geometry.coordinates, true); // true = force open
+        // Start Scanner (Rear Camera, No UI)
+        Html5Qrcode.getCameras().then(devices => {
+            if (devices && devices.length) {
+                const html5QrCode = new Html5Qrcode("reader");
+                html5QrCode.start(
+                    { facingMode: "environment" }, 
+                    { fps: 10, qrbox: 250 },
+                    onScanSuccess
+                ).catch(err => console.log("Scanner init error (PC?):", err));
             }
-        }
-
-        // Start Scanner
-        const html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 200 });
-        html5QrcodeScanner.render(onScanSuccess);
-
+        });
 
         map.on('load', () => {
             
@@ -436,16 +430,16 @@
             map.on('mouseenter', 'marker-core', () => map.getCanvas().style.cursor = 'pointer');
             map.on('mouseleave', 'marker-core', () => map.getCanvas().style.cursor = '');
 
-            // Check URL param on load (for manual links)
+            // Deep Link Check
             const urlParams = new URLSearchParams(window.location.search);
             const startEvent = urlParams.get('event');
-            if(startEvent) triggerEventFromScan(startEvent);
+            if(startEvent) onScanSuccess(startEvent);
 
             updateMap(1933);
         });
 
         // ------------------------------------------------------------------
-        // 4. LOGIC
+        // 4. GAMEPLAY
         // ------------------------------------------------------------------
         function handleMarker(props, coords, force = false) {
             if (props.locked && !state.unlocked && !force) {
@@ -456,8 +450,7 @@
                 state.discovered.push(props.id);
                 updateProgress();
             }
-            
-            // Smart Pan (Tablet friendly)
+            // Smart Pan
             const isPortrait = window.innerHeight > window.innerWidth;
             const offset = isPortrait ? [0, -200] : [-200, 0];
             
