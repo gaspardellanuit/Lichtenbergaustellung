@@ -16,7 +16,7 @@
 
     <style>
         :root {
-            /* Theme Colors */
+            /* Colors */
             --bg-color: #050505;
             --text-main: #ffffff;
             --c-erinnerung: #D4AF37;   /* Gold */
@@ -36,28 +36,44 @@
 
         #map { position: absolute; top: 0; bottom: 0; width: 100%; z-index: 1; }
 
-        /* --- THE 1-PIXEL SCANNER (Technically visible but tiny) --- */
-        #qr-tiny-container {
-            position: absolute; 
+        /* --- THE GHOST SCANNER (FULLSCREEN & ACTIVE) --- */
+        /* Must be on screen to work, but we make it nearly transparent */
+        #qr-ghost {
+            position: fixed; 
             top: 0; left: 0; 
-            width: 1px; height: 1px; /* Tiny! */
-            opacity: 0.1; /* Not fully hidden to keep browser happy */
-            pointer-events: none;
-            overflow: hidden;
-            z-index: 0;
+            width: 100vw; height: 100vh; 
+            z-index: 2; /* Just above map, below UI */
+            opacity: 0.05; /* Faintly visible to debug, effectively invisible */
+            pointer-events: none; /* Clicks go through to map */
+            object-fit: cover;
         }
+        /* Override library styles to force fullscreen video */
+        #qr-ghost video { width: 100% !important; height: 100% !important; object-fit: cover !important; }
+
+        /* START SCREEN OVERLAY (Critical for Audio/Camera permissions) */
+        #start-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95); z-index: 9999;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            text-align: center;
+        }
+        .start-btn {
+            font-family: var(--font-head); font-size: 1.5rem;
+            background: var(--c-widerstand); color: black; border: none;
+            padding: 20px 40px; border-radius: 50px; cursor: pointer;
+            text-transform: uppercase; font-weight: bold; letter-spacing: 2px;
+            box-shadow: 0 0 30px var(--c-widerstand); animation: pulse 2s infinite;
+        }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
 
         /* UI LAYER */
         #ui-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10; }
 
-        /* STATUS DOT (Shows Camera is Active) */
-        #cam-status {
-            position: absolute; top: 10px; left: 10px; width: 8px; height: 8px; 
-            background: red; border-radius: 50%; z-index: 100;
-            box-shadow: 0 0 5px red; animation: blink 2s infinite;
-            pointer-events: none;
+        /* VIGNETTE */
+        .vignette-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 6;
+            background: radial-gradient(circle at center, transparent 30%, rgba(0,0,0,0.8) 60%, rgba(0,0,0,1) 90%);
         }
-        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
 
         /* HEADER */
         header { 
@@ -108,7 +124,7 @@
         .ticks span:first-child { text-align: left; }
         .ticks span:last-child { text-align: right; }
 
-        /* STATUS PANEL */
+        /* STATUS */
         #status-panel {
             position: absolute; top: 30px; right: 30px; width: 240px; pointer-events: auto;
             background: rgba(0,0,0,0.6); padding: 15px; border-radius: 8px; border: 1px solid #333;
@@ -150,24 +166,21 @@
 
         .sidebar-content { padding: 40px; padding-top: 0; }
         .hero-img { width: 100%; height: 300px; object-fit: cover; border-bottom: 4px solid #333; margin-bottom: 25px; }
+        
         .cat-tag { 
             font-family: var(--font-head); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2px; 
             margin-bottom: 10px; display: inline-block; padding: 4px 8px; border: 1px solid #444; color: #fff;
         }
+        
         h2 { font-family: var(--font-head); font-size: 2.2rem; line-height: 1.1; margin: 0 0 25px 0; font-weight: 700; color: white; }
         .article { font-size: 1.05rem; line-height: 1.7; color: #ccc; font-weight: 300; margin-bottom: 40px; }
         .article h3 { color: white; font-family: var(--font-head); font-size: 1.2rem; margin-top: 30px; margin-bottom: 10px; font-weight: 500; border-left: 3px solid var(--c-path); padding-left: 10px; }
         .source { font-size: 0.75rem; color: #666; border-top: 1px solid #222; padding-top: 20px; font-style: italic; }
+
         .locked-view { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px; color: #555; }
         .locked-icon { font-size: 4rem; margin-bottom: 20px; opacity: 0.5; }
 
-        /* VIGNETTE */
-        .vignette-overlay {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5;
-            background: radial-gradient(circle at center, transparent 30%, rgba(0,0,0,0.8) 60%, rgba(0,0,0,1) 90%);
-        }
-
-        /* FEEDBACK FLASH */
+        /* FLASH EFFECT */
         @keyframes scan-flash { 0% { background-color: rgba(255, 255, 255, 0.8); } 100% { background-color: transparent; } }
         .scan-feedback { animation: scan-flash 0.5s ease-out; pointer-events: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 100; }
 
@@ -184,19 +197,22 @@
 </head>
 <body class="p-1933">
 
+    <div id="start-overlay">
+        <h1 style="margin-bottom: 30px; color:white;">Museum Lichtenberg</h1>
+        <button class="start-btn" onclick="startApp()">Ausstellung Starten</button>
+        <p style="color:#aaa; margin-top:20px; font-family:'Inter';">Bitte Kamera-Zugriff zulassen.</p>
+    </div>
+
     <div id="map"></div>
     <div class="vignette-overlay"></div>
-    <div id="cam-status" title="Scanner aktiv"></div>
+
+    <div id="qr-ghost"></div>
 
     <div id="ui-layer">
         <header>
             <div class="museum-label">Museum Lichtenberg</div>
             <h1>Orte des<br>Widerstands</h1>
         </header>
-
-        <div id="qr-tiny-container">
-            <div id="reader"></div>
-        </div>
 
         <div id="status-panel">
             <div class="status-header">Archiv Fortschritt</div>
@@ -366,7 +382,8 @@
             discovered: [],
             required: 3,
             unlocked: false,
-            lastScan: 0 // Cooldown
+            lastScan: 0,
+            audioCtx: null
         };
 
         const map = new mapboxgl.Map({
@@ -380,15 +397,38 @@
         });
 
         // ------------------------------------------------------------------
-        // 3. SOUND & FEEDBACK
+        // 3. START SEQUENCE (Audio/Cam Init)
         // ------------------------------------------------------------------
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function startApp() {
+            // 1. Remove Overlay
+            document.getElementById('start-overlay').style.display = 'none';
+            
+            // 2. Init Audio Context (User interaction happened)
+            state.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            state.audioCtx.resume();
+
+            // 3. Init Scanner (Ghost Mode)
+            Html5Qrcode.getCameras().then(devices => {
+                if (devices && devices.length) {
+                    const html5QrCode = new Html5Qrcode("qr-ghost");
+                    html5QrCode.start(
+                        { facingMode: "environment" }, 
+                        { fps: 10, qrbox: 250 },
+                        onScanSuccess
+                    ).catch(err => console.log("Camera Error:", err));
+                }
+            }).catch(err => console.log("No Cameras:", err));
+        }
+
+        // ------------------------------------------------------------------
+        // 4. SCANNER LOGIC
+        // ------------------------------------------------------------------
         function playBeep() {
-            if (audioCtx.state === 'suspended') audioCtx.resume();
-            const oscillator = audioCtx.createOscillator();
-            const gainNode = audioCtx.createGain();
+            if (!state.audioCtx) return;
+            const oscillator = state.audioCtx.createOscillator();
+            const gainNode = state.audioCtx.createGain();
             oscillator.connect(gainNode);
-            gainNode.connect(audioCtx.destination);
+            gainNode.connect(state.audioCtx.destination);
             oscillator.type = "sine";
             oscillator.frequency.value = 1200; 
             gainNode.gain.value = 0.1;
@@ -403,16 +443,11 @@
             setTimeout(() => flash.remove(), 600);
         }
 
-        // ------------------------------------------------------------------
-        // 4. SCANNER LOGIC (HEADLESS & CONTINUOUS)
-        // ------------------------------------------------------------------
         function onScanSuccess(decodedText) {
-            // Prevent duplicate scans within 2 seconds
             const now = Date.now();
             if (now - state.lastScan < 2000) return;
             state.lastScan = now;
 
-            // Handle URL or ID
             let eventId = null;
             try {
                 const url = new URL(decodedText);
@@ -432,7 +467,7 @@
                         updateProgress();
                     }
                     if (target.properties.locked) {
-                        unlockAll(); // Force unlock
+                        unlockAll(); 
                     } else {
                         updateMap(target.properties.year);
                     }
@@ -440,18 +475,6 @@
                 }
             }
         }
-
-        // Initialize Invisible Scanner
-        Html5Qrcode.getCameras().then(devices => {
-            if (devices && devices.length) {
-                const html5QrCode = new Html5Qrcode("qr-tiny-container");
-                html5QrCode.start(
-                    { facingMode: "environment" }, 
-                    { fps: 10, qrbox: 250 },
-                    onScanSuccess
-                ).catch(err => console.log("Camera Error:", err));
-            }
-        });
 
         // ------------------------------------------------------------------
         // 5. MAP LOGIC
@@ -476,6 +499,14 @@
             map.on('click', 'marker-core', (e) => handleMarker(e.features[0].properties, e.features[0].geometry.coordinates));
             map.on('mouseenter', 'marker-core', () => map.getCanvas().style.cursor = 'pointer');
             map.on('mouseleave', 'marker-core', () => map.getCanvas().style.cursor = '');
+
+            // Check URL param (Deep Link)
+            const urlParams = new URLSearchParams(window.location.search);
+            const startEvent = urlParams.get('event');
+            if(startEvent) {
+                document.getElementById('start-overlay').style.display = 'none'; // Auto-start if deep link
+                onScanSuccess(startEvent);
+            }
 
             updateMap(1933);
         });
