@@ -16,7 +16,7 @@
 
     <style>
         :root {
-            /* Colors */
+            /* Theme Colors */
             --bg-color: #050505;
             --text-main: #ffffff;
             --c-erinnerung: #D4AF37;   /* Gold */
@@ -29,7 +29,6 @@
             --font-head: 'Space Grotesk', sans-serif;
             --font-body: 'Inter', sans-serif;
             
-            /* Dimensions */
             --sidebar-width: 500px;
         }
 
@@ -37,28 +36,28 @@
 
         #map { position: absolute; top: 0; bottom: 0; width: 100%; z-index: 1; }
 
-        /* --- THE GHOST SCANNER (INVISIBLE BUT ACTIVE) --- */
-        #qr-ghost {
-            position: fixed; 
+        /* --- THE 1-PIXEL SCANNER (Technically visible but tiny) --- */
+        #qr-tiny-container {
+            position: absolute; 
             top: 0; left: 0; 
-            width: 100%; height: 100%; 
-            z-index: 5; /* Above map visually */
-            opacity: 0.01; /* Almost invisible, but technically 'seen' by browser */
-            pointer-events: none; /* Let clicks pass through to the map */
+            width: 1px; height: 1px; /* Tiny! */
+            opacity: 0.1; /* Not fully hidden to keep browser happy */
+            pointer-events: none;
             overflow: hidden;
-        }
-        #qr-ghost video {
-            width: 100%; height: 100%; object-fit: cover;
+            z-index: 0;
         }
 
         /* UI LAYER */
         #ui-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10; }
 
-        /* VIGNETTE */
-        .vignette-overlay {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 6;
-            background: radial-gradient(circle at center, transparent 30%, rgba(0,0,0,0.8) 60%, rgba(0,0,0,1) 90%);
+        /* STATUS DOT (Shows Camera is Active) */
+        #cam-status {
+            position: absolute; top: 10px; left: 10px; width: 8px; height: 8px; 
+            background: red; border-radius: 50%; z-index: 100;
+            box-shadow: 0 0 5px red; animation: blink 2s infinite;
+            pointer-events: none;
         }
+        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
 
         /* HEADER */
         header { 
@@ -109,7 +108,7 @@
         .ticks span:first-child { text-align: left; }
         .ticks span:last-child { text-align: right; }
 
-        /* STATUS */
+        /* STATUS PANEL */
         #status-panel {
             position: absolute; top: 30px; right: 30px; width: 240px; pointer-events: auto;
             background: rgba(0,0,0,0.6); padding: 15px; border-radius: 8px; border: 1px solid #333;
@@ -151,21 +150,24 @@
 
         .sidebar-content { padding: 40px; padding-top: 0; }
         .hero-img { width: 100%; height: 300px; object-fit: cover; border-bottom: 4px solid #333; margin-bottom: 25px; }
-        
         .cat-tag { 
             font-family: var(--font-head); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2px; 
             margin-bottom: 10px; display: inline-block; padding: 4px 8px; border: 1px solid #444; color: #fff;
         }
-        
         h2 { font-family: var(--font-head); font-size: 2.2rem; line-height: 1.1; margin: 0 0 25px 0; font-weight: 700; color: white; }
         .article { font-size: 1.05rem; line-height: 1.7; color: #ccc; font-weight: 300; margin-bottom: 40px; }
         .article h3 { color: white; font-family: var(--font-head); font-size: 1.2rem; margin-top: 30px; margin-bottom: 10px; font-weight: 500; border-left: 3px solid var(--c-path); padding-left: 10px; }
         .source { font-size: 0.75rem; color: #666; border-top: 1px solid #222; padding-top: 20px; font-style: italic; }
-
         .locked-view { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px; color: #555; }
         .locked-icon { font-size: 4rem; margin-bottom: 20px; opacity: 0.5; }
 
-        /* FLASH EFFECT */
+        /* VIGNETTE */
+        .vignette-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5;
+            background: radial-gradient(circle at center, transparent 30%, rgba(0,0,0,0.8) 60%, rgba(0,0,0,1) 90%);
+        }
+
+        /* FEEDBACK FLASH */
         @keyframes scan-flash { 0% { background-color: rgba(255, 255, 255, 0.8); } 100% { background-color: transparent; } }
         .scan-feedback { animation: scan-flash 0.5s ease-out; pointer-events: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 100; }
 
@@ -184,14 +186,17 @@
 
     <div id="map"></div>
     <div class="vignette-overlay"></div>
-
-    <div id="qr-ghost"></div>
+    <div id="cam-status" title="Scanner aktiv"></div>
 
     <div id="ui-layer">
         <header>
             <div class="museum-label">Museum Lichtenberg</div>
             <h1>Orte des<br>Widerstands</h1>
         </header>
+
+        <div id="qr-tiny-container">
+            <div id="reader"></div>
+        </div>
 
         <div id="status-panel">
             <div class="status-header">Archiv Fortschritt</div>
@@ -437,20 +442,20 @@
         }
 
         // Initialize Invisible Scanner
-        // UsingHtml5Qrcode class instead of Scanner for headless operation
         Html5Qrcode.getCameras().then(devices => {
             if (devices && devices.length) {
-                const html5QrCode = new Html5Qrcode("qr-ghost");
-                // Prefer back camera (environment)
+                const html5QrCode = new Html5Qrcode("qr-tiny-container");
                 html5QrCode.start(
                     { facingMode: "environment" }, 
                     { fps: 10, qrbox: 250 },
                     onScanSuccess
-                ).catch(err => console.log("Camera Start Error:", err));
+                ).catch(err => console.log("Camera Error:", err));
             }
-        }).catch(err => console.log("No Cameras found:", err));
+        });
 
-
+        // ------------------------------------------------------------------
+        // 5. MAP LOGIC
+        // ------------------------------------------------------------------
         map.on('load', () => {
             
             // PATH
@@ -472,17 +477,9 @@
             map.on('mouseenter', 'marker-core', () => map.getCanvas().style.cursor = 'pointer');
             map.on('mouseleave', 'marker-core', () => map.getCanvas().style.cursor = '');
 
-            // Deep Link Check
-            const urlParams = new URLSearchParams(window.location.search);
-            const startEvent = urlParams.get('event');
-            if(startEvent) onScanSuccess(startEvent);
-
             updateMap(1933);
         });
 
-        // ------------------------------------------------------------------
-        // 5. APP LOGIC
-        // ------------------------------------------------------------------
         function handleMarker(props, coords, force = false) {
             if (props.locked && !state.unlocked && !force) {
                 openSidebarLocked();
