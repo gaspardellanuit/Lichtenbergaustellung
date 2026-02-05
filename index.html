@@ -16,20 +16,17 @@
 
     <style>
         :root {
-            /* Colors */
             --bg-color: #050505;
             --text-main: #ffffff;
-            --c-erinnerung: #D4AF37;   /* Gold */
-            --c-gedenken: #A0A0A0;     /* Silver */
-            --c-widerstand: #00E676;   /* Neon Green */
-            --c-heute: #FF3D00;        /* Neon Red */
-            --c-path: #00FFFF;         /* Cyan Path */
+            --c-erinnerung: #D4AF37;
+            --c-gedenken: #A0A0A0;
+            --c-widerstand: #00E676;
+            --c-heute: #FF3D00;
+            --c-path: #00FFFF;
 
-            /* Fonts */
             --font-head: 'Space Grotesk', sans-serif;
             --font-body: 'Inter', sans-serif;
             
-            /* Dimensions */
             --sidebar-width: 500px;
         }
 
@@ -37,48 +34,56 @@
 
         #map { position: absolute; top: 0; bottom: 0; width: 100%; z-index: 1; }
 
-        /* --- MINI SCANNER WINDOW (Top Left) --- */
+        /* --- MINI SCANNER WINDOW (Small & Visible) --- */
         #mini-scanner-wrapper {
             position: absolute; 
-            top: 170px; /* Below the header */
+            top: 150px; 
             left: 30px; 
-            width: 260px; 
-            height: 200px;
+            width: 180px;  /* Much smaller */
+            height: 130px; /* Much smaller */
             background: #000;
             border: 2px solid var(--c-widerstand);
-            border-radius: 12px;
-            overflow: hidden;
+            border-radius: 8px;
             z-index: 20; 
             pointer-events: auto;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.9);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.9);
+            overflow: hidden; /* Important for overlay */
         }
         
         #reader { width: 100%; height: 100%; object-fit: cover; }
 
-        /* SCAN RESULT OVERLAY (Appears on success) */
+        /* CLICK OVERLAY (Appears on successful scan) */
         #scan-result-layer {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85);
+            position: absolute; 
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9);
             display: none; /* Hidden by default */
-            flex-direction: column; align-items: center; justify-content: center;
-            z-index: 22;
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center;
+            z-index: 100; /* Must be on top of #reader */
         }
         
         .result-btn {
             background: var(--c-widerstand); color: black; border: none;
-            padding: 10px 20px; border-radius: 30px; font-weight: bold;
-            font-family: var(--font-head); text-transform: uppercase;
-            cursor: pointer; margin-top: 10px; animation: pulse 1s infinite;
+            padding: 8px 12px; border-radius: 4px; font-weight: bold;
+            font-family: var(--font-head); text-transform: uppercase; font-size: 0.8rem;
+            cursor: pointer; margin-top: 5px; 
+            box-shadow: 0 0 15px var(--c-widerstand);
+            animation: pulse 1s infinite;
         }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+        
+        .scan-msg { color: white; font-size: 0.6rem; font-family: var(--font-head); letter-spacing: 1px; }
 
         .scan-label {
             position: absolute; bottom: 0; left: 0; width: 100%;
             background: rgba(0,230,118,0.8); color: black;
-            font-size: 0.7rem; text-align: center; padding: 4px;
+            font-size: 0.5rem; text-align: center; padding: 2px;
             font-family: var(--font-head); font-weight: bold; text-transform: uppercase;
-            z-index: 21;
+            z-index: 50; pointer-events: none;
         }
+
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
 
         /* START OVERLAY */
         #start-overlay {
@@ -131,12 +136,8 @@
             font-family: var(--font-head); font-size: 2.5rem; font-weight: 700; display: block; 
             margin-bottom: 5px; line-height: 1; color: white;
         }
-        input[type=range] {
-            -webkit-appearance: none; width: 100%; background: transparent; cursor: pointer;
-        }
-        input[type=range]::-webkit-slider-runnable-track {
-            width: 100%; height: 4px; background: #444; border-radius: 2px;
-        }
+        input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; cursor: pointer; }
+        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; background: #444; border-radius: 2px; }
         input[type=range]::-webkit-slider-thumb {
             -webkit-appearance: none; height: 20px; width: 20px; border-radius: 50%;
             background: #fff; border: 2px solid #000; margin-top: -8px; transition: transform 0.1s;
@@ -213,7 +214,7 @@
             :root { --sidebar-width: 100%; }
             #timeline-ui { width: 90%; bottom: 20px; padding: 15px 20px; }
             .sidebar-content { padding: 25px; }
-            #mini-scanner-wrapper { top: 130px; left: 20px; width: 180px; height: 140px; }
+            #mini-scanner-wrapper { top: 120px; left: 20px; width: 140px; height: 100px; }
         }
 
         .mapboxgl-popup-content { background: #000; color: #fff; border: 1px solid #444; font-family: var(--font-body); padding: 10px 14px; }
@@ -240,11 +241,13 @@
 
         <div id="mini-scanner-wrapper">
             <div id="reader"></div>
+            
             <div id="scan-result-layer">
-                <div style="color:white; font-size:0.8rem; margin-bottom:5px;">QR-CODE ERKANNT</div>
-                <button id="scan-action-btn" class="result-btn">ANZEIGEN ➔</button>
+                <span class="scan-msg">QR ERKANNT</span>
+                <button id="scan-action-btn" class="result-btn">ÖFFNEN</button>
             </div>
-            <div class="scan-label">QR-SCANNER</div>
+            
+            <div class="scan-label">SCANNER</div>
         </div>
 
         <div id="status-panel">
@@ -445,7 +448,7 @@
                     const html5QrCode = new Html5Qrcode("reader");
                     html5QrCode.start(
                         { facingMode: "environment" }, 
-                        { fps: 10, qrbox: 200 },
+                        { fps: 10, qrbox: 150 }, // Smaller Scan Area
                         onScanSuccess
                     ).catch(err => console.log("Camera Error:", err));
                 }
@@ -453,7 +456,7 @@
         }
 
         // ------------------------------------------------------------------
-        // 4. SCANNER LOGIC WITH CLICK OVERLAY
+        // 4. SCANNER LOGIC (MANUAL CLICK TRIGGER)
         // ------------------------------------------------------------------
         function playBeep() {
             if (!state.audioCtx) return;
@@ -469,11 +472,10 @@
         }
 
         function onScanSuccess(decodedText) {
+            // Rate Limiter
             const now = Date.now();
-            if (now - state.lastScan < 2000) return; // Debounce
-            state.lastScan = now;
-
-            // Check ID
+            if (now - state.lastScan < 3000) return; // 3 sec cooldown to allow clicking
+            
             let eventId = null;
             try {
                 const url = new URL(decodedText);
@@ -485,28 +487,34 @@
             if (eventId) {
                 const target = geoData.features.find(f => f.properties.id === eventId);
                 if (target) {
+                    state.lastScan = now;
                     playBeep();
                     
-                    // Show "Click" Overlay
-                    const layer = document.getElementById('scan-result-layer');
+                    // Show Overlay for Click
+                    const overlay = document.getElementById('scan-result-layer');
                     const btn = document.getElementById('scan-action-btn');
-                    layer.style.display = 'flex';
+                    overlay.style.display = 'flex';
                     
-                    // Button Click Action
+                    // Button Click Logic
                     btn.onclick = () => {
-                        layer.style.display = 'none';
+                        overlay.style.display = 'none'; // Hide overlay
                         
                         // Game Logic
                         if (!state.discovered.includes(eventId)) {
                             state.discovered.push(eventId);
                             updateProgress();
                         }
-                        if (target.properties.locked) unlockAll();
-                        else updateMap(target.properties.year);
-                        
-                        // Navigate
+                        if (target.properties.locked) {
+                            unlockAll();
+                        } else {
+                            updateMap(target.properties.year);
+                        }
+                        // Fly to marker
                         handleMarker(target.properties, target.geometry.coordinates, true);
                     };
+                    
+                    // Auto-hide overlay after 5 seconds if not clicked
+                    setTimeout(() => { overlay.style.display = 'none'; }, 5000);
                 }
             }
         }
