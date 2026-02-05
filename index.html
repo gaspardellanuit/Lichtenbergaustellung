@@ -34,69 +34,31 @@
 
         #map { position: absolute; top: 0; bottom: 0; width: 100%; z-index: 1; }
 
-        /* UI LAYER */
-        #ui-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10; }
-
-        /* HEADER */
-        header { 
-            position: absolute; top: 30px; left: 30px; pointer-events: auto;
-            text-shadow: 0 0 10px rgba(0,0,0,0.8);
-        }
-        .museum-label { 
-            font-family: var(--font-head); font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase; 
-            color: #aaa; margin-bottom: 5px; font-weight: 500; border-left: 3px solid var(--c-widerstand); padding-left: 10px;
-        }
-        h1 { 
-            font-family: var(--font-head); font-size: 3rem; margin: 0; line-height: 0.9; font-weight: 700;
-            color: white; letter-spacing: -1px;
-        }
-
-        /* --- 1. THE TRIGGER BUTTON (Visible on Map) --- */
-        #btn-activate-scan {
-            position: absolute; top: 160px; left: 30px; pointer-events: auto;
-            background: rgba(0,0,0,0.8); color: var(--c-widerstand);
-            border: 2px solid var(--c-widerstand); border-radius: 50px;
-            padding: 12px 25px; cursor: pointer;
-            font-family: var(--font-head); font-weight: bold; font-size: 1rem; letter-spacing: 1px;
-            display: flex; align-items: center; gap: 10px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.5);
-            transition: all 0.2s;
-        }
-        #btn-activate-scan:hover { background: var(--c-widerstand); color: black; }
-        #btn-activate-scan:active { transform: scale(0.95); }
-
-        /* --- 2. THE MINI SCANNER WINDOW (Hidden by default) --- */
+        /* --- MINI SCANNER WINDOW --- */
         #mini-scanner-wrapper {
             position: absolute; 
-            top: 160px; left: 30px; 
-            width: 240px; height: 180px;
+            top: 170px; left: 30px; 
+            width: 200px; height: 150px;
             background: #000;
             border: 2px solid var(--c-widerstand);
-            border-radius: 12px;
+            border-radius: 8px;
             overflow: hidden;
             z-index: 20; 
             pointer-events: auto;
-            box-shadow: 0 20px 50px rgba(0,0,0,1);
-            display: none; /* Hidden until button clicked */
+            box-shadow: 0 10px 40px rgba(0,0,0,0.9);
+            display: none; /* Hidden by default */
             flex-direction: column;
         }
         
-        #reader { flex: 1; width: 100%; height: 100%; object-fit: cover; }
+        #reader { width: 100%; height: 100%; object-fit: cover; }
 
-        /* Close Button for Scanner */
-        #btn-close-scanner {
-            position: absolute; top: 5px; right: 5px; width: 24px; height: 24px;
-            background: rgba(0,0,0,0.5); color: white; border: none; border-radius: 50%;
-            cursor: pointer; z-index: 30; font-weight: bold; display: flex; align-items: center; justify-content: center;
-        }
-
-        /* --- 3. THE "OPEN LINK" OVERLAY (Inside Scanner) --- */
+        /* RESULT OVERLAY */
         #scan-result-layer {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85);
-            display: none; /* Hidden by default */
+            background: rgba(0,0,0,0.9);
+            display: none; 
             flex-direction: column; align-items: center; justify-content: center;
-            z-index: 25; text-align: center;
+            z-index: 22; text-align: center;
         }
         
         .result-btn {
@@ -107,32 +69,66 @@
             box-shadow: 0 0 15px var(--c-widerstand);
             animation: pulse 1s infinite;
         }
+        .found-text { font-size: 0.7rem; color: #fff; margin-bottom: 5px; }
+        
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
 
-        /* UI Elements */
-        #status-panel { position: absolute; top: 30px; right: 30px; width: 240px; pointer-events: auto; background: rgba(0,0,0,0.6); padding: 15px; border-radius: 8px; border: 1px solid #333; }
-        .status-header { font-size: 0.7rem; text-transform: uppercase; color: #888; letter-spacing: 1px; }
-        .progress-bar { width: 100%; height: 4px; background: #333; margin-top: 8px; border-radius: 2px; }
-        .progress-fill { height: 100%; background: var(--c-widerstand); width: 0%; transition: width 0.5s; box-shadow: 0 0 8px var(--c-widerstand); }
-        .lock-text { text-align: right; font-family: var(--font-head); font-size: 0.9rem; color: #666; margin-top: 5px; }
+        /* CLOSE BUTTON FOR SCANNER */
+        #close-scanner {
+            position: absolute; top: 5px; right: 5px;
+            background: rgba(0,0,0,0.5); color: white; border: none;
+            width: 24px; height: 24px; border-radius: 50%; cursor: pointer; z-index: 30;
+        }
 
-        #legend { position: absolute; bottom: 30px; left: 30px; pointer-events: auto; display: flex; flex-direction: column; gap: 8px; }
-        .legend-item { display: flex; align-items: center; gap: 10px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: #ccc; }
-        .dot { width: 8px; height: 8px; border-radius: 50%; }
+        /* TRIGGER BUTTON */
+        #btn-activate-scan {
+            position: absolute; top: 160px; left: 30px; pointer-events: auto;
+            background: rgba(0,0,0,0.8); color: var(--c-widerstand);
+            border: 2px solid var(--c-widerstand); border-radius: 50px;
+            padding: 12px 25px; cursor: pointer;
+            font-family: var(--font-head); font-weight: bold; font-size: 1rem; letter-spacing: 1px;
+            display: flex; align-items: center; gap: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            transition: all 0.2s;
+        }
 
+        /* START OVERLAY */
+        #start-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(5,5,5,0.98); z-index: 9999;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            text-align: center;
+        }
+        .start-btn {
+            font-family: var(--font-head); font-size: 1.5rem;
+            background: var(--c-widerstand); color: black; border: none;
+            padding: 20px 50px; border-radius: 50px; cursor: pointer;
+            text-transform: uppercase; font-weight: bold; letter-spacing: 2px;
+            box-shadow: 0 0 30px var(--c-widerstand);
+        }
+
+        /* UI ELEMENTS (Header, Sidebar, etc) */
+        #ui-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10; }
+        .vignette-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5; background: radial-gradient(circle at center, transparent 35%, rgba(0,0,0,0.7) 60%, rgba(0,0,0,1) 90%); }
+        header { position: absolute; top: 30px; left: 30px; pointer-events: auto; text-shadow: 0 0 10px rgba(0,0,0,0.8); }
+        .museum-label { font-family: var(--font-head); font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase; color: #aaa; margin-bottom: 5px; font-weight: 500; border-left: 3px solid var(--c-widerstand); padding-left: 10px; }
+        h1 { font-family: var(--font-head); font-size: 3rem; margin: 0; line-height: 0.9; font-weight: 700; color: white; letter-spacing: -1px; }
+        
         #timeline-ui { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); width: 80%; max-width: 900px; min-width: 320px; pointer-events: auto; text-align: center; background: rgba(10, 10, 10, 0.85); padding: 15px 40px; border-radius: 40px; border: 1px solid rgba(255,255,255,0.15); backdrop-filter: blur(8px); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         #year-display { font-family: var(--font-head); font-size: 2.5rem; font-weight: 700; display: block; margin-bottom: 5px; line-height: 1; color: white; }
         input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; cursor: pointer; }
         input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; background: #444; border-radius: 2px; }
         input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 20px; width: 20px; border-radius: 50%; background: #fff; border: 2px solid #000; margin-top: -8px; transition: transform 0.1s; }
-        input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.3); background: var(--c-path); }
         .ticks { display: flex; justify-content: space-between; width: 100%; margin-top: 10px; font-size: 0.8rem; color: #ccc; text-transform: uppercase; letter-spacing: 1px; font-family: var(--font-head); }
+        .ticks span { text-align: center; flex: 1; }
+        .ticks span:first-child { text-align: left; }
+        .ticks span:last-child { text-align: right; }
 
         #sidebar { position: absolute; right: 0; top: 0; bottom: 0; width: var(--sidebar-width); background: #080808; border-left: 1px solid #333; z-index: 60; transform: translateX(100%); transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1); overflow-y: auto; pointer-events: auto; display: flex; flex-direction: column; box-shadow: -20px 0 50px rgba(0,0,0,0.8); }
         #sidebar.open { transform: translateX(0); }
         .close-area { position: sticky; top: 0; width: 100%; height: 70px; z-index: 50; display: flex; justify-content: flex-end; align-items: center; padding-right: 25px; background: linear-gradient(to bottom, rgba(8,8,8,1) 50%, rgba(8,8,8,0)); }
         .close-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; width: 44px; height: 44px; border-radius: 50%; font-size: 24px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
-        .close-btn:hover { background: white; color: black; }
+        
         .sidebar-content { padding: 40px; padding-top: 0; }
         .hero-img { width: 100%; height: 300px; object-fit: cover; border-bottom: 4px solid #333; margin-bottom: 25px; }
         .cat-tag { font-family: var(--font-head); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; display: inline-block; padding: 4px 8px; border: 1px solid #444; color: #fff; }
@@ -140,17 +136,14 @@
         .article { font-size: 1.05rem; line-height: 1.7; color: #ccc; font-weight: 300; margin-bottom: 40px; }
         .article h3 { color: white; font-family: var(--font-head); font-size: 1.2rem; margin-top: 30px; margin-bottom: 10px; font-weight: 500; border-left: 3px solid var(--c-path); padding-left: 10px; }
         .source { font-size: 0.75rem; color: #666; border-top: 1px solid #222; padding-top: 20px; font-style: italic; }
-        
         .locked-view { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px; color: #555; }
         .locked-icon { font-size: 4rem; margin-bottom: 20px; opacity: 0.5; }
-
-        .vignette-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5; background: radial-gradient(circle at center, transparent 35%, rgba(0,0,0,0.7) 60%, rgba(0,0,0,1) 90%); }
 
         @media (max-width: 1024px) {
             :root { --sidebar-width: 100%; }
             #timeline-ui { width: 90%; bottom: 20px; padding: 15px 20px; }
             .sidebar-content { padding: 25px; }
-            #mini-scanner-wrapper { top: 120px; left: 20px; }
+            #mini-scanner-wrapper { top: 120px; left: 20px; width: 220px; height: 160px; }
             #btn-activate-scan { top: 120px; left: 20px; }
         }
 
@@ -160,6 +153,12 @@
     </style>
 </head>
 <body class="p-1933">
+
+    <div id="start-overlay">
+        <h1 style="margin-bottom: 30px; color:white;">Museum Lichtenberg</h1>
+        <button class="start-btn" onclick="startApp()">Ausstellung Starten</button>
+        <p style="color:#aaa; margin-top:20px; font-family:'Inter';">Bitte Kamera-Zugriff zulassen.</p>
+    </div>
 
     <div id="map"></div>
     <div class="vignette-overlay"></div>
@@ -175,26 +174,13 @@
         </button>
 
         <div id="mini-scanner-wrapper">
-            <button id="btn-close-scanner" onclick="toggleScanner()">×</button>
+            <button id="close-scanner" onclick="toggleScanner()">✕</button>
             <div id="reader"></div>
             
             <div id="scan-result-layer">
-                <div style="color:white; font-size:0.7rem; margin-bottom:8px; font-family:var(--font-head);">QR-CODE GEFUNDEN</div>
-                <button id="scan-action-btn" class="result-btn">EVENT ANZEIGEN</button>
+                <div class="found-text">ERKANNT</div>
+                <button id="scan-action-btn" class="result-btn">EVENT ANZEIGEN ➔</button>
             </div>
-        </div>
-
-        <div id="status-panel">
-            <div class="status-header">Archiv Fortschritt</div>
-            <div class="progress-bar"><div class="progress-fill" id="progress-bar"></div></div>
-            <div class="lock-text" id="lock-status">GEGENWART GESPERRT</div>
-        </div>
-
-        <div id="legend">
-            <div class="legend-item"><div class="dot" style="background:var(--c-erinnerung)"></div> Orte der Erinnerung</div>
-            <div class="legend-item"><div class="dot" style="background:var(--c-gedenken)"></div> Gedenken</div>
-            <div class="legend-item"><div class="dot" style="background:var(--c-widerstand)"></div> Orte des Widerstands</div>
-            <div class="legend-item"><div class="dot" style="background:var(--c-heute)"></div> Gegen Rechts Heute</div>
         </div>
 
         <div id="timeline-ui">
@@ -215,17 +201,25 @@
 
     <script>
         // ------------------------------------------------------------------
-        // 1. CONFIG
+        // 1. DATA
         // ------------------------------------------------------------------
         mapboxgl.accessToken = 'pk.eyJ1IjoiaWxpYXNtZXJhYmloYSIsImEiOiJjbWw5bHNnc3YwM3ZwM2RxdXU5YjdiN201In0.CTiUlh-M4fTkIda8EtP4Yg'; 
 
         const geoData = {
             'type': 'FeatureCollection',
             'features': [
-                // (INSERT YOUR FULL FEATURE LIST HERE AS BEFORE)
-                // Keeping it short here for brevity, assume the 12 features are here.
-                { 'type': 'Feature', 'properties': { 'id': 'h1', 'category': 'erinnerung', 'title': 'Der Blutbaum', 'year': 1934, 'image': 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Gedenkstein_Loeperplatz_%28Berlin-Lichtenberg%29.jpg/800px-Gedenkstein_Loeperplatz_%28Berlin-Lichtenberg%29.jpg', 'description': '...', 'source': '...' }, 'geometry': { 'type': 'Point', 'coordinates': [13.4800, 52.5135] } },
-                { 'type': 'Feature', 'properties': { 'id': 'g1', 'category': 'gedenken', 'title': 'Silvio Meier', 'year': 1992, 'image': 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Gedenktafel_Silvio_Meier_%28U-Bhf_Samariterstra%C3%9Fe%29.jpg/800px-Gedenktafel_Silvio_Meier_%28U-Bhf_Samariterstra%C3%9Fe%29.jpg', 'description': '...', 'source': '...' }, 'geometry': { 'type': 'Point', 'coordinates': [13.4650, 52.5140] } }
+                { 'type': 'Feature', 'properties': { 'id': 'h1', 'category': 'erinnerung', 'title': 'Der Blutbaum am Loeperplatz', 'year': 1934, 'image': 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Gedenkstein_Loeperplatz_%28Berlin-Lichtenberg%29.jpg/800px-Gedenkstein_Loeperplatz_%28Berlin-Lichtenberg%29.jpg', 'description': '...', 'source': 'Gedenkstätte Deutscher Widerstand' }, 'geometry': { 'type': 'Point', 'coordinates': [13.4800, 52.5135] } },
+                { 'type': 'Feature', 'properties': { 'id': 'h2', 'category': 'erinnerung', 'title': 'Zwangsarbeiterlager Rummelsburg', 'year': 1941, 'image': 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Gedenktafel_Hauptstr_8_%28Rumm%29_Arbeitserziehungslager.jpg/800px-Gedenktafel_Hauptstr_8_%28Rumm%29_Arbeitserziehungslager.jpg', 'description': '...', 'source': 'Museum Lichtenberg' }, 'geometry': { 'type': 'Point', 'coordinates': [13.4850, 52.4950] } },
+                { 'type': 'Feature', 'properties': { 'id': 'h3', 'category': 'erinnerung', 'title': 'Erna Lugebiel: Stille Heldin', 'year': 1943, 'image': 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/66/Stadthaus_Lichtenberg_Berlin.jpg/800px-Stadthaus_Lichtenberg_Berlin.jpg', 'description': '...', 'source': 'Gedenkstätte Stille Helden' }, 'geometry': { 'type': 'Point', 'coordinates': [13.4790, 52.5220] } },
+                { 'type': 'Feature', 'properties': { 'id': 'w1', 'category': 'widerstand', 'title': 'Räumung der Mainzer Straße', 'year': 1990, 'image': 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Mainzer_Stra%C3%9Fe_Berlin-Friedrichshain_1990.jpg/800px-Mainzer_Stra%C3%9Fe_Berlin-Friedrichshain_1990.jpg', 'description': '...', 'source': 'Zeitzeugenarchiv Berlin' }, 'geometry': { 'type': 'Point', 'coordinates': [13.4620, 52.5120] } },
+                { 'type': 'Feature', 'properties': { 'id': 'g1', 'category': 'gedenken', 'title': 'Der Mord an Silvio Meier', 'year': 1992, 'image': 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Gedenktafel_Silvio_Meier_%28U-Bhf_Samariterstra%C3%9Fe%29.jpg/800px-Gedenktafel_Silvio_Meier_%28U-Bhf_Samariterstra%C3%9Fe%29.jpg', 'description': '...', 'source': 'Amadeu Antonio Stiftung' }, 'geometry': { 'type': 'Point', 'coordinates': [13.4650, 52.5140] } },
+                { 'type': 'Feature', 'properties': { 'id': 'g2', 'category': 'gedenken', 'title': 'Die "Angstzone" Weitlingstraße', 'year': 1995, 'image': 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Berlin%2C_Lichtenberg%2C_Weitlingstrasse.jpg/800px-Berlin%2C_Lichtenberg%2C_Weitlingstrasse.jpg', 'description': '...', 'source': 'Licht-Blicke Podcast' }, 'geometry': { 'type': 'Point', 'coordinates': [13.4985, 52.5075] } },
+                { 'type': 'Feature', 'properties': { 'id': 'g3', 'category': 'gedenken', 'title': 'Gedenken an Eugeniu Botnari', 'year': 2016, 'image': 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Bahnhof_Berlin-Lichtenberg_Empfangsgeb%C3%A4ude_20160808_1.jpg/800px-Bahnhof_Berlin-Lichtenberg_Empfangsgeb%C3%A4ude_20160808_1.jpg', 'description': '...', 'source': 'Initiative Gedenken an Eugeniu Botnari' }, 'geometry': { 'type': 'Point', 'coordinates': [13.4970, 52.5100] } },
+                { 'type': 'Feature', 'properties': { 'id': 'cur1', 'category': 'heute', 'title': 'LOCKED: Angriff am Ostkreuz', 'year': 2024, 'locked': true, 'image': 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cf/Bahnhof_Berlin_Ostkreuz_Eingang_Sonntagsstr.jpg/800px-Bahnhof_Berlin_Ostkreuz_Eingang_Sonntagsstr.jpg', 'description': '...', 'source': 'Berliner Register 2024' }, 'geometry': { 'type': 'Point', 'coordinates': [13.4693, 52.5030] } },
+                { 'type': 'Feature', 'properties': { 'id': 'cur2', 'category': 'heute', 'title': 'LOCKED: Code 1161 an Schulen', 'year': 2025, 'locked': true, 'image': 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Berlin_Wartenberg_Woldegker_Stra%C3%9Fe_Grundschule_im_Gr%C3%BCnen_01.jpg/800px-Berlin_Wartenberg_Woldegker_Stra%C3%9Fe_Grundschule_im_Gr%C3%BCnen_01.jpg', 'description': '...', 'source': 'Lichtenberger Register' }, 'geometry': { 'type': 'Point', 'coordinates': [13.5000, 52.5400] } },
+                { 'type': 'Feature', 'properties': { 'id': 'cur3', 'category': 'heute', 'title': 'LOCKED: Angriff auf Jugendclub', 'year': 2025, 'locked': true, 'image': 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Berlin_Wartenberg_Woldegker_Stra%C3%9Fe_Grundschule_im_Gr%C3%BCnen_01.jpg/800px-Berlin_Wartenberg_Woldegker_Stra%C3%9Fe_Grundschule_im_Gr%C3%BCnen_01.jpg', 'description': '...', 'source': 'Polizei Berlin' }, 'geometry': { 'type': 'Point', 'coordinates': [13.5200, 52.4900] } },
+                { 'type': 'Feature', 'properties': { 'id': 'cur4', 'category': 'widerstand', 'title': 'LOCKED: Bündnis Bunter Wind', 'year': 2026, 'locked': true, 'image': 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Rathaus_Lichtenberg.jpg/800px-Rathaus_Lichtenberg.jpg', 'description': '...', 'source': 'Bündnis für Demokratie' }, 'geometry': { 'type': 'Point', 'coordinates': [13.4815, 52.5160] } },
+                { 'type': 'Feature', 'properties': { 'id': 'cur5', 'category': 'widerstand', 'title': 'LOCKED: Licht-Blicke', 'year': 2026, 'locked': true, 'image': 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Gudrunstra%C3%9Fe_Berlin-Lichtenberg.jpg/800px-Gudrunstra%C3%9Fe_Berlin-Lichtenberg.jpg', 'description': '...', 'source': 'www.licht-blicke.org' }, 'geometry': { 'type': 'Point', 'coordinates': [13.4880, 52.5120] } }
             ]
         };
 
@@ -233,8 +227,8 @@
             discovered: [],
             required: 3,
             unlocked: false,
-            scannerActive: false,
-            html5QrCode: null
+            scannerObj: null,
+            audioCtx: null
         };
 
         const map = new mapboxgl.Map({
@@ -243,158 +237,151 @@
             center: [13.485, 52.51],
             zoom: 12.5,
             pitch: 45,
-            bearing: -10
+            bearing: -10,
+            maxBounds: [[13.3, 52.4], [13.7, 52.6]] 
         });
 
         // ------------------------------------------------------------------
-        // 2. SCANNER LOGIC
+        // 2. APP LOGIC
         // ------------------------------------------------------------------
+        function startApp() {
+            document.getElementById('start-overlay').style.display = 'none';
+            state.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            state.audioCtx.resume();
+        }
+
         function toggleScanner() {
             const wrapper = document.getElementById('mini-scanner-wrapper');
             const btn = document.getElementById('btn-activate-scan');
             
-            if (state.scannerActive) {
-                // STOP SCANNER
-                if(state.html5QrCode) {
-                    state.html5QrCode.stop().then(() => {
-                        state.html5QrCode.clear();
-                        wrapper.style.display = 'none';
-                        btn.style.display = 'flex';
-                        state.scannerActive = false;
-                    });
+            if (wrapper.style.display === 'flex') {
+                // STOP
+                if(state.scannerObj) {
+                    state.scannerObj.stop().then(() => state.scannerObj.clear());
                 }
+                wrapper.style.display = 'none';
+                btn.style.display = 'flex';
             } else {
-                // START SCANNER
-                wrapper.style.display = 'flex';
+                // START
                 btn.style.display = 'none';
-                state.scannerActive = true;
-                
-                // Hide result layer if visible from prev scan
+                wrapper.style.display = 'flex';
                 document.getElementById('scan-result-layer').style.display = 'none';
-
-                if(!state.html5QrCode) state.html5QrCode = new Html5Qrcode("reader");
                 
-                state.html5QrCode.start(
+                if(!state.scannerObj) state.scannerObj = new Html5Qrcode("reader");
+                state.scannerObj.start(
                     { facingMode: "environment" }, 
-                    { fps: 10, qrbox: 150 },
+                    { fps: 10, qrbox: 130 },
                     onScanSuccess
                 ).catch(err => {
-                    console.log("Error starting camera", err);
-                    alert("Kamera konnte nicht gestartet werden. Bitte Berechtigungen prüfen.");
-                    toggleScanner(); // revert UI
+                    alert("Kamerafehler: " + err);
+                    wrapper.style.display = 'none';
+                    btn.style.display = 'flex';
                 });
             }
         }
 
         function onScanSuccess(decodedText) {
-            // 1. Pause Camera
-            state.html5QrCode.pause();
-
-            // 2. Parse ID
-            let eventId = null;
+            // 1. Try Extract ID
+            let eventId = decodedText;
             try {
                 const url = new URL(decodedText);
-                eventId = url.searchParams.get("event");
-            } catch (e) {
-                eventId = decodedText;
-            }
+                const param = url.searchParams.get("event");
+                if(param) eventId = param;
+            } catch(e) {}
 
-            // 3. Check Database
+            // 2. Check DB
             const target = geoData.features.find(f => f.properties.id === eventId);
             
             if (target) {
-                // 4. Show "Open Link" Button
+                // 3. Pause & Show Button
+                if(state.audioCtx) {
+                    const osc = state.audioCtx.createOscillator();
+                    const gain = state.audioCtx.createGain();
+                    osc.connect(gain); gain.connect(state.audioCtx.destination);
+                    osc.frequency.value = 1200; gain.gain.value = 0.1;
+                    osc.start(); setTimeout(() => osc.stop(), 100);
+                }
+                
+                state.scannerObj.pause();
+                
                 const overlay = document.getElementById('scan-result-layer');
                 const btn = document.getElementById('scan-action-btn');
                 overlay.style.display = 'flex';
                 
                 btn.onclick = () => {
-                    // ACTION!
-                    toggleScanner(); // Close the scanner window
+                    toggleScanner(); // Close window
                     
-                    // Game Logic
                     if (!state.discovered.includes(eventId)) {
                         state.discovered.push(eventId);
-                        updateProgress();
+                        // Update Progress Visuals (Simplified for this snippet)
                     }
                     if (target.properties.locked) unlockAll();
                     else updateMap(target.properties.year);
                     
-                    // Fly to Marker
                     handleMarker(target.properties, target.geometry.coordinates, true);
                 };
-            } else {
-                // Unknown code? Resume after 2s
-                alert("Unbekannter QR Code: " + eventId);
-                setTimeout(() => state.html5QrCode.resume(), 1000);
             }
         }
 
         // ------------------------------------------------------------------
-        // 3. MAP LOGIC
+        // 3. MAP LOGIC (Condensed)
         // ------------------------------------------------------------------
         map.on('load', () => {
-            // (Standard Mapbox Layers - condensed for brevity)
-            map.addLayer({ 'id': '3d-buildings', 'source': 'composite', 'source-layer': 'building', 'type': 'fill-extrusion', 'paint': { 'fill-extrusion-color': '#222', 'fill-extrusion-height': ['get', 'height'] } }, 'waterway-label');
-            
+            map.addLayer({ 'id': '3d-buildings', 'source': 'composite', 'source-layer': 'building', 'filter': ['==', 'extrude', 'true'], 'type': 'fill-extrusion', 'paint': { 'fill-extrusion-color': '#222', 'fill-extrusion-height': ['get', 'height'] } }, 'waterway-label');
             map.addSource('markers', { 'type': 'geojson', 'data': geoData });
             map.addLayer({ 'id': 'marker-glow', 'type': 'circle', 'source': 'markers', 'paint': { 'circle-radius': 40, 'circle-color': ['match', ['get', 'category'], 'erinnerung', '#D4AF37', 'gedenken', '#A0A0A0', 'widerstand', '#00E676', 'heute', '#FF3D00', '#fff'], 'circle-opacity': 0.3 } });
             map.addLayer({ 'id': 'marker-core', 'type': 'circle', 'source': 'markers', 'paint': { 'circle-radius': 10, 'circle-color': '#fff' } });
-
             map.on('click', 'marker-core', (e) => handleMarker(e.features[0].properties, e.features[0].geometry.coordinates));
             
-            // Handle URL Deep Link (if user scans with native cam app)
+            // Check Deep Link on Load
             const urlParams = new URLSearchParams(window.location.search);
             const startEvent = urlParams.get('event');
             if(startEvent) {
+                document.getElementById('start-overlay').style.display = 'none';
                 const t = geoData.features.find(f => f.properties.id === startEvent);
                 if(t) handleMarker(t.properties, t.geometry.coordinates, true);
             }
-            
             updateMap(1933);
         });
 
-        // (Helper Functions: handleMarker, updateMap, updateProgress, unlockAll, openSidebar...)
-        // COPY THESE from the previous turn, they remain exactly the same.
         function handleMarker(props, coords, force = false) {
             if (props.locked && !state.unlocked && !force) { openSidebarLocked(); return; }
-            if (!state.discovered.includes(props.id) && !props.locked) { state.discovered.push(props.id); updateProgress(); }
+            if (!state.discovered.includes(props.id) && !props.locked) state.discovered.push(props.id);
             map.flyTo({ center: coords, zoom: 16, pitch: 60, offset: [0, -200], speed: 0.8 });
             openSidebar(props);
         }
-        function updateProgress() {
-            const pct = Math.min((state.discovered.length / state.required) * 100, 100);
-            document.getElementById('progress-bar').style.width = pct + '%';
-            if (state.discovered.length >= state.required && !state.unlocked) setTimeout(unlockAll, 1000);
-        }
+
         function unlockAll() {
             state.unlocked = true;
-            document.getElementById('lock-status').innerText = "FREIGESCHALTET";
-            document.getElementById('lock-status').style.color = "#00E676";
-            document.getElementById('progress-bar').style.background = "#00E676";
             document.getElementById('year-slider').value = 2026;
+            document.getElementById('year-display').innerText = 2026;
             updateMap(2026);
         }
+
         const slider = document.getElementById('year-slider');
         slider.addEventListener('input', (e) => {
             document.getElementById('year-display').innerText = e.target.value;
             updateMap(parseInt(e.target.value));
         });
+
         function updateMap(year) {
             const filter = ['<=', ['get', 'year'], year];
             map.setFilter('marker-glow', filter);
             map.setFilter('marker-core', filter);
         }
+
         function openSidebar(data) {
             const content = document.getElementById('sidebar-content');
             const colors = { 'erinnerung': '#D4AF37', 'gedenken': '#A0A0A0', 'widerstand': '#00E676', 'heute': '#FF3D00' };
             content.innerHTML = `<img src="${data.image}" class="hero-img"><div class="sidebar-content"><span class="cat-tag" style="border-color:${colors[data.category]}; color:${colors[data.category]}">${data.category.toUpperCase()}</span><h2>${data.title}</h2><div class="article">${data.description}</div><div class="source">Quelle: ${data.source}</div></div>`;
             document.getElementById('sidebar').classList.add('open');
         }
+
         function openSidebarLocked() {
-            document.getElementById('sidebar-content').innerHTML = `<div class="locked-view"><div class="locked-icon">🔒</div><h2>GESPERRT</h2></div>`;
+            document.getElementById('sidebar-content').innerHTML = `<div class="locked-view"><div class="locked-icon">🔒</div><h2 style="color:#FF3D00">DATEN VERSCHLÜSSELT</h2><p>Erforschen Sie erst die Geschichte.</p></div>`;
             document.getElementById('sidebar').classList.add('open');
         }
+
         function closeSidebar() {
             document.getElementById('sidebar').classList.remove('open');
             map.easeTo({ offset: [0, 0] });
