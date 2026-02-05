@@ -8,6 +8,8 @@
     <script src='https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js'></script>
     <link href='https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css' rel='stylesheet' />
     
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet">
@@ -17,17 +19,16 @@
             /* Colors */
             --bg-color: #050505;
             --text-main: #ffffff;
-            --c-erinnerung: #D4AF37;   /* Gold */
-            --c-gedenken: #A0A0A0;     /* Silver */
-            --c-widerstand: #00E676;   /* Neon Green */
-            --c-heute: #FF3D00;        /* Neon Red */
-            --c-path: #00FFFF;         /* Cyan Path */
+            --c-erinnerung: #D4AF37;   
+            --c-gedenken: #A0A0A0;     
+            --c-widerstand: #00E676;   
+            --c-heute: #FF3D00;        
+            --c-path: #00FFFF;         
 
             /* Fonts */
             --font-head: 'Space Grotesk', sans-serif;
             --font-body: 'Inter', sans-serif;
             
-            /* Dimensions */
             --sidebar-width: 500px;
         }
 
@@ -58,11 +59,30 @@
             color: white; letter-spacing: -1px;
         }
         
+        /* QR SCANNER PREVIEW (KIOSK MODE) */
+        #qr-container {
+            position: absolute; top: 30px; left: 50%; transform: translateX(-50%);
+            width: 250px; height: 180px; 
+            background: rgba(0,0,0,0.8); border: 2px solid var(--c-widerstand); border-radius: 10px;
+            pointer-events: auto; overflow: hidden; z-index: 50;
+            box-shadow: 0 0 20px rgba(0, 230, 118, 0.2);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+        #reader { width: 100%; height: 100%; object-fit: cover; }
+        .scan-instruction {
+            position: absolute; bottom: 5px; width: 100%; text-align: center;
+            font-size: 0.7rem; color: var(--c-widerstand); text-transform: uppercase; letter-spacing: 1px;
+            text-shadow: 0 0 5px black; z-index: 51;
+        }
+        /* Hide HTML5-QRCode default buttons */
+        #reader__dashboard_section_csr span, #reader__dashboard_section_swaplink { display: none !important; }
+
         /* TIMELINE */
         #timeline-ui {
             position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
-            width: 50%; max-width: 600px; min-width: 300px; pointer-events: auto; text-align: center;
-            background: rgba(10, 10, 10, 0.85); padding: 15px 30px; border-radius: 40px;
+            width: 80%; max-width: 900px; min-width: 320px; 
+            pointer-events: auto; text-align: center;
+            background: rgba(10, 10, 10, 0.85); padding: 15px 40px; border-radius: 40px;
             border: 1px solid rgba(255,255,255,0.15); backdrop-filter: blur(8px);
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
@@ -70,19 +90,20 @@
             font-family: var(--font-head); font-size: 2.5rem; font-weight: 700; display: block; 
             margin-bottom: 5px; line-height: 1; color: white;
         }
-        input[type=range] {
-            -webkit-appearance: none; width: 100%; background: transparent; cursor: pointer;
-        }
-        input[type=range]::-webkit-slider-runnable-track {
-            width: 100%; height: 4px; background: #444; border-radius: 2px;
-        }
+        input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; cursor: pointer; }
+        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; background: #444; border-radius: 2px; }
         input[type=range]::-webkit-slider-thumb {
             -webkit-appearance: none; height: 20px; width: 20px; border-radius: 50%;
             background: #fff; border: 2px solid #000; margin-top: -8px; transition: transform 0.1s;
         }
         input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.3); background: var(--c-path); }
 
-        /* STATUS / GAMIFICATION */
+        .ticks { 
+            display: flex; justify-content: space-between; width: 100%; margin-top: 10px;
+            font-size: 0.8rem; color: #ccc; text-transform: uppercase; letter-spacing: 1px; font-family: var(--font-head);
+        }
+
+        /* STATUS */
         #status-panel {
             position: absolute; top: 30px; right: 30px; width: 240px; pointer-events: auto;
             background: rgba(0,0,0,0.6); padding: 15px; border-radius: 8px; border: 1px solid #333;
@@ -103,7 +124,7 @@
         /* SIDEBAR */
         #sidebar {
             position: absolute; right: 0; top: 0; bottom: 0; width: var(--sidebar-width);
-            background: #080808; border-left: 1px solid #333; z-index: 20;
+            background: #080808; border-left: 1px solid #333; z-index: 60;
             transform: translateX(100%); transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
             overflow-y: auto; pointer-events: auto; display: flex; flex-direction: column;
             box-shadow: -20px 0 50px rgba(0,0,0,0.8);
@@ -131,24 +152,19 @@
         }
         
         h2 { font-family: var(--font-head); font-size: 2.2rem; line-height: 1.1; margin: 0 0 25px 0; font-weight: 700; color: white; }
-        
         .article { font-size: 1.05rem; line-height: 1.7; color: #ccc; font-weight: 300; margin-bottom: 40px; }
         .article h3 { color: white; font-family: var(--font-head); font-size: 1.2rem; margin-top: 30px; margin-bottom: 10px; font-weight: 500; border-left: 3px solid var(--c-path); padding-left: 10px; }
-        
         .source { font-size: 0.75rem; color: #666; border-top: 1px solid #222; padding-top: 20px; font-style: italic; }
 
-        .locked-view {
-            height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; 
-            text-align: center; padding: 40px; color: #555;
-        }
+        .locked-view { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px; color: #555; }
         .locked-icon { font-size: 4rem; margin-bottom: 20px; opacity: 0.5; }
 
         @media (max-width: 1024px) {
-            :root { --sidebar-width: 100%; } 
-            h1 { font-size: 2rem; }
-            #timeline-ui { width: 80%; bottom: 20px; }
-            .museum-label { font-size: 0.6rem; }
+            :root { --sidebar-width: 100%; }
+            #timeline-ui { width: 90%; bottom: 20px; padding: 15px 20px; }
             .sidebar-content { padding: 25px; }
+            /* Mobile adjustment for scanner */
+            #qr-container { width: 200px; height: 150px; top: 100px; }
         }
 
         .mapboxgl-popup-content { background: #000; color: #fff; border: 1px solid #444; font-family: var(--font-body); padding: 10px 14px; }
@@ -167,6 +183,11 @@
             <h1>Orte des<br>Widerstands</h1>
         </header>
 
+        <div id="qr-container">
+            <div id="reader"></div>
+            <div class="scan-instruction">Scan Zone</div>
+        </div>
+
         <div id="status-panel">
             <div class="status-header">Archiv Fortschritt</div>
             <div class="progress-bar"><div class="progress-fill" id="progress-bar"></div></div>
@@ -175,14 +196,17 @@
 
         <div id="legend">
             <div class="legend-item"><div class="dot" style="background:var(--c-erinnerung)"></div> Orte der Erinnerung</div>
-            <div class="legend-item"><div class="dot" style="background:var(--c-gedenken)"></div> Orte des Gedenkens</div>
-            <div class="legend-item"><div class="dot" style="background:var(--c-widerstand)"></div> Orte des Widerstands</div>
+            <div class="legend-item"><div class="dot" style="background:var(--c-gedenken)"></div> Gedenken</div>
+            <div class="legend-item"><div class="dot" style="background:var(--c-widerstand)"></div> Widerstand</div>
             <div class="legend-item"><div class="dot" style="background:var(--c-heute)"></div> Gegen Rechts Heute</div>
         </div>
 
         <div id="timeline-ui">
             <span id="year-display">1933</span>
             <input type="range" id="year-slider" min="1933" max="2026" value="1933" step="1">
+            <div class="ticks">
+                <span>1933</span><span>1990</span><span>2000</span><span>Heute</span>
+            </div>
         </div>
     </div>
 
@@ -200,13 +224,12 @@
         const geoData = {
             'type': 'FeatureCollection',
             'features': [
-                // 1933-1945
                 {
                     'type': 'Feature',
                     'properties': {
                         'id': 'h1', 'category': 'erinnerung', 'title': 'Der Blutbaum am Loeperplatz', 'year': 1934,
                         'image': 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Gedenkstein_Loeperplatz_%28Berlin-Lichtenberg%29.jpg/800px-Gedenkstein_Loeperplatz_%28Berlin-Lichtenberg%29.jpg',
-                        'description': `<h3>Historischer Kontext</h3><p>Der Loeperplatz in Lichtenberg, einst ein belebter Marktplatz, verwandelte sich nach der Machtübernahme der Nationalsozialisten 1933 in einen Ort des Schreckens. Lichtenberg, traditionell ein Arbeiterbezirk mit starker Verankerung von KPD und SPD, leistete erheblichen Widerstand gegen das neue Regime. Die Nazis reagierten mit brutaler Härte.</p><h3>Das Ereignis</h3><p>Der Platz wurde zur Richtstätte. Eine alte Eiche, die hier stand, erhielt im Volksmund den Namen "Blutbaum", da an ihr Hinrichtungen stattfanden. Der Gedenkstein, der heute hier steht, ehrt Mitglieder der Widerstandsgruppe um Anton Saefkow, Franz Jacob und Bernhard Bästlein. Diese Gruppe organisierte eines der größten illegalen Netzwerke gegen den NS-Staat, verteilte Flugblätter und verübte Sabotage in Rüstungsbetrieben.</p><h3>Bedeutung Heute</h3><p>Dieser Ort mahnt uns, dass Widerstand auch unter totalitärer Herrschaft möglich war, aber oft tödliche Konsequenzen hatte. Er ist ein zentraler Ankerpunkt für das Gedenken in Lichtenberg und erinnert daran, Demokratie niemals als selbstverständlich anzusehen.</p>`,
+                        'description': `<h3>Historischer Kontext</h3><p>Der Loeperplatz in Lichtenberg, einst ein belebter Marktplatz, verwandelte sich nach der Machtübernahme der Nationalsozialisten 1933 in einen Ort des Schreckens. Lichtenberg, traditionell ein Arbeiterbezirk mit starker Verankerung von KPD und SPD, leistete erheblichen Widerstand gegen das neue Regime.</p><h3>Das Ereignis</h3><p>Der Platz wurde zur Richtstätte. Eine alte Eiche, die hier stand, erhielt im Volksmund den Namen "Blutbaum", da an ihr Hinrichtungen stattfanden. Der Gedenkstein ehrt Mitglieder der Widerstandsgruppe um Anton Saefkow, Franz Jacob und Bernhard Bästlein.</p><h3>Bedeutung Heute</h3><p>Dieser Ort mahnt uns, dass Widerstand auch unter totalitärer Herrschaft möglich war, aber oft tödliche Konsequenzen hatte. Er ist ein zentraler Ankerpunkt für das Gedenken.</p>`,
                         'source': 'Gedenkstätte Deutscher Widerstand'
                     },
                     'geometry': { 'type': 'Point', 'coordinates': [13.4800, 52.5135] }
@@ -216,8 +239,8 @@
                     'properties': {
                         'id': 'h2', 'category': 'erinnerung', 'title': 'Zwangsarbeiterlager Rummelsburg', 'year': 1941,
                         'image': 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Gedenktafel_Hauptstr_8_%28Rumm%29_Arbeitserziehungslager.jpg/800px-Gedenktafel_Hauptstr_8_%28Rumm%29_Arbeitserziehungslager.jpg',
-                        'description': `<h3>Ein Ort der Ausbeutung</h3><p>Das "Arbeitserziehungslager" (AEL) Rummelsburg war ein Instrument des NS-Terrors, das oft im Schatten der großen Konzentrationslager steht. Hier wurden Tausende Menschen interniert, die von den Nazis als "asozial" oder "arbeitsunwillig" stigmatisiert wurden. Dazu zählten Obdachlose, Sexarbeiterinnen, aber auch Jugendliche, die Swing-Musik hörten.</p><h3>Zwangsarbeit für die Industrie</h3><p>Die Häftlinge mussten unter unmenschlichen Bedingungen Zwangsarbeit leisten, unter anderem für die IG Farben (Aceta-Werke). Viele starben an Unterernährung, Misshandlung oder Krankheiten. Das Lager fungierte auch als Durchgangsstation in die Vernichtungslager.</p><h3>Vom Lager zum Luxusloft</h3><p>Nach 1945 wurde die Geschichte des Ortes lange verdrängt. In den letzten Jahren entstand hier das Wohnviertel "Rummelsburger Bucht". Kritiker bemängeln, dass die Spuren der Geschichte durch teure Eigentumswohnungen überschrieben wurden. Nur eine Gedenkstele am Ufer erinnert heute noch an das Leid der Inhaftierten.</p>`,
-                        'source': 'Museum Lichtenberg / Stiftung Topographie des Terrors'
+                        'description': `<h3>Ein Ort der Ausbeutung</h3><p>Das "Arbeitserziehungslager" (AEL) Rummelsburg war ein Instrument des NS-Terrors. Hier wurden Tausende Menschen interniert, die von den Nazis als "asozial" stigmatisiert wurden. Dazu zählten Obdachlose, Sexarbeiterinnen, aber auch Jugendliche.</p><h3>Vom Lager zum Luxusloft</h3><p>Nach 1945 wurde die Geschichte des Ortes lange verdrängt. In den letzten Jahren entstand hier das Wohnviertel "Rummelsburger Bucht". Kritiker bemängeln, dass die Spuren der Geschichte durch teure Eigentumswohnungen überschrieben wurden.</p>`,
+                        'source': 'Museum Lichtenberg'
                     },
                     'geometry': { 'type': 'Point', 'coordinates': [13.4850, 52.4950] }
                 },
@@ -226,19 +249,17 @@
                     'properties': {
                         'id': 'h3', 'category': 'erinnerung', 'title': 'Erna Lugebiel: Stille Heldin', 'year': 1943,
                         'image': 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/66/Stadthaus_Lichtenberg_Berlin.jpg/800px-Stadthaus_Lichtenberg_Berlin.jpg',
-                        'description': `<h3>Zivilcourage im Alltag</h3><p>Nicht jeder Widerstand fand mit Waffen statt. Erna Lugebiel, eine Schneiderin aus der Möllendorffstraße, zeigte, was Zivilcourage bedeutete. Mitten in Lichtenberg versteckte sie jüdische Bürger und politisch Verfolgte in ihrer Wohnung und versorgte sie mit Lebensmitteln und gefälschten Papieren.</p><h3>Gefahr des Verrats</h3><p>In einer Gesellschaft, die von Denunziantentum geprägt war, schwebte Erna Lugebiel in ständiger Lebensgefahr. Ein einziger Hinweis eines Nachbarn hätte für sie und ihre Schützlinge das Todesurteil bedeutet. Sie wurde schließlich verhaftet und ins KZ Ravensbrück deportiert, überlebte aber.</p><h3>Vorbildfunktion</h3><p>Ihr Handeln widerlegt die Behauptung, man habe "nichts tun können". Die "Stillen Helden" beweisen, dass Menschlichkeit auch in der Diktatur eine Wahl war.</p>`,
+                        'description': `<h3>Zivilcourage im Alltag</h3><p>Erna Lugebiel, eine Schneiderin aus der Möllendorffstraße, zeigte, was Zivilcourage bedeutete. Sie versteckte jüdische Bürger und politisch Verfolgte in ihrer Wohnung und versorgte sie mit Lebensmitteln.</p><h3>Gefahr des Verrats</h3><p>In einer Gesellschaft, die von Denunziantentum geprägt war, schwebte sie in ständiger Lebensgefahr. Ein einziger Hinweis eines Nachbarn hätte für sie das Todesurteil bedeutet.</p>`,
                         'source': 'Gedenkstätte Stille Helden'
                     },
                     'geometry': { 'type': 'Point', 'coordinates': [13.4790, 52.5220] }
                 },
-
-                // 1990s
                 {
                     'type': 'Feature',
                     'properties': {
                         'id': 'w1', 'category': 'widerstand', 'title': 'Räumung der Mainzer Straße', 'year': 1990,
                         'image': 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Mainzer_Stra%C3%9Fe_Berlin-Friedrichshain_1990.jpg/800px-Mainzer_Stra%C3%9Fe_Berlin-Friedrichshain_1990.jpg',
-                        'description': `<h3>Das Ende eines Freiraums</h3><p>Im November 1990 fand in der Mainzer Straße (Grenze Friedrichshain/Lichtenberg) einer der massivsten Polizeieinsätze der deutschen Nachkriegsgeschichte statt. Tausende Polizisten räumten die besetzten Häuser, die ein Symbol der alternativen Szene in Ost-Berlin waren.</p><h3>Politische Bedeutung</h3><p>Für die antifaschistische Bewegung war dies ein herber Schlag. Die besetzten Häuser waren nicht nur Wohnraum, sondern dienten auch als Schutzräume und organisatorische Basis gegen die in den 90ern massiv erstarkende Neonazi-Szene. Nach der Räumung fehlte dieser Rückhalt, was das Machtvakuum für rechte Gruppen in Lichtenberg vergrößerte.</p>`,
+                        'description': `<h3>Das Ende eines Freiraums</h3><p>Im November 1990 fand in der Mainzer Straße einer der massivsten Polizeieinsätze der Nachkriegsgeschichte statt. Tausende Polizisten räumten die besetzten Häuser, ein Symbol der alternativen Szene.</p><h3>Politische Bedeutung</h3><p>Für die antifaschistische Bewegung war dies ein herber Schlag. Die besetzten Häuser dienten auch als Schutzräume gegen die in den 90ern massiv erstarkende Neonazi-Szene.</p>`,
                         'source': 'Zeitzeugenarchiv Berlin'
                     },
                     'geometry': { 'type': 'Point', 'coordinates': [13.4620, 52.5120] }
@@ -248,7 +269,7 @@
                     'properties': {
                         'id': 'g1', 'category': 'gedenken', 'title': 'Der Mord an Silvio Meier', 'year': 1992,
                         'image': 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Gedenktafel_Silvio_Meier_%28U-Bhf_Samariterstra%C3%9Fe%29.jpg/800px-Gedenktafel_Silvio_Meier_%28U-Bhf_Samariterstra%C3%9Fe%29.jpg',
-                        'description': `<h3>Ein traumatisches Ereignis</h3><p>Am 21. November 1992 wurde der 27-jährige Hausbesetzer und Antifaschist Silvio Meier im U-Bahnhof Samariterstraße von Neonazis erstochen. Die Täter waren junge Rechtsextreme aus Lichtenberg, die sich durch die aggressive Stimmung der Nachwendezeit ermutigt fühlten.</p><h3>Die "Baseballschlägerjahre"</h3><p>Der Mord markiert den blutigen Höhepunkt rechter Gewalt in Berlin. Er verdeutlichte, dass "rechte Jugendkultur" keine harmlose Rebellion war, sondern tödlichen Ernst bedeutete. Der Staat verharmloste die Täter oft als "frustriert" und "orientierungslos".</p><h3>Gedenkkultur</h3><p>Silvio Meiers Tod politisierte eine ganze Generation. Seit 1992 finden jährlich Gedenkdemonstrationen statt. Eine Straße in Friedrichshain trägt heute seinen Namen. Der U-Bahnhof bleibt ein zentraler Ort des Gedenkens.</p>`,
+                        'description': `<h3>Ein traumatisches Ereignis</h3><p>Am 21. November 1992 wurde der Antifaschist Silvio Meier im U-Bahnhof Samariterstraße von Neonazis erstochen. Die Täter waren junge Rechtsextreme aus Lichtenberg.</p><h3>Gedenkkultur</h3><p>Der Mord politisierte eine ganze Generation. Seit 1992 finden jährlich Gedenkdemonstrationen statt. Der U-Bahnhof bleibt ein zentraler Ort des Gedenkens.</p>`,
                         'source': 'Amadeu Antonio Stiftung'
                     },
                     'geometry': { 'type': 'Point', 'coordinates': [13.4650, 52.5140] }
@@ -258,8 +279,8 @@
                     'properties': {
                         'id': 'g2', 'category': 'gedenken', 'title': 'Die "Angstzone" Weitlingstraße', 'year': 1995,
                         'image': 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Berlin%2C_Lichtenberg%2C_Weitlingstrasse.jpg/800px-Berlin%2C_Lichtenberg%2C_Weitlingstrasse.jpg',
-                        'description': `<h3>National Befreite Zone?</h3><p>In den 90er und frühen 2000er Jahren erlangte der Weitlingkiez traurige Berühmtheit. Neonazi-Kameradschaften versuchten hier, eine sogenannte "National Befreite Zone" zu etablieren. Ein lokales Szenelokal diente als Treffpunkt für organisierte Rechtsextreme.</p><h3>Alltag des Terrors</h3><p>Für Menschen mit Migrationsgeschichte, Punks, Linke oder Homosexuelle war das Betreten dieses Kiezes lebensgefährlich. Übergriffe waren an der Tagesordnung. Die Polizei wurde oft kritisiert, nicht entschieden genug einzugreifen.</p><h3>Der Wandel</h3><p>Erst durch massiven Druck von Anwohnerinitiativen, antifaschistischen Gruppen und einem Wandel in der Bezirkspolitik konnte die Hegemonie der Nazis gebrochen werden. Heute ist der Kiez bunter, doch rechte Strukturen versuchen weiterhin, Fuß zu fassen.</p>`,
-                        'source': 'Licht-Blicke Podcast / Antifa Archiv'
+                        'description': `<h3>National Befreite Zone?</h3><p>In den 90er Jahren erlangte der Weitlingkiez traurige Berühmtheit. Neonazi-Kameradschaften versuchten hier, eine sogenannte "National Befreite Zone" zu etablieren.</p><h3>Alltag des Terrors</h3><p>Für Menschen mit Migrationsgeschichte oder Punks war das Betreten dieses Kiezes lebensgefährlich. Übergriffe waren an der Tagesordnung.</p>`,
+                        'source': 'Licht-Blicke Podcast'
                     },
                     'geometry': { 'type': 'Point', 'coordinates': [13.4985, 52.5075] }
                 },
@@ -268,20 +289,18 @@
                     'properties': {
                         'id': 'g3', 'category': 'gedenken', 'title': 'Gedenken an Eugeniu Botnari', 'year': 2016,
                         'image': 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Bahnhof_Berlin-Lichtenberg_Empfangsgeb%C3%A4ude_20160808_1.jpg/800px-Bahnhof_Berlin-Lichtenberg_Empfangsgeb%C3%A4ude_20160808_1.jpg',
-                        'description': `<h3>Tödlicher Sozialdarwinismus</h3><p>Im September 2016 wurde der wohnungslose Eugeniu Botnari im Edeka-Markt am Bahnhof Lichtenberg vom Filialleiter brutal geschlagen und misshandelt, weil er verdächtigt wurde, Alkohol gestohlen zu haben. Er starb wenige Tage später an den Folgen eines Schädel-Hirn-Traumas.</p><h3>Hass auf die Schwächsten</h3><p>Der Fall ist ein erschütterndes Beispiel für Gewalt gegen sozial Benachteiligte. Die Abwertung von obdachlosen Menschen ist ein Kernbestandteil rechtsextremer Ideologie (Sozialdarwinismus), findet aber oft auch Anschluss in der "Mitte der Gesellschaft". Gedenkinitiativen kämpfen seit Jahren dafür, dass dieser Mord als das anerkannt wird, was er war: Ein Verbrechen aus Menschenverachtung.</p>`,
+                        'description': `<h3>Tödlicher Sozialdarwinismus</h3><p>Im September 2016 wurde der wohnungslose Eugeniu Botnari im Bahnhof Lichtenberg vom Filialleiter eines Supermarktes tödlich misshandelt.</p><h3>Hass auf die Schwächsten</h3><p>Der Fall ist ein Beispiel für Gewalt gegen sozial Benachteiligte. Die Abwertung von obdachlosen Menschen ist ein Kernbestandteil rechtsextremer Ideologie.</p>`,
                         'source': 'Initiative Gedenken an Eugeniu Botnari'
                     },
                     'geometry': { 'type': 'Point', 'coordinates': [13.4970, 52.5100] }
                 },
-
-                // 2020-2026 (LOCKED)
                 {
                     'type': 'Feature',
                     'properties': {
                         'id': 'cur1', 'category': 'heute', 'title': 'LOCKED: Angriff am Ostkreuz', 'year': 2024, 'locked': true,
                         'image': 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cf/Bahnhof_Berlin_Ostkreuz_Eingang_Sonntagsstr.jpg/800px-Bahnhof_Berlin_Ostkreuz_Eingang_Sonntagsstr.jpg',
-                        'description': `<h3>Neue Qualität der Gewalt</h3><p>Im Jahr 2024 ereignete sich am S-Bahnhof Ostkreuz ein schwerer, organisierter Übergriff. Eine Gruppe von Neonazis attackierte gezielt Anreisende zu einer antifaschistischen Demonstration. Die Täter gehörten zur "Nationalrevolutionären Jugend" (NRJ), der Jugendorganisation der Partei "Der III. Weg".</p><h3>Strategie der Raumnahme</h3><p>Dieser Vorfall markiert eine strategische Änderung: Es handelt sich nicht um spontane Pöbeleien betrunkener Skinheads, sondern um militärisch geplante Hinterhalte an Verkehrsknotenpunkten. Ziel ist es, politische Gegner einzuschüchtern und den öffentlichen Raum als "Angstzone" zu markieren.</p>`,
-                        'source': 'Berliner Register Jahresbericht 2024'
+                        'description': `<h3>Strategie der Raumnahme</h3><p>2024 ereignete sich ein organisierter Angriff auf Antifaschisten am Ostkreuz durch die Gruppe "NRJ". Dies markiert eine neue Qualität der strategischen Gewalt an Verkehrsknotenpunkten.</p>`,
+                        'source': 'Berliner Register 2024'
                     },
                     'geometry': { 'type': 'Point', 'coordinates': [13.4693, 52.5030] }
                 },
@@ -290,7 +309,7 @@
                     'properties': {
                         'id': 'cur2', 'category': 'heute', 'title': 'LOCKED: Code 1161 an Schulen', 'year': 2025, 'locked': true,
                         'image': 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Berlin_Wartenberg_Woldegker_Stra%C3%9Fe_Grundschule_im_Gr%C3%BCnen_01.jpg/800px-Berlin_Wartenberg_Woldegker_Stra%C3%9Fe_Grundschule_im_Gr%C3%BCnen_01.jpg',
-                        'description': `<h3>Propaganda auf dem Schulhof</h3><p>Das Berliner Register meldet einen massiven Anstieg rechter Propaganda an Schulen in Lichtenberg und Hohenschönhausen. Besonders häufig taucht der Zahlencode "1161" auf Stickern und in Schmierereien auf. Er steht für "Anti-Antifaschistische Aktion".</p><h3>Einschüchterung der Jugend</h3><p>Diese Symbolik ist eine direkte Drohung gegen Schüler:innen, die sich zivilgesellschaftlich engagieren oder Minderheiten angehören. Die extreme Rechte versucht, Schulen als Rekrutierungsort zu nutzen und eine "rechte Jugendkultur" als rebellische Alternative zu etablieren. Schulen reagieren zunehmend mit Projekttagen zur Demokratieförderung.</p>`,
+                        'description': `<h3>Propaganda auf dem Schulhof</h3><p>Massives Auftreten von Stickern mit dem Code "1161" (Anti-Antifa) an Schulen. Ziel ist die Einschüchterung engagierter Schüler:innen.</p>`,
                         'source': 'Lichtenberger Register'
                     },
                     'geometry': { 'type': 'Point', 'coordinates': [13.5000, 52.5400] }
@@ -299,9 +318,9 @@
                     'type': 'Feature',
                     'properties': {
                         'id': 'cur3', 'category': 'heute', 'title': 'LOCKED: Angriff auf Jugendclub', 'year': 2025, 'locked': true,
-                        'image': 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Berlin_Wartenberg_Woldegker_Stra%C3%9Fe_Grundschule_im_Gr%C3%BCnen_01.jpg/800px-Berlin_Wartenberg_Woldegker_Stra%C3%9Fe_Grundschule_im_Gr%C3%BCnen_01.jpg', // Symbolbild
-                        'description': `<h3>Schutzräume in Gefahr</h3><p>Ende 2025 wurde ein Jugendclub an der Grenze zu Köpenick von einer Gruppe Neonazis mit Reizstoff attackiert. Es war der vorläufige Höhepunkt einer Serie von Einschüchterungsversuchen gegen Einrichtungen der offenen Jugendarbeit.</p><h3>Kampf um die Köpfe</h3><p>Jugendclubs sind oft die letzten Orte, an denen demokratische Werte vermittelt werden und Jugendliche sich frei entfalten können. Die Strategie der Rechten ist es, diese Räume unbewohnbar zu machen oder die Sozialarbeiter einzuschüchtern.</p>`,
-                        'source': 'Polizei Berlin / Register'
+                        'image': 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Berlin_Wartenberg_Woldegker_Stra%C3%9Fe_Grundschule_im_Gr%C3%BCnen_01.jpg/800px-Berlin_Wartenberg_Woldegker_Stra%C3%9Fe_Grundschule_im_Gr%C3%BCnen_01.jpg',
+                        'description': `<h3>Schutzräume in Gefahr</h3><p>Ein Jugendclub wurde mit Reizstoff attackiert. Die Strategie der Rechten ist es, diese demokratischen Räume unbewohnbar zu machen.</p>`,
+                        'source': 'Polizei Berlin'
                     },
                     'geometry': { 'type': 'Point', 'coordinates': [13.5200, 52.4900] }
                 },
@@ -310,17 +329,17 @@
                     'properties': {
                         'id': 'cur4', 'category': 'widerstand', 'title': 'LOCKED: Bündnis Bunter Wind', 'year': 2026, 'locked': true,
                         'image': 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Rathaus_Lichtenberg.jpg/800px-Rathaus_Lichtenberg.jpg',
-                        'description': `<h3>Die Brandmauer steht</h3><p>Das Rathaus Lichtenberg ist heute das symbolische Zentrum der demokratischen Zivilgesellschaft. Das Bündnis "Bunter Wind für Lichtenberg" organisiert hier regelmäßig Proteste, wenn rechtsextreme Gruppierungen versuchen, im Bezirk aufzumarschieren.</p><h3>Erfolg durch Vernetzung</h3><p>Anders als in den 90er Jahren agieren Demokraten heute nicht mehr isoliert. Kirchen, Sportvereine, Parteien und antifaschistische Gruppen arbeiten eng zusammen. Projekte wie "Licht-Blicke" und "Moskito" leisten essenzielle Bildungsarbeit. Das Netzwerk zeigt Wirkung: Rechte Aufmärsche werden heute regelmäßig blockiert oder massiv übertönt.</p>`,
-                        'source': 'Bündnis für Demokratie und Toleranz'
+                        'description': `<h3>Die Brandmauer steht</h3><p>Das Bündnis organisiert den Widerstand gegen rechte Aufmärsche. Die "Brandmauer" in Lichtenberg steht durch die Zusammenarbeit von Sportvereinen, Kirchen und Politik.</p>`,
+                        'source': 'Bündnis für Demokratie'
                     },
                     'geometry': { 'type': 'Point', 'coordinates': [13.4815, 52.5160] }
                 },
                 {
                     'type': 'Feature',
                     'properties': {
-                        'id': 'cur5', 'category': 'widerstand', 'title': 'LOCKED: Licht-Blicke Netzwerk', 'year': 2026, 'locked': true,
+                        'id': 'cur5', 'category': 'widerstand', 'title': 'LOCKED: Licht-Blicke', 'year': 2026, 'locked': true,
                         'image': 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Gudrunstra%C3%9Fe_Berlin-Lichtenberg.jpg/800px-Gudrunstra%C3%9Fe_Berlin-Lichtenberg.jpg',
-                        'description': `<h3>Fachstelle gegen Rechts</h3><p>Die Fach- und Netzwerkstelle Licht-Blicke ist das Rückgrat der Arbeit gegen Rechtsextremismus in Lichtenberg. Sie unterstützt Betroffene von rechter Gewalt, berät Schulen und organisiert Fortbildungen.</p><h3>Politische Bildung als Schlüssel</h3><p>In Zeiten von Desinformation und TikTok-Propaganda ist ihre Arbeit wichtiger denn je. Sie stärken die Argumentationsfähigkeit von Jugendlichen und fördern eine Kultur des Hinsehens. Ohne diese strukturelle Arbeit wäre der zivilgesellschaftliche Widerstand kaum möglich.</p>`,
+                        'description': `<h3>Fachstelle gegen Rechts</h3><p>Licht-Blicke unterstützt Betroffene von rechter Gewalt und berät Schulen. Ihre Arbeit ist essenziell für den zivilgesellschaftlichen Widerstand.</p>`,
                         'source': 'www.licht-blicke.org'
                     },
                     'geometry': { 'type': 'Point', 'coordinates': [13.4880, 52.5120] }
@@ -331,7 +350,7 @@
         // ------------------------------------------------------------------
         // 2. STATE & CONFIG
         // ------------------------------------------------------------------
-        mapboxgl.accessToken = 'pk.eyJ1IjoiaWxpYXNtZXJhYmloYSIsImEiOiJjbWw5bHNnc3YwM3ZwM2RxdXU5YjdiN201In0.CTiUlh-M4fTkIda8EtP4Yg'; // <--- PASTE TOKEN
+        mapboxgl.accessToken = 'pk.eyJ1IjoiaWxpYXNtZXJhYmloYSIsImEiOiJjbWw5bHNnc3YwM3ZwM2RxdXU5YjdiN201In0.CTiUlh-M4fTkIda8EtP4Yg'; 
 
         let state = {
             discovered: [],
@@ -343,92 +362,93 @@
             container: 'map',
             style: 'mapbox://styles/mapbox/dark-v11',
             center: [13.485, 52.51],
-            zoom: 13,
+            zoom: 12.5,
             pitch: 45,
             bearing: -10,
             maxBounds: [[13.3, 52.4], [13.7, 52.6]] 
         });
 
         // ------------------------------------------------------------------
-        // 3. MAP LOGIC
+        // 3. QR & MAP LOGIC
         // ------------------------------------------------------------------
+        
+        // --- QR SCANNER STARTUP ---
+        function onScanSuccess(decodedText, decodedResult) {
+            // Check if URL contains "event="
+            try {
+                // If it's a full URL
+                let url = new URL(decodedText);
+                let eventId = url.searchParams.get("event");
+                
+                // Or if the QR code IS just the ID (e.g., "g1")
+                if (!eventId) eventId = decodedText; 
+
+                if (eventId) {
+                    triggerEventFromScan(eventId);
+                }
+            } catch (e) {
+                // If text is just "g1"
+                triggerEventFromScan(decodedText);
+            }
+        }
+
+        function triggerEventFromScan(id) {
+            const target = geoData.features.find(f => f.properties.id === id);
+            if (target) {
+                // Force unlock logic
+                if (!state.discovered.includes(id)) {
+                    state.discovered.push(id);
+                    updateProgress();
+                }
+                // If locked event, auto-unlock whole game
+                if (target.properties.locked && !state.unlocked) {
+                    unlockAll();
+                }
+                
+                // Go to marker
+                handleMarker(target.properties, target.geometry.coordinates, true); // true = force open
+            }
+        }
+
+        // Start Scanner
+        const html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 200 });
+        html5QrcodeScanner.render(onScanSuccess);
+
+
         map.on('load', () => {
             
-            // Check for Deep Link (QR Code Scan)
-            const urlParams = new URLSearchParams(window.location.search);
-            const eventId = urlParams.get('event');
+            // PATH
+            map.addSource('path-source', { 'type': 'geojson', 'data': { 'type': 'Feature', 'geometry': { 'type': 'LineString', 'coordinates': [] } } });
+            map.addLayer({ 'id': 'path-glow', 'type': 'line', 'source': 'path-source', 'paint': { 'line-color': '#00FFFF', 'line-width': 10, 'line-opacity': 0.3, 'line-blur': 4 } });
+            map.addLayer({ 'id': 'path-core', 'type': 'line', 'source': 'path-source', 'paint': { 'line-color': '#00FFFF', 'line-width': 3, 'line-dasharray': [2, 1] } });
 
-            // A. The Path
-            map.addSource('path-source', {
-                'type': 'geojson', 'data': { 'type': 'Feature', 'geometry': { 'type': 'LineString', 'coordinates': [] } }
-            });
-            map.addLayer({
-                'id': 'path-glow', 'type': 'line', 'source': 'path-source',
-                'paint': { 'line-color': '#00FFFF', 'line-width': 10, 'line-opacity': 0.3, 'line-blur': 4 }
-            });
-            map.addLayer({
-                'id': 'path-core', 'type': 'line', 'source': 'path-source',
-                'paint': { 'line-color': '#00FFFF', 'line-width': 3, 'line-dasharray': [2, 1] }
-            });
-
-            // B. 3D Buildings
+            // BUILDINGS
             const layers = map.getStyle().layers;
             const labelLayerId = layers.find(l => l.type === 'symbol' && l.layout['text-field']).id;
-            map.addLayer({
-                'id': '3d-buildings', 'source': 'composite', 'source-layer': 'building', 'filter': ['==', 'extrude', 'true'],
-                'type': 'fill-extrusion', 'paint': { 'fill-extrusion-color': '#222', 'fill-extrusion-height': ['get', 'height'], 'fill-extrusion-opacity': 0.9 }
-            }, labelLayerId);
+            map.addLayer({ 'id': '3d-buildings', 'source': 'composite', 'source-layer': 'building', 'filter': ['==', 'extrude', 'true'], 'type': 'fill-extrusion', 'paint': { 'fill-extrusion-color': '#222', 'fill-extrusion-height': ['get', 'height'], 'fill-extrusion-opacity': 0.9 } }, labelLayerId);
 
-            // C. Markers
+            // MARKERS
             map.addSource('markers', { 'type': 'geojson', 'data': geoData });
-            map.addLayer({
-                'id': 'marker-glow', 'type': 'circle', 'source': 'markers',
-                'paint': { 'circle-radius': 40, 'circle-color': ['match', ['get', 'category'], 'erinnerung', '#D4AF37', 'gedenken', '#A0A0A0', 'widerstand', '#00E676', 'heute', '#FF3D00', '#fff'], 'circle-opacity': 0.3, 'circle-blur': 0.6 }
-            });
-            map.addLayer({
-                'id': 'marker-core', 'type': 'circle', 'source': 'markers',
-                'paint': { 'circle-radius': 10, 'circle-color': '#fff', 'circle-stroke-width': 2, 'circle-stroke-color': '#000' }
-            });
+            map.addLayer({ 'id': 'marker-glow', 'type': 'circle', 'source': 'markers', 'paint': { 'circle-radius': 40, 'circle-color': ['match', ['get', 'category'], 'erinnerung', '#D4AF37', 'gedenken', '#A0A0A0', 'widerstand', '#00E676', 'heute', '#FF3D00', '#fff'], 'circle-opacity': 0.3, 'circle-blur': 0.6 } });
+            map.addLayer({ 'id': 'marker-core', 'type': 'circle', 'source': 'markers', 'paint': { 'circle-radius': 10, 'circle-color': '#fff', 'circle-stroke-width': 2, 'circle-stroke-color': '#000' } });
 
-            // Interaction
-            map.on('click', 'marker-core', (e) => {
-                const props = e.features[0].properties;
-                const coords = e.features[0].geometry.coordinates;
-                handleMarker(props, coords);
-            });
+            map.on('click', 'marker-core', (e) => handleMarker(e.features[0].properties, e.features[0].geometry.coordinates));
             map.on('mouseenter', 'marker-core', () => map.getCanvas().style.cursor = 'pointer');
             map.on('mouseleave', 'marker-core', () => map.getCanvas().style.cursor = '');
 
-            // Init
-            updateMap(1933);
+            // Check URL param on load (for manual links)
+            const urlParams = new URLSearchParams(window.location.search);
+            const startEvent = urlParams.get('event');
+            if(startEvent) triggerEventFromScan(startEvent);
 
-            // HANDLE QR CODE SCAN
-            if (eventId) {
-                const targetFeature = geoData.features.find(f => f.properties.id === eventId);
-                if (targetFeature) {
-                    // Unlock specific event immediately
-                    state.discovered.push(eventId); 
-                    
-                    // If it's a locked event, force unlock mode
-                    if (targetFeature.properties.locked) {
-                        state.unlocked = true; 
-                        document.getElementById('year-slider').value = 2026;
-                        updateMap(2026);
-                        alert("QR-Code erkannt: Archiv-Eintrag freigeschaltet.");
-                    } else {
-                        updateMap(targetFeature.properties.year);
-                    }
-                    
-                    handleMarker(targetFeature.properties, targetFeature.geometry.coordinates);
-                }
-            }
+            updateMap(1933);
         });
 
         // ------------------------------------------------------------------
         // 4. LOGIC
         // ------------------------------------------------------------------
-        function handleMarker(props, coords) {
-            if (props.locked && !state.unlocked) {
+        function handleMarker(props, coords, force = false) {
+            if (props.locked && !state.unlocked && !force) {
                 openSidebarLocked();
                 return;
             }
@@ -436,11 +456,12 @@
                 state.discovered.push(props.id);
                 updateProgress();
             }
-            // Smart Pan (Responsive)
-            const isPortrait = window.innerHeight > window.innerWidth;
-            const offset = isPortrait ? [0, -150] : [-200, 0];
             
-            map.flyTo({ center: coords, zoom: 16, pitch: 60, offset: offset, speed: 0.6 });
+            // Smart Pan (Tablet friendly)
+            const isPortrait = window.innerHeight > window.innerWidth;
+            const offset = isPortrait ? [0, -200] : [-200, 0];
+            
+            map.flyTo({ center: coords, zoom: 16, pitch: 60, offset: offset, speed: 0.8 });
             openSidebar(props);
         }
 
@@ -460,7 +481,6 @@
             document.getElementById('year-slider').value = 2026;
             document.getElementById('year-display').innerText = 2026;
             updateMap(2026);
-            alert("Zugriff gewährt: Daten der Gegenwart (2020-2026) sind nun sichtbar.");
         }
 
         const slider = document.getElementById('year-slider');
@@ -480,7 +500,7 @@
             else if (year <= 2010) { body.classList.add('p-1990'); map.setFog({'color':'#0d1b2a', 'range':[0.5,8]}); }
             else { body.classList.add('p-2026'); map.setFog({'color':'#000', 'range':[0.5,10]}); }
 
-            // Filter Markers
+            // Filter
             const filter = ['<=', ['get', 'year'], year];
             map.setFilter('marker-glow', filter);
             map.setFilter('marker-core', filter);
@@ -489,9 +509,7 @@
             const visible = geoData.features.filter(f => f.properties.year <= year);
             visible.sort((a,b) => a.properties.year - b.properties.year);
             const coords = visible.map(f => f.geometry.coordinates);
-            if(map.getSource('path-source')) {
-                map.getSource('path-source').setData({ 'type': 'Feature', 'geometry': { 'type': 'LineString', 'coordinates': coords } });
-            }
+            if(map.getSource('path-source')) map.getSource('path-source').setData({ 'type': 'Feature', 'geometry': { 'type': 'LineString', 'coordinates': coords } });
         }
 
         function openSidebar(data) {
@@ -510,7 +528,7 @@
 
         function openSidebarLocked() {
             document.getElementById('sidebar-content').innerHTML = `
-                <div class="locked-view"><div class="locked-icon">🔒</div><h2 style="color:#FF3D00">DATEN VERSCHLÜSSELT</h2><p>Erforschen Sie die Geschichte.</p></div>`;
+                <div class="locked-view"><div class="locked-icon">🔒</div><h2 style="color:#FF3D00">DATEN VERSCHLÜSSELT</h2><p>Erforschen Sie erst die Geschichte.</p></div>`;
             document.getElementById('sidebar').classList.add('open');
         }
 
