@@ -34,66 +34,6 @@
 
         #map { position: absolute; top: 0; bottom: 0; width: 100%; z-index: 1; }
 
-        /* --- MINI SCANNER WINDOW (Top Left) --- */
-        #mini-scanner-wrapper {
-            position: absolute; 
-            top: 170px; left: 30px; 
-            width: 150px; height: 100px;
-            background: #000;
-            border: 2px solid var(--c-widerstand);
-            border-radius: 8px;
-            overflow: hidden;
-            z-index: 20; 
-            pointer-events: auto;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.9);
-        }
-        
-        #reader { width: 100%; height: 100%; object-fit: cover; }
-
-        /* SCAN RESULT OVERLAY (The Link Button) */
-        #scan-result-layer {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85);
-            display: none; /* Hidden by default */
-            flex-direction: column; align-items: center; justify-content: center;
-            z-index: 22; text-align: center;
-        }
-        
-        .found-text { color: white; font-size: 0.7rem; margin-bottom: 8px; font-family: var(--font-body); }
-        
-        .link-btn {
-            background: var(--c-widerstand); color: black; border: none;
-            padding: 10px 15px; border-radius: 4px; font-weight: bold;
-            font-family: var(--font-head); text-transform: uppercase; font-size: 0.9rem;
-            cursor: pointer; text-decoration: none; display: inline-block;
-            box-shadow: 0 0 15px var(--c-widerstand); animation: pulse 1s infinite;
-        }
-        
-        .scan-label {
-            position: absolute; bottom: 0; left: 0; width: 100%;
-            background: rgba(0,230,118,0.8); color: black;
-            font-size: 0.6rem; text-align: center; padding: 2px;
-            font-family: var(--font-head); font-weight: bold; text-transform: uppercase;
-            z-index: 21;
-        }
-
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
-
-        /* START OVERLAY */
-        #start-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(5,5,5,0.98); z-index: 9999;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            text-align: center;
-        }
-        .start-btn {
-            font-family: var(--font-head); font-size: 1.5rem;
-            background: var(--c-widerstand); color: black; border: none;
-            padding: 20px 50px; border-radius: 50px; cursor: pointer;
-            text-transform: uppercase; font-weight: bold; letter-spacing: 2px;
-            box-shadow: 0 0 30px var(--c-widerstand);
-        }
-
         /* UI LAYER */
         #ui-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10; }
 
@@ -108,6 +48,49 @@
         .museum-label { font-family: var(--font-head); font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase; color: #aaa; margin-bottom: 5px; font-weight: 500; border-left: 3px solid var(--c-widerstand); padding-left: 10px; }
         h1 { font-family: var(--font-head); font-size: 3rem; margin: 0; line-height: 0.9; font-weight: 700; color: white; letter-spacing: -1px; }
         
+        /* --- SCANNER BUTTON (Floating Action Button) --- */
+        #scan-trigger-btn {
+            position: absolute; top: 160px; left: 30px; pointer-events: auto;
+            background: black; color: var(--c-widerstand);
+            border: 2px solid var(--c-widerstand);
+            border-radius: 50px; padding: 15px 30px;
+            font-family: var(--font-head); font-size: 1.2rem; font-weight: bold; letter-spacing: 2px;
+            cursor: pointer; display: flex; align-items: center; gap: 10px;
+            box-shadow: 0 0 20px rgba(0, 230, 118, 0.4);
+            transition: all 0.3s ease;
+        }
+        #scan-trigger-btn:hover { background: var(--c-widerstand); color: black; transform: scale(1.05); }
+        #scan-trigger-btn span { font-size: 1.5rem; }
+
+        /* --- FULLSCREEN SCANNER OVERLAY --- */
+        #fullscreen-scanner {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: #000; z-index: 9999; display: none; /* Hidden by default */
+            flex-direction: column; align-items: center; justify-content: center;
+        }
+        #reader { width: 100%; height: 100%; object-fit: cover; }
+        
+        .scanner-ui-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;
+            border: 50px solid rgba(0,0,0,0.7); box-sizing: border-box;
+        }
+        .scanner-crosshair {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 250px; height: 250px; border: 4px solid var(--c-widerstand);
+            box-shadow: 0 0 50px var(--c-widerstand); border-radius: 20px;
+        }
+        .scanner-msg {
+            position: absolute; bottom: 100px; width: 100%; text-align: center;
+            color: white; font-family: var(--font-head); font-size: 1.2rem; text-transform: uppercase;
+            text-shadow: 0 2px 10px black;
+        }
+        #close-scanner-btn {
+            position: absolute; top: 30px; right: 30px; pointer-events: auto;
+            background: rgba(255,255,255,0.2); border: none; color: white;
+            width: 50px; height: 50px; border-radius: 50%; font-size: 24px; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; backdrop-filter: blur(10px);
+        }
+
         /* TIMELINE */
         #timeline-ui {
             position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
@@ -128,10 +111,7 @@
         .ticks span:last-child { text-align: right; }
 
         /* STATUS */
-        #status-panel {
-            position: absolute; top: 30px; right: 30px; width: 240px; pointer-events: auto;
-            background: rgba(0,0,0,0.6); padding: 15px; border-radius: 8px; border: 1px solid #333;
-        }
+        #status-panel { position: absolute; top: 30px; right: 30px; width: 240px; pointer-events: auto; background: rgba(0,0,0,0.6); padding: 15px; border-radius: 8px; border: 1px solid #333; }
         .status-header { font-size: 0.7rem; text-transform: uppercase; color: #888; letter-spacing: 1px; }
         .progress-bar { width: 100%; height: 4px; background: #333; margin-top: 8px; border-radius: 2px; }
         .progress-fill { height: 100%; background: var(--c-widerstand); width: 0%; transition: width 0.5s; box-shadow: 0 0 8px var(--c-widerstand); }
@@ -143,19 +123,11 @@
         .dot { width: 8px; height: 8px; border-radius: 50%; }
 
         /* SIDEBAR */
-        #sidebar {
-            position: absolute; right: 0; top: 0; bottom: 0; width: var(--sidebar-width);
-            background: #080808; border-left: 1px solid #333; z-index: 60;
-            transform: translateX(100%); transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
-            overflow-y: auto; pointer-events: auto; display: flex; flex-direction: column;
-            box-shadow: -20px 0 50px rgba(0,0,0,0.8);
-        }
+        #sidebar { position: absolute; right: 0; top: 0; bottom: 0; width: var(--sidebar-width); background: #080808; border-left: 1px solid #333; z-index: 60; transform: translateX(100%); transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1); overflow-y: auto; pointer-events: auto; display: flex; flex-direction: column; box-shadow: -20px 0 50px rgba(0,0,0,0.8); }
         #sidebar.open { transform: translateX(0); }
-
         .close-area { position: sticky; top: 0; width: 100%; height: 70px; z-index: 50; display: flex; justify-content: flex-end; align-items: center; padding-right: 25px; background: linear-gradient(to bottom, rgba(8,8,8,1) 50%, rgba(8,8,8,0)); }
         .close-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; width: 44px; height: 44px; border-radius: 50%; font-size: 24px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
         .close-btn:hover { background: white; color: black; }
-
         .sidebar-content { padding: 40px; padding-top: 0; }
         .hero-img { width: 100%; height: 300px; object-fit: cover; border-bottom: 4px solid #333; margin-bottom: 25px; }
         .cat-tag { font-family: var(--font-head); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; display: inline-block; padding: 4px 8px; border: 1px solid #444; color: #fff; }
@@ -170,7 +142,8 @@
             :root { --sidebar-width: 100%; }
             #timeline-ui { width: 90%; bottom: 20px; padding: 15px 20px; }
             .sidebar-content { padding: 25px; }
-            #mini-scanner-wrapper { top: 120px; left: 20px; }
+            /* Button shift */
+            #scan-trigger-btn { top: 120px; left: 20px; font-size: 1rem; padding: 10px 20px; }
         }
 
         .mapboxgl-popup-content { background: #000; color: #fff; border: 1px solid #444; font-family: var(--font-body); padding: 10px 14px; }
@@ -180,10 +153,12 @@
 </head>
 <body class="p-1933">
 
-    <div id="start-overlay">
-        <h1 style="margin-bottom: 30px; color:white;">Museum Lichtenberg</h1>
-        <button class="start-btn" onclick="startApp()">Ausstellung Starten</button>
-        <p style="color:#aaa; margin-top:20px; font-family:'Inter';">Bitte Kamera-Zugriff zulassen.</p>
+    <div id="fullscreen-scanner">
+        <div id="reader"></div>
+        <div class="scanner-ui-overlay"></div>
+        <div class="scanner-crosshair"></div>
+        <div class="scanner-msg">QR-Code scannen</div>
+        <button id="close-scanner-btn" onclick="stopScanner()">✕</button>
     </div>
 
     <div id="map"></div>
@@ -195,16 +170,9 @@
             <h1>Orte des<br>Widerstands</h1>
         </header>
 
-        <div id="mini-scanner-wrapper">
-            <div id="reader"></div>
-            
-            <div id="scan-result-layer">
-                <div class="found-text">QR-CODE GEFUNDEN</div>
-                <button id="scan-action-btn" class="link-btn">LINK ÖFFNEN</button>
-            </div>
-            
-            <div class="scan-label">SCANNER</div>
-        </div>
+        <button id="scan-trigger-btn" onclick="openScanner()">
+            <span>⚲</span> SCAN QR
+        </button>
 
         <div id="status-panel">
             <div class="status-header">Archiv Fortschritt</div>
@@ -374,9 +342,8 @@
             discovered: [],
             required: 3,
             unlocked: false,
-            lastScan: 0,
-            audioCtx: null,
-            html5QrCode: null
+            scannerObj: null,
+            audioCtx: null
         };
 
         const map = new mapboxgl.Map({
@@ -390,31 +357,42 @@
         });
 
         // ------------------------------------------------------------------
-        // 3. START SEQUENCE (Init Audio & Camera)
+        // 3. SCANNER LOGIC (FULLSCREEN)
         // ------------------------------------------------------------------
-        function startApp() {
-            document.getElementById('start-overlay').style.display = 'none';
-            
-            // Audio Context
-            state.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function openScanner() {
+            // Audio Context init on click
+            if(!state.audioCtx) {
+                state.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
             state.audioCtx.resume();
 
-            // Scanner Start
-            Html5Qrcode.getCameras().then(devices => {
-                if (devices && devices.length) {
-                    state.html5QrCode = new Html5Qrcode("reader");
-                    state.html5QrCode.start(
-                        { facingMode: "environment" }, 
-                        { fps: 10, qrbox: 130 },
-                        onScanSuccess
-                    ).catch(err => console.log("Cam Error:", err));
-                }
-            }).catch(err => console.log("No Cameras:", err));
+            document.getElementById('fullscreen-scanner').style.display = 'flex';
+            
+            // Init library
+            if(!state.scannerObj) {
+                state.scannerObj = new Html5Qrcode("reader");
+            }
+
+            state.scannerObj.start(
+                { facingMode: "environment" }, 
+                { fps: 10, qrbox: 250 },
+                onScanSuccess,
+                (err) => { /* ignore init errors */ }
+            ).catch(err => {
+                alert("Kamera konnte nicht gestartet werden: " + err);
+                stopScanner();
+            });
         }
 
-        // ------------------------------------------------------------------
-        // 4. SCANNER LOGIC
-        // ------------------------------------------------------------------
+        function stopScanner() {
+            document.getElementById('fullscreen-scanner').style.display = 'none';
+            if(state.scannerObj) {
+                state.scannerObj.stop().then(() => {
+                    // stopped
+                }).catch(err => console.log("Stop error", err));
+            }
+        }
+
         function playBeep() {
             if (!state.audioCtx) return;
             const oscillator = state.audioCtx.createOscillator();
@@ -429,12 +407,7 @@
         }
 
         function onScanSuccess(decodedText) {
-            // Prevent spam scanning
-            const now = Date.now();
-            if (now - state.lastScan < 3000) return;
-            state.lastScan = now;
-
-            // Extract Event ID from URL or Raw Text
+            // Parse ID
             let eventId = null;
             try {
                 const url = new URL(decodedText);
@@ -443,27 +416,11 @@
                 eventId = decodedText;
             }
 
-            // Verify if ID exists in our database
-            const target = geoData.features.find(f => f.properties.id === eventId);
-            
-            if (target) {
-                // Feedback
-                playBeep();
-                
-                // Show Overlay
-                const overlay = document.getElementById('scan-result-layer');
-                const btn = document.getElementById('scan-action-btn');
-                
-                // PAUSE SCANNER (Visual Freeze)
-                state.html5QrCode.pause();
-                
-                overlay.style.display = 'flex';
-                btn.innerText = "ÖFFNEN: " + target.properties.title.substring(0, 15) + "...";
-
-                // Click Action
-                btn.onclick = () => {
-                    overlay.style.display = 'none';
-                    state.html5QrCode.resume(); // Resume scanning
+            if (eventId) {
+                const target = geoData.features.find(f => f.properties.id === eventId);
+                if (target) {
+                    playBeep();
+                    stopScanner(); // Close camera immediately
                     
                     // Logic
                     if (!state.discovered.includes(eventId)) {
@@ -471,21 +428,14 @@
                         updateProgress();
                     }
                     if (target.properties.locked) {
-                        unlockAll();
+                        unlockAll(); 
                     } else {
                         updateMap(target.properties.year);
                     }
+                    
                     // Navigate
                     handleMarker(target.properties, target.geometry.coordinates, true);
-                };
-                
-                // Auto Reset if user does nothing
-                setTimeout(() => {
-                    if(overlay.style.display === 'flex') {
-                        overlay.style.display = 'none';
-                        state.html5QrCode.resume();
-                    }
-                }, 5000);
+                }
             }
         }
 
@@ -517,10 +467,8 @@
             const urlParams = new URLSearchParams(window.location.search);
             const startEvent = urlParams.get('event');
             if(startEvent) {
-                document.getElementById('start-overlay').style.display = 'none'; 
-                // Manual trigger for deep link
-                const target = geoData.features.find(f => f.properties.id === startEvent);
-                if(target) handleMarker(target.properties, target.geometry.coordinates, true);
+                // If url has ?event=x, simulate scan success directly
+                onScanSuccess(startEvent);
             }
 
             updateMap(1933);
