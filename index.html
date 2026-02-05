@@ -19,11 +19,11 @@
             /* Colors */
             --bg-color: #050505;
             --text-main: #ffffff;
-            --c-erinnerung: #D4AF37;   /* Gold */
-            --c-gedenken: #A0A0A0;     /* Silver */
-            --c-widerstand: #00E676;   /* Neon Green */
-            --c-heute: #FF3D00;        /* Neon Red */
-            --c-path: #00FFFF;         /* Cyan Path */
+            --c-erinnerung: #D4AF37;   
+            --c-gedenken: #A0A0A0;     
+            --c-widerstand: #00E676;   
+            --c-heute: #FF3D00;        
+            --c-path: #00FFFF;         
 
             /* Fonts */
             --font-head: 'Space Grotesk', sans-serif;
@@ -37,7 +37,18 @@
 
         #map { position: absolute; top: 0; bottom: 0; width: 100%; }
 
-        /* VIGNETTE (Focus Effect) */
+        /* VISUAL FEEDBACK FLASH */
+        @keyframes scan-flash {
+            0% { background-color: rgba(255, 255, 255, 0.8); }
+            100% { background-color: transparent; }
+        }
+        .scan-success-flash {
+            animation: scan-flash 0.5s ease-out;
+            pointer-events: none;
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 100;
+        }
+
+        /* VIGNETTE */
         .vignette-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5;
             background: radial-gradient(circle at center, transparent 30%, rgba(0,0,0,0.8) 60%, rgba(0,0,0,1) 90%);
@@ -60,14 +71,14 @@
             color: white; letter-spacing: -1px;
         }
         
-        /* INVISIBLE SCANNER CONTAINER (Background Process) */
+        /* INVISIBLE SCANNER CONTAINER (Hidden but active) */
         #qr-container {
-            position: absolute; top: -1000px; left: -1000px; /* Hide off-screen */
-            width: 1px; height: 1px; opacity: 0; pointer-events: none; overflow: hidden;
+            position: absolute; top: -2000px; left: -2000px; 
+            width: 300px; height: 300px; opacity: 0; pointer-events: none; overflow: hidden;
         }
         #reader { width: 100%; height: 100%; }
 
-        /* TIMELINE (Spaced Out) */
+        /* TIMELINE */
         #timeline-ui {
             position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
             width: 80%; max-width: 900px; min-width: 320px; 
@@ -102,7 +113,7 @@
         .ticks span:first-child { text-align: left; }
         .ticks span:last-child { text-align: right; }
 
-        /* STATUS / GAMIFICATION */
+        /* STATUS */
         #status-panel {
             position: absolute; top: 30px; right: 30px; width: 240px; pointer-events: auto;
             background: rgba(0,0,0,0.6); padding: 15px; border-radius: 8px; border: 1px solid #333;
@@ -173,6 +184,8 @@
 
     <div id="map"></div>
     <div class="vignette-overlay"></div>
+
+    <div id="flash-overlay"></div>
 
     <div id="ui-layer">
         <header>
@@ -351,7 +364,8 @@
         let state = {
             discovered: [],
             required: 3,
-            unlocked: false
+            unlocked: false,
+            lastScan: 0 // Cooldown timer
         };
 
         const map = new mapboxgl.Map({
@@ -365,30 +379,61 @@
         });
 
         // ------------------------------------------------------------------
-        // 3. LOGIC & SCANNER
+        // 3. SOUND & FEEDBACK
         // ------------------------------------------------------------------
-        
-        // --- INVISIBLE HEADLESS SCANNER ---
+        // Simple synthetic beep so no external file needed
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playBeep() {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            oscillator.type = "sine";
+            oscillator.frequency.value = 1000; // 1000 Hz
+            gainNode.gain.value = 0.1;
+            oscillator.start();
+            setTimeout(() => oscillator.stop(), 150); // 150ms beep
+        }
+
+        function triggerFlash() {
+            const flash = document.createElement("div");
+            flash.className = "scan-success-flash";
+            document.body.appendChild(flash);
+            setTimeout(() => flash.remove(), 600);
+        }
+
+        // ------------------------------------------------------------------
+        // 4. SCANNER LOGIC (HEADLESS)
+        // ------------------------------------------------------------------
         function onScanSuccess(decodedText) {
-            // Check for URL param "event=" or just raw ID "g1"
+            // Rate Limiter: Prevent multiple triggers per second
+            const now = Date.now();
+            if (now - state.lastScan < 2000) return;
+            state.lastScan = now;
+
+            // Handle URL or ID
             let eventId = null;
             try {
                 const url = new URL(decodedText);
                 eventId = url.searchParams.get("event");
             } catch (e) {
-                eventId = decodedText; // Assume text is just ID
+                eventId = decodedText;
             }
 
             if (eventId) {
                 const target = geoData.features.find(f => f.properties.id === eventId);
                 if (target) {
+                    playBeep();
+                    triggerFlash();
+                    
                     // Unlock Logic
                     if (!state.discovered.includes(eventId)) {
                         state.discovered.push(eventId);
                         updateProgress();
                     }
                     if (target.properties.locked) {
-                        unlockAll(); // Force unlock if they scanned a future event
+                        unlockAll(); // Force unlock
                     } else {
                         updateMap(target.properties.year);
                     }
@@ -397,18 +442,22 @@
             }
         }
 
-        // Start Scanner (Rear Camera, No UI)
+        // Init Invisible Scanner
         Html5Qrcode.getCameras().then(devices => {
             if (devices && devices.length) {
                 const html5QrCode = new Html5Qrcode("reader");
+                // Prefer back camera (environment)
                 html5QrCode.start(
                     { facingMode: "environment" }, 
                     { fps: 10, qrbox: 250 },
                     onScanSuccess
-                ).catch(err => console.log("Scanner init error (PC?):", err));
+                ).catch(err => console.log("Camera Error:", err));
             }
         });
 
+        // ------------------------------------------------------------------
+        // 5. MAP LOGIC
+        // ------------------------------------------------------------------
         map.on('load', () => {
             
             // PATH
@@ -430,17 +479,9 @@
             map.on('mouseenter', 'marker-core', () => map.getCanvas().style.cursor = 'pointer');
             map.on('mouseleave', 'marker-core', () => map.getCanvas().style.cursor = '');
 
-            // Deep Link Check
-            const urlParams = new URLSearchParams(window.location.search);
-            const startEvent = urlParams.get('event');
-            if(startEvent) onScanSuccess(startEvent);
-
             updateMap(1933);
         });
 
-        // ------------------------------------------------------------------
-        // 4. GAMEPLAY
-        // ------------------------------------------------------------------
         function handleMarker(props, coords, force = false) {
             if (props.locked && !state.unlocked && !force) {
                 openSidebarLocked();
@@ -450,10 +491,8 @@
                 state.discovered.push(props.id);
                 updateProgress();
             }
-            // Smart Pan
             const isPortrait = window.innerHeight > window.innerWidth;
             const offset = isPortrait ? [0, -200] : [-200, 0];
-            
             map.flyTo({ center: coords, zoom: 16, pitch: 60, offset: offset, speed: 0.8 });
             openSidebar(props);
         }
@@ -486,19 +525,16 @@
         });
 
         function updateMap(year) {
-            // Theme
             const body = document.body;
             body.className = '';
             if (year <= 1945) { body.classList.add('p-1933'); map.setFog({'color':'#fff', 'range':[1,10]}); }
             else if (year <= 2010) { body.classList.add('p-1990'); map.setFog({'color':'#0d1b2a', 'range':[0.5,8]}); }
             else { body.classList.add('p-2026'); map.setFog({'color':'#000', 'range':[0.5,10]}); }
 
-            // Filter
             const filter = ['<=', ['get', 'year'], year];
             map.setFilter('marker-glow', filter);
             map.setFilter('marker-core', filter);
             
-            // Path
             const visible = geoData.features.filter(f => f.properties.year <= year);
             visible.sort((a,b) => a.properties.year - b.properties.year);
             const coords = visible.map(f => f.geometry.coordinates);
