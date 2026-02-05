@@ -19,11 +19,11 @@
             /* Colors */
             --bg-color: #050505;
             --text-main: #ffffff;
-            --c-erinnerung: #D4AF37;   
-            --c-gedenken: #A0A0A0;     
-            --c-widerstand: #00E676;   
-            --c-heute: #FF3D00;        
-            --c-path: #00FFFF;         
+            --c-erinnerung: #D4AF37;   /* Gold */
+            --c-gedenken: #A0A0A0;     /* Silver */
+            --c-widerstand: #00E676;   /* Neon Green */
+            --c-heute: #FF3D00;        /* Neon Red */
+            --c-path: #00FFFF;         /* Cyan Path */
 
             /* Fonts */
             --font-head: 'Space Grotesk', sans-serif;
@@ -35,27 +35,30 @@
 
         body { margin: 0; padding: 0; background: var(--bg-color); color: var(--text-main); font-family: var(--font-body); overflow: hidden; }
 
-        #map { position: absolute; top: 0; bottom: 0; width: 100%; }
+        #map { position: absolute; top: 0; bottom: 0; width: 100%; z-index: 1; }
 
-        /* VISUAL FEEDBACK FLASH */
-        @keyframes scan-flash {
-            0% { background-color: rgba(255, 255, 255, 0.8); }
-            100% { background-color: transparent; }
+        /* --- THE GHOST SCANNER (INVISIBLE BUT ACTIVE) --- */
+        #qr-ghost {
+            position: fixed; 
+            top: 0; left: 0; 
+            width: 100%; height: 100%; 
+            z-index: 5; /* Above map visually */
+            opacity: 0.01; /* Almost invisible, but technically 'seen' by browser */
+            pointer-events: none; /* Let clicks pass through to the map */
+            overflow: hidden;
         }
-        .scan-success-flash {
-            animation: scan-flash 0.5s ease-out;
-            pointer-events: none;
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 100;
-        }
-
-        /* VIGNETTE */
-        .vignette-overlay {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5;
-            background: radial-gradient(circle at center, transparent 30%, rgba(0,0,0,0.8) 60%, rgba(0,0,0,1) 90%);
+        #qr-ghost video {
+            width: 100%; height: 100%; object-fit: cover;
         }
 
         /* UI LAYER */
         #ui-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10; }
+
+        /* VIGNETTE */
+        .vignette-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 6;
+            background: radial-gradient(circle at center, transparent 30%, rgba(0,0,0,0.8) 60%, rgba(0,0,0,1) 90%);
+        }
 
         /* HEADER */
         header { 
@@ -71,13 +74,6 @@
             color: white; letter-spacing: -1px;
         }
         
-        /* INVISIBLE SCANNER CONTAINER (Hidden but active) */
-        #qr-container {
-            position: absolute; top: -2000px; left: -2000px; 
-            width: 300px; height: 300px; opacity: 0; pointer-events: none; overflow: hidden;
-        }
-        #reader { width: 100%; height: 100%; }
-
         /* TIMELINE */
         #timeline-ui {
             position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
@@ -169,6 +165,10 @@
         .locked-view { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px; color: #555; }
         .locked-icon { font-size: 4rem; margin-bottom: 20px; opacity: 0.5; }
 
+        /* FLASH EFFECT */
+        @keyframes scan-flash { 0% { background-color: rgba(255, 255, 255, 0.8); } 100% { background-color: transparent; } }
+        .scan-feedback { animation: scan-flash 0.5s ease-out; pointer-events: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 100; }
+
         @media (max-width: 1024px) {
             :root { --sidebar-width: 100%; }
             #timeline-ui { width: 90%; bottom: 20px; padding: 15px 20px; }
@@ -185,17 +185,13 @@
     <div id="map"></div>
     <div class="vignette-overlay"></div>
 
-    <div id="flash-overlay"></div>
+    <div id="qr-ghost"></div>
 
     <div id="ui-layer">
         <header>
             <div class="museum-label">Museum Lichtenberg</div>
             <h1>Orte des<br>Widerstands</h1>
         </header>
-
-        <div id="qr-container">
-            <div id="reader"></div>
-        </div>
 
         <div id="status-panel">
             <div class="status-header">Archiv Fortschritt</div>
@@ -206,7 +202,7 @@
         <div id="legend">
             <div class="legend-item"><div class="dot" style="background:var(--c-erinnerung)"></div> Orte der Erinnerung</div>
             <div class="legend-item"><div class="dot" style="background:var(--c-gedenken)"></div> Gedenken</div>
-            <div class="legend-item"><div class="dot" style="background:var(--c-widerstand)"></div> Orte des Widerstands</div>
+            <div class="legend-item"><div class="dot" style="background:var(--c-widerstand)"></div> Widerstand</div>
             <div class="legend-item"><div class="dot" style="background:var(--c-heute)"></div> Gegen Rechts Heute</div>
         </div>
 
@@ -365,7 +361,7 @@
             discovered: [],
             required: 3,
             unlocked: false,
-            lastScan: 0 // Cooldown timer
+            lastScan: 0 // Cooldown
         };
 
         const map = new mapboxgl.Map({
@@ -381,7 +377,6 @@
         // ------------------------------------------------------------------
         // 3. SOUND & FEEDBACK
         // ------------------------------------------------------------------
-        // Simple synthetic beep so no external file needed
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         function playBeep() {
             if (audioCtx.state === 'suspended') audioCtx.resume();
@@ -390,24 +385,24 @@
             oscillator.connect(gainNode);
             gainNode.connect(audioCtx.destination);
             oscillator.type = "sine";
-            oscillator.frequency.value = 1000; // 1000 Hz
+            oscillator.frequency.value = 1200; 
             gainNode.gain.value = 0.1;
             oscillator.start();
-            setTimeout(() => oscillator.stop(), 150); // 150ms beep
+            setTimeout(() => oscillator.stop(), 100); 
         }
 
         function triggerFlash() {
             const flash = document.createElement("div");
-            flash.className = "scan-success-flash";
+            flash.className = "scan-feedback";
             document.body.appendChild(flash);
             setTimeout(() => flash.remove(), 600);
         }
 
         // ------------------------------------------------------------------
-        // 4. SCANNER LOGIC (HEADLESS)
+        // 4. SCANNER LOGIC (HEADLESS & CONTINUOUS)
         // ------------------------------------------------------------------
         function onScanSuccess(decodedText) {
-            // Rate Limiter: Prevent multiple triggers per second
+            // Prevent duplicate scans within 2 seconds
             const now = Date.now();
             if (now - state.lastScan < 2000) return;
             state.lastScan = now;
@@ -427,7 +422,6 @@
                     playBeep();
                     triggerFlash();
                     
-                    // Unlock Logic
                     if (!state.discovered.includes(eventId)) {
                         state.discovered.push(eventId);
                         updateProgress();
@@ -442,22 +436,21 @@
             }
         }
 
-        // Init Invisible Scanner
+        // Initialize Invisible Scanner
+        // UsingHtml5Qrcode class instead of Scanner for headless operation
         Html5Qrcode.getCameras().then(devices => {
             if (devices && devices.length) {
-                const html5QrCode = new Html5Qrcode("reader");
+                const html5QrCode = new Html5Qrcode("qr-ghost");
                 // Prefer back camera (environment)
                 html5QrCode.start(
                     { facingMode: "environment" }, 
                     { fps: 10, qrbox: 250 },
                     onScanSuccess
-                ).catch(err => console.log("Camera Error:", err));
+                ).catch(err => console.log("Camera Start Error:", err));
             }
-        });
+        }).catch(err => console.log("No Cameras found:", err));
 
-        // ------------------------------------------------------------------
-        // 5. MAP LOGIC
-        // ------------------------------------------------------------------
+
         map.on('load', () => {
             
             // PATH
@@ -479,9 +472,17 @@
             map.on('mouseenter', 'marker-core', () => map.getCanvas().style.cursor = 'pointer');
             map.on('mouseleave', 'marker-core', () => map.getCanvas().style.cursor = '');
 
+            // Deep Link Check
+            const urlParams = new URLSearchParams(window.location.search);
+            const startEvent = urlParams.get('event');
+            if(startEvent) onScanSuccess(startEvent);
+
             updateMap(1933);
         });
 
+        // ------------------------------------------------------------------
+        // 5. APP LOGIC
+        // ------------------------------------------------------------------
         function handleMarker(props, coords, force = false) {
             if (props.locked && !state.unlocked && !force) {
                 openSidebarLocked();
