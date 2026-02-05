@@ -35,34 +35,43 @@
 
         body { margin: 0; padding: 0; background: var(--bg-color); color: var(--text-main); font-family: var(--font-body); overflow: hidden; }
 
-        /* MAP IS OPAQUE (NO SEE-THROUGH) */
-        #map { position: absolute; top: 0; bottom: 0; width: 100%; z-index: 1; background: #000; }
+        #map { position: absolute; top: 0; bottom: 0; width: 100%; z-index: 1; }
 
-        /* --- THE MINI SCANNER WINDOW (Top Left) --- */
+        /* --- MINI SCANNER WINDOW (Top Left) --- */
         #mini-scanner-wrapper {
             position: absolute; 
             top: 170px; /* Below the header */
             left: 30px; 
-            width: 240px; 
-            height: 180px;
+            width: 260px; 
+            height: 200px;
             background: #000;
-            border: 2px solid var(--c-widerstand); /* Neon Green Frame */
+            border: 2px solid var(--c-widerstand);
             border-radius: 12px;
             overflow: hidden;
-            z-index: 20; /* Above map */
+            z-index: 20; 
             pointer-events: auto;
             box-shadow: 0 10px 40px rgba(0,0,0,0.9);
         }
         
-        /* The video element inside */
         #reader { width: 100%; height: 100%; object-fit: cover; }
 
-        /* "REC" Indicator */
-        .rec-dot {
-            position: absolute; top: 10px; right: 10px; width: 10px; height: 10px; 
-            background: red; border-radius: 50%; z-index: 21;
-            animation: blink 1.5s infinite;
+        /* SCAN RESULT OVERLAY (Appears on success) */
+        #scan-result-layer {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
+            display: none; /* Hidden by default */
+            flex-direction: column; align-items: center; justify-content: center;
+            z-index: 22;
         }
+        
+        .result-btn {
+            background: var(--c-widerstand); color: black; border: none;
+            padding: 10px 20px; border-radius: 30px; font-weight: bold;
+            font-family: var(--font-head); text-transform: uppercase;
+            cursor: pointer; margin-top: 10px; animation: pulse 1s infinite;
+        }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+
         .scan-label {
             position: absolute; bottom: 0; left: 0; width: 100%;
             background: rgba(0,230,118,0.8); color: black;
@@ -70,7 +79,6 @@
             font-family: var(--font-head); font-weight: bold; text-transform: uppercase;
             z-index: 21;
         }
-        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
 
         /* START OVERLAY */
         #start-overlay {
@@ -84,9 +92,8 @@
             background: var(--c-widerstand); color: black; border: none;
             padding: 20px 50px; border-radius: 50px; cursor: pointer;
             text-transform: uppercase; font-weight: bold; letter-spacing: 2px;
-            box-shadow: 0 0 30px var(--c-widerstand); animation: pulse 2s infinite;
+            box-shadow: 0 0 30px var(--c-widerstand);
         }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
 
         /* UI LAYER */
         #ui-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10; }
@@ -124,8 +131,12 @@
             font-family: var(--font-head); font-size: 2.5rem; font-weight: 700; display: block; 
             margin-bottom: 5px; line-height: 1; color: white;
         }
-        input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; cursor: pointer; }
-        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; background: #444; border-radius: 2px; }
+        input[type=range] {
+            -webkit-appearance: none; width: 100%; background: transparent; cursor: pointer;
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%; height: 4px; background: #444; border-radius: 2px;
+        }
         input[type=range]::-webkit-slider-thumb {
             -webkit-appearance: none; height: 20px; width: 20px; border-radius: 50%;
             background: #fff; border: 2px solid #000; margin-top: -8px; transition: transform 0.1s;
@@ -198,15 +209,11 @@
         .locked-view { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px; color: #555; }
         .locked-icon { font-size: 4rem; margin-bottom: 20px; opacity: 0.5; }
 
-        /* FLASH EFFECT */
-        @keyframes scan-flash { 0% { background-color: rgba(255, 255, 255, 0.8); } 100% { background-color: transparent; } }
-        .scan-feedback { animation: scan-flash 0.5s ease-out; pointer-events: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 100; }
-
         @media (max-width: 1024px) {
             :root { --sidebar-width: 100%; }
             #timeline-ui { width: 90%; bottom: 20px; padding: 15px 20px; }
             .sidebar-content { padding: 25px; }
-            #mini-scanner-wrapper { width: 180px; height: 140px; top: 130px; left: 20px; }
+            #mini-scanner-wrapper { top: 130px; left: 20px; width: 180px; height: 140px; }
         }
 
         .mapboxgl-popup-content { background: #000; color: #fff; border: 1px solid #444; font-family: var(--font-body); padding: 10px 14px; }
@@ -233,8 +240,11 @@
 
         <div id="mini-scanner-wrapper">
             <div id="reader"></div>
-            <div class="rec-dot"></div>
-            <div class="scan-label">QR-SCANNER AKTIV</div>
+            <div id="scan-result-layer">
+                <div style="color:white; font-size:0.8rem; margin-bottom:5px;">QR-CODE ERKANNT</div>
+                <button id="scan-action-btn" class="result-btn">ANZEIGEN ➔</button>
+            </div>
+            <div class="scan-label">QR-SCANNER</div>
         </div>
 
         <div id="status-panel">
@@ -246,7 +256,7 @@
         <div id="legend">
             <div class="legend-item"><div class="dot" style="background:var(--c-erinnerung)"></div> Orte der Erinnerung</div>
             <div class="legend-item"><div class="dot" style="background:var(--c-gedenken)"></div> Gedenken</div>
-            <div class="legend-item"><div class="dot" style="background:var(--c-widerstand)"></div> Widerstand</div>
+            <div class="legend-item"><div class="dot" style="background:var(--c-widerstand)"></div> Orte des Widerstands</div>
             <div class="legend-item"><div class="dot" style="background:var(--c-heute)"></div> Gegen Rechts Heute</div>
         </div>
 
@@ -429,7 +439,7 @@
             state.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             state.audioCtx.resume();
 
-            // Scanner Init (Visible Box)
+            // Start Scanner (Rear Camera)
             Html5Qrcode.getCameras().then(devices => {
                 if (devices && devices.length) {
                     const html5QrCode = new Html5Qrcode("reader");
@@ -443,7 +453,7 @@
         }
 
         // ------------------------------------------------------------------
-        // 4. SCANNER LOGIC (AUTO-NAVIGATE)
+        // 4. SCANNER LOGIC WITH CLICK OVERLAY
         // ------------------------------------------------------------------
         function playBeep() {
             if (!state.audioCtx) return;
@@ -458,19 +468,12 @@
             setTimeout(() => oscillator.stop(), 100); 
         }
 
-        function triggerFlash() {
-            const flash = document.createElement("div");
-            flash.className = "scan-feedback";
-            document.body.appendChild(flash);
-            setTimeout(() => flash.remove(), 600);
-        }
-
         function onScanSuccess(decodedText) {
-            // Prevent spamming
             const now = Date.now();
-            if (now - state.lastScan < 2000) return;
+            if (now - state.lastScan < 2000) return; // Debounce
             state.lastScan = now;
 
+            // Check ID
             let eventId = null;
             try {
                 const url = new URL(decodedText);
@@ -483,19 +486,27 @@
                 const target = geoData.features.find(f => f.properties.id === eventId);
                 if (target) {
                     playBeep();
-                    triggerFlash();
                     
-                    if (!state.discovered.includes(eventId)) {
-                        state.discovered.push(eventId);
-                        updateProgress();
-                    }
-                    if (target.properties.locked) {
-                        unlockAll(); 
-                    } else {
-                        updateMap(target.properties.year);
-                    }
-                    // AUTO NAVIGATE
-                    handleMarker(target.properties, target.geometry.coordinates, true);
+                    // Show "Click" Overlay
+                    const layer = document.getElementById('scan-result-layer');
+                    const btn = document.getElementById('scan-action-btn');
+                    layer.style.display = 'flex';
+                    
+                    // Button Click Action
+                    btn.onclick = () => {
+                        layer.style.display = 'none';
+                        
+                        // Game Logic
+                        if (!state.discovered.includes(eventId)) {
+                            state.discovered.push(eventId);
+                            updateProgress();
+                        }
+                        if (target.properties.locked) unlockAll();
+                        else updateMap(target.properties.year);
+                        
+                        // Navigate
+                        handleMarker(target.properties, target.geometry.coordinates, true);
+                    };
                 }
             }
         }
@@ -523,14 +534,6 @@
             map.on('click', 'marker-core', (e) => handleMarker(e.features[0].properties, e.features[0].geometry.coordinates));
             map.on('mouseenter', 'marker-core', () => map.getCanvas().style.cursor = 'pointer');
             map.on('mouseleave', 'marker-core', () => map.getCanvas().style.cursor = '');
-
-            // Deep Link Check
-            const urlParams = new URLSearchParams(window.location.search);
-            const startEvent = urlParams.get('event');
-            if(startEvent) {
-                document.getElementById('start-overlay').style.display = 'none'; // Auto-start if deep link
-                onScanSuccess(startEvent);
-            }
 
             updateMap(1933);
         });
