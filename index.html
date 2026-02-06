@@ -28,6 +28,23 @@
         body { margin: 0; padding: 0; background: var(--bg-color); color: var(--text-main); font-family: var(--font-body); overflow: hidden; }
         #map { position: absolute; top: 0; bottom: 0; width: 100%; z-index: 1; }
 
+        /* --- START SCREEN (Z-Index High) --- */
+        #start-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95); z-index: 9999;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            backdrop-filter: blur(10px);
+        }
+        .start-btn {
+            background: var(--c-widerstand); color: black; border: none;
+            padding: 15px 50px; border-radius: 30px;
+            font-family: var(--font-head); font-weight: bold; font-size: 1.2rem;
+            cursor: pointer; margin-top: 30px;
+            box-shadow: 0 0 30px var(--c-widerstand);
+            transition: transform 0.2s;
+        }
+        .start-btn:active { transform: scale(0.95); }
+
         /* --- MINI SCANNER (Positioned Lower) --- */
         #mini-scanner {
             position: absolute; 
@@ -61,20 +78,6 @@
         }
         .hit-icon { font-size: 24px; color: black; font-weight: bold; }
         .hit-text { font-size: 10px; color: black; font-family: var(--font-head); font-weight: bold; margin-top: 2px; }
-
-        /* START SCREEN */
-        #start-screen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.95); z-index: 9999;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-        }
-        .start-btn {
-            background: var(--c-widerstand); color: black; border: none;
-            padding: 15px 40px; border-radius: 30px;
-            font-family: var(--font-head); font-weight: bold; font-size: 1.2rem;
-            cursor: pointer; margin-top: 20px;
-            box-shadow: 0 0 20px var(--c-widerstand);
-        }
 
         /* UI LAYER */
         #ui-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10; }
@@ -132,8 +135,8 @@
 <body class="p-1933">
 
     <div id="start-screen">
-        <h1 style="color:white; margin-bottom: 10px;">Museum Lichtenberg</h1>
-        <p style="color:#aaa;">Orte des Widerstands</p>
+        <h1 style="color:white; margin-bottom: 10px; text-shadow:0 0 20px black;">Museum Lichtenberg</h1>
+        <p style="color:#aaa; font-family:var(--font-head);">Orte des Widerstands</p>
         <button class="start-btn" onclick="startExhibition()">Ausstellung Starten</button>
     </div>
 
@@ -188,12 +191,11 @@
         // ------------------------------------------------------------------
         mapboxgl.accessToken = 'pk.eyJ1IjoiaWxpYXNtZXJhYmloYSIsImEiOiJjbWw5bHNnc3YwM3ZwM2RxdXU5YjdiN201In0.CTiUlh-M4fTkIda8EtP4Yg'; 
 
-        // UPDATED: Use Direct Image Links from Wikimedia (No Thumbs) for better reliability
         const geoData = {
             'type': 'FeatureCollection',
             'features': [
                 { 'type': 'Feature', 'properties': { 'id': 'h1', 'category': 'erinnerung', 'title': 'Der Blutbaum am Loeperplatz', 'year': 1934, 'image': 'https://upload.wikimedia.org/wikipedia/commons/c/c5/Gedenkstein_Loeperplatz_%28Berlin-Lichtenberg%29.jpg', 'description': `<h3>Historischer Kontext</h3><p>Der Loeperplatz in Lichtenberg, einst ein belebter Marktplatz, verwandelte sich nach der Machtübernahme der Nationalsozialisten 1933 in einen Ort des Schreckens.</p><h3>Das Ereignis</h3><p>Der Platz wurde zur Richtstätte. Eine alte Eiche, die hier stand, erhielt im Volksmund den Namen "Blutbaum", da an ihr Hinrichtungen stattfanden.</p>`, 'source': 'Gedenkstätte Deutscher Widerstand' }, 'geometry': { 'type': 'Point', 'coordinates': [13.4800, 52.5135] } },
-                { 'type': 'Feature', 'properties': { 'id': 'h2', 'category': 'erinnerung', 'title': 'Zwangsarbeiterlager Rummelsburg', 'year': 1941, 'image': 'https://upload.wikimedia.org/wikipedia/commons/5/52/Bundesarchiv_Bild_183-1990-0704-026%2C_Berlin%2C_Rummelsburg%2C_M%C3%A4nnerhaftanstalt.jpg`, 'source': 'Museum Lichtenberg' }, 'geometry': { 'type': 'Point', 'coordinates': [13.4850, 52.4950] } },
+                { 'type': 'Feature', 'properties': { 'id': 'h2', 'category': 'erinnerung', 'title': 'Zwangsarbeiterlager Rummelsburg', 'year': 1941, 'image': 'https://upload.wikimedia.org/wikipedia/commons/5/52/Bundesarchiv_Bild_183-1990-0704-026%2C_Berlin%2C_Rummelsburg%2C_M%C3%A4nnerhaftanstalt.jpg', 'description': `<h3>Ein Ort der Ausbeutung</h3><p>Das "Arbeitserziehungslager" (AEL) Rummelsburg war ein Instrument des NS-Terrors. Hier wurden Tausende Menschen interniert.</p>`, 'source': 'Museum Lichtenberg' }, 'geometry': { 'type': 'Point', 'coordinates': [13.4850, 52.4950] } },
                 { 'type': 'Feature', 'properties': { 'id': 'h3', 'category': 'erinnerung', 'title': 'Erna Lugebiel', 'year': 1943, 'image': 'https://upload.wikimedia.org/wikipedia/commons/6/66/Stadthaus_Lichtenberg_Berlin.jpg', 'description': `<h3>Zivilcourage im Alltag</h3><p>Erna Lugebiel, eine Schneiderin aus der Möllendorffstraße, zeigte, was Zivilcourage bedeutete. Sie versteckte jüdische Bürger und politisch Verfolgte.</p>`, 'source': 'Gedenkstätte Stille Helden' }, 'geometry': { 'type': 'Point', 'coordinates': [13.4790, 52.5220] } },
                 { 'type': 'Feature', 'properties': { 'id': 'w1', 'category': 'widerstand', 'title': 'Mainzer Straße', 'year': 1990, 'image': 'https://upload.wikimedia.org/wikipedia/commons/6/6d/Mainzer_Stra%C3%9Fe_Berlin-Friedrichshain_1990.jpg', 'description': `<h3>Das Ende eines Freiraums</h3><p>Im November 1990 fand in der Mainzer Straße einer der massivsten Polizeieinsätze der Nachkriegsgeschichte statt.</p>`, 'source': 'Zeitzeugenarchiv Berlin' }, 'geometry': { 'type': 'Point', 'coordinates': [13.4620, 52.5120] } },
                 { 'type': 'Feature', 'properties': { 'id': 'g1', 'category': 'gedenken', 'title': 'Silvio Meier', 'year': 1992, 'image': 'https://upload.wikimedia.org/wikipedia/commons/a/a2/Gedenktafel_Silvio_Meier_%28U-Bhf_Samariterstra%C3%9Fe%29.jpg', 'description': `<h3>Ein traumatisches Ereignis</h3><p>Am 21. November 1992 wurde der Antifaschist Silvio Meier im U-Bahnhof Samariterstraße von Neonazis erstochen.</p>`, 'source': 'Amadeu Antonio Stiftung' }, 'geometry': { 'type': 'Point', 'coordinates': [13.4650, 52.5140] } },
@@ -227,25 +229,28 @@
         // 3. START EXHIBITION (Audio & Camera Permissions)
         // ------------------------------------------------------------------
         function startExhibition() {
-            // Remove start screen
+            // Remove start screen IMMEDIATELY
             document.getElementById('start-screen').style.display = 'none';
             
-            // Init Scanner (Camera)
-            initScanner();
+            // Try init scanner, but don't block app if it fails
+            setTimeout(initScanner, 500);
         }
 
         function initScanner() {
-            state.scanner = new Html5Qrcode("reader");
-            const config = { fps: 10, qrbox: { width: 80, height: 80 } }; // Small box
-            
-            state.scanner.start(
-                { facingMode: "environment" }, 
-                config, 
-                onScanSuccess
-            ).catch(err => {
-                console.log("Scanner Error", err);
-                alert("Kamera konnte nicht gestartet werden. Bitte neu laden und 'Zulassen' klicken.");
-            });
+            try {
+                state.scanner = new Html5Qrcode("reader");
+                const config = { fps: 10, qrbox: { width: 80, height: 80 } }; 
+                
+                state.scanner.start(
+                    { facingMode: "environment" }, 
+                    config, 
+                    onScanSuccess
+                ).catch(err => {
+                    console.log("Scanner Error (Camera not allowed?):", err);
+                });
+            } catch(e) {
+                console.log("Scanner Lib Error:", e);
+            }
         }
 
         function onScanSuccess(decodedText) {
@@ -259,7 +264,6 @@
             }
 
             if(foundId && foundId !== state.lastScannedId) {
-                // We found a new code!
                 state.lastScannedId = foundId;
                 
                 // 1. Pause video
@@ -302,7 +306,7 @@
             // Reset Scanner
             setTimeout(() => {
                 document.getElementById('scan-hit-overlay').style.display = 'none';
-                document.getElementById('mini-scanner').style.borderColor = "#333";
+                document.getElementById('mini-scanner').style.borderColor = "#444";
                 state.lastScannedId = null;
                 state.scanner.resume();
             }, 1000);
