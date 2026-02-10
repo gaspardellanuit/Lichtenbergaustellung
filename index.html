@@ -131,6 +131,10 @@
         h2 { font-family: var(--font-head); font-size: 2.2rem; line-height: 1.1; margin: 0 0 25px 0; font-weight: 700; color: white; }
         .article { font-size: 1.05rem; line-height: 1.7; color: #ccc; font-weight: 300; margin-bottom: 40px; }
         .article h3 { color: white; font-family: var(--font-head); font-size: 1.2rem; margin-top: 30px; margin-bottom: 10px; font-weight: 500; border-left: 3px solid var(--c-path); padding-left: 10px; }
+        .article h4 { color: #aaa; font-family: var(--font-head); font-size: 1.0rem; margin-top: 25px; margin-bottom: 5px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+        .article p { margin-bottom: 15px; }
+        .article ul { padding-left: 20px; margin-bottom: 20px; }
+        .article li { margin-bottom: 8px; }
         .source { font-size: 0.75rem; color: #666; border-top: 1px solid #222; padding-top: 20px; font-style: italic; }
         .locked-view { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px; color: #555; }
         .locked-icon { font-size: 4rem; margin-bottom: 20px; opacity: 0.5; }
@@ -180,8 +184,8 @@
 
         <div id="legend">
             <div class="legend-item"><div class="dot" style="background:var(--c-erinnerung)"></div> Orte der Erinnerung</div>
-            <div class="legend-item"><div class="dot" style="background:var(--c-gedenken)"></div> Gedenken</div>
-            <div class="legend-item"><div class="dot" style="background:var(--c-widerstand)"></div> Widerstand</div>
+            <div class="legend-item"><div class="dot" style="background:var(--c-gedenken)"></div> Orte des Gedenkens</div>
+            <div class="legend-item"><div class="dot" style="background:var(--c-widerstand)"></div> Orte des Widerstands</div>
         </div>
 
         <div id="timeline-ui">
@@ -217,8 +221,17 @@
                         'year': 1999,
                         'image': 'https://upload.wikimedia.org/wikipedia/commons/0/01/Memorial_plaque_metal_Kurt_Schneider_Berlin%2C_Germany.jpg',
                         'description': `
-                            <p>Kurt Schneider wurde 1961 in Königs Wusterhausen geboren. Er arbeitete als Maurer und lebte ab 1999 im Bezirk Lichtenberg. In der Nacht auf den 6. Oktober 1999 wurde er nachts auf dem Heimweg von einer Tankstelle von vier Neonazis überfallen und zusammengeschlagen. Die vier Täter ließen Schneider zurück, kehrten jedoch einige Zeit später mit einem Messer bewaffnet an den Tatort zurück, traten erneut auf ihn ein und ermordeten ihn daraufhin mit vier Messerstichen. Den Leichnam Kurt Schneiders ließen sie in einem Gebüsch zurück. Bereits am nächsten Tag wurden die Täter verhaftet und Ende des Monats wegen schweren Raubes in Tateinheit mit gefährlicher Körperverletzung und Mord zu lebenslanger respektive langjähriger Haft verurteilt.</p>
-                            <p>Vor Gericht gaben sie zu, Schneider als Reaktion auf einen Gruß seinerseits angegriffen zu haben. Da sie ihn als minderwertigen Menschen ansahen, empfanden sie diese Geste als Beleidigung. Das Gericht erkannte aber kein politisches Motiv. Die offen ausgedrückte rechtsradikale Gesinnung der Täter und ihr sozialdarwinistisches Weltbild wurden von den Behörden nicht beachtet. Stattdessen wurde die Tötung Schneiders als Vertuschungsversuch des vorangegangenen Raubüberfalls gedeutet. Erst 2018 wurde die Tat durch eine Studie der Technischen Universität Berlins nachträglich als rechtsextremer Gewaltakt und Kurt Schneider offiziell als Opfer rechter Gewalt anerkannt.</p>
+                            <h4>Hintergrund</h4>
+                            <p>Kurt Schneider wurde 1961 in Königs Wusterhausen geboren. Er arbeitete als Maurer und lebte ab 1999 im Bezirk Lichtenberg.</p>
+                            
+                            <h4>Der Mord</h4>
+                            <p>In der Nacht auf den 6. Oktober 1999 wurde er nachts auf dem Heimweg von einer Tankstelle von vier Neonazis überfallen und zusammengeschlagen. Die vier Täter ließen Schneider zurück, kehrten jedoch einige Zeit später mit einem Messer bewaffnet an den Tatort zurück, traten erneut auf ihn ein und ermordeten ihn daraufhin mit vier Messerstichen. Den Leichnam Kurt Schneiders ließen sie in einem Gebüsch zurück.</p>
+                            
+                            <h4>Juristische Aufarbeitung</h4>
+                            <p>Bereits am nächsten Tag wurden die Täter verhaftet und Ende des Monats wegen schweren Raubes in Tateinheit mit gefährlicher Körperverletzung und Mord zu lebenslanger respektive langjähriger Haft verurteilt. Vor Gericht gaben sie zu, Schneider als Reaktion auf einen Gruß seinerseits angegriffen zu haben. Da sie ihn als minderwertigen Menschen ansahen, empfanden sie diese Geste als Beleidigung.</p>
+                            <p>Das Gericht erkannte aber kein politisches Motiv. Die offen ausgedrückte rechtsradikale Gesinnung der Täter und ihr sozialdarwinistisches Weltbild wurden von den Behörden nicht beachtet. Stattdessen wurde die Tötung Schneiders als Vertuschungsversuch des vorangegangenen Raubüberfalls gedeutet. Erst 2018 wurde die Tat durch eine Studie der Technischen Universität Berlins nachträglich als rechtsextremer Gewaltakt und Kurt Schneider offiziell als Opfer rechter Gewalt anerkannt.</p>
+                            
+                            <h4>Gedenken</h4>
                             <p>Zur Enthüllung der Edelstahltafel am 17.8.2021 sprachen Bezirksbürgermeister Michael Grunst, der Vorsitzende der Lichtenberger Gedenktafelkommission Manfred Becker und Sebastian Sommer von der Antifaschistischen Vernetzung Lichtenberg. Die Tafel ist an einem steinernen Pfosten links neben der Treppe zum ehemaligen Friedhof befestigt. Ihrer Anbringung gingen Initiativen zivilgesellschaftlicher Gruppierungen voraus, die im Jahr 2019 anlässlich des 20. Todestages von Kurt Schneider erstmals öffentlich seiner gedachten.</p>
                         `,
                         'source': 'Gedenktafeln in Berlin - Kurt Schneider'
@@ -234,8 +247,16 @@
                         'year': 1992,
                         'image': 'https://upload.wikimedia.org/wikipedia/commons/1/14/Silvio_Meier.jpg',
                         'description': `
-                            <p>Silvio Meier wurde 1965 in Quedlinburg in Sachsen-Anhalt geboren. Im Jahr 1986 zog er in den Ostteil des damals geteilten Berlins. Hier wurde Silvio Meier politisch aktiv, engagierte sich in den oppositionellen Kreisen der DDR und beteiligte sich am Aufbau von Strukturen gegen das Regime. Er war unter anderem Mitbegründer der „Kirche von Unten“ sowie der Umweltbibliothek in der Zionskirche in Berlin-Mitte – einem der bedeutendsten Treffpunkte der späten DDR-Oppositionsbewegung. Silvio Meier war vom Beginn seines politischen Engagements an dazu gezwungen, sich mit rechter Gewalt auseinanderzusetzen. In der Zionskirche organisierte er am Abend des 18. Oktober 1987 ein Konzert, das von Neonazis überfallen wurde. Der Überfall auf die Zionskirche gilt als Wendepunkt in der Wahrnehmung der rechtsextremen Strömungen in der DDR, die bis dahin von der Führung weitestgehend ignoriert worden waren. Nach dem Zusammenbruch der DDR wurde Silvio Meier Teil der Berliner Hausbesetzerszene. Er lebte in einem Haus in der Schreinerstraße 47 in Berlin-Friedrichshain und arbeitete in einer alternativen Druckerei.</p>
-                            <p>Silvio Meier wurde wegen seines antifaschistischen Auftretens ermordet und weil er erkennbar der alternativen Hausbesetzerszene angehörte – einem Feindbild der extremen Rechten. Obwohl die Angeklagten selbst keinen Hehl aus ihrer rechten Gesinnung machten, wurde den politischen Aspekten der Tat vor Gericht wenig Beachtung geschenkt. Die Hooliganszene der Täter wurde im Urteil als „Alkoholmissbrauch treibende Jugendgruppe“ bezeichnet und damit entpolitisiert.</p>
+                            <h4>Aktivismus in der DDR</h4>
+                            <p>Silvio Meier wurde 1965 in Quedlinburg in Sachsen-Anhalt geboren. Im Jahr 1986 zog er in den Ostteil des damals geteilten Berlins. Hier wurde Silvio Meier politisch aktiv, engagierte sich in den oppositionellen Kreisen der DDR und beteiligte sich am Aufbau von Strukturen gegen das Regime. Er war unter anderem Mitbegründer der „Kirche von Unten“ sowie der Umweltbibliothek in der Zionskirche in Berlin-Mitte – einem der bedeutendsten Treffpunkte der späten DDR-Oppositionsbewegung. Silvio Meier war vom Beginn seines politischen Engagements an dazu gezwungen, sich mit rechter Gewalt auseinanderzusetzen. In der Zionskirche organisierte er am Abend des 18. Oktober 1987 ein Konzert, das von Neonazis überfallen wurde. Der Überfall auf die Zionskirche gilt als Wendepunkt in der Wahrnehmung der rechtsextremen Strömungen in der DDR, die bis dahin von der Führung weitestgehend ignoriert worden waren.</p>
+                            
+                            <h4>Hausbesetzung und Ermordung</h4>
+                            <p>Nach dem Zusammenbruch der DDR wurde Silvio Meier Teil der Berliner Hausbesetzerszene. Er lebte in einem Haus in der Schreinerstraße 47 in Berlin-Friedrichshain und arbeitete in einer alternativen Druckerei. Silvio Meier wurde wegen seines antifaschistischen Auftretens ermordet und weil er erkennbar der alternativen Hausbesetzerszene angehörte – einem Feindbild der extremen Rechten.</p>
+                            
+                            <h4>Juristisches Nachspiel</h4>
+                            <p>Obwohl die Angeklagten selbst keinen Hehl aus ihrer rechten Gesinnung machten, wurde den politischen Aspekten der Tat vor Gericht wenig Beachtung geschenkt. Die Hooliganszene der Täter wurde im Urteil als „Alkoholmissbrauch treibende Jugendgruppe“ bezeichnet und damit entpolitisiert.</p>
+                            
+                            <h4>Erinnerungskultur</h4>
                             <p>In Gedenken an Silvio Meier wurde eine breite Erinnerungskultur etabliert, Angehörige und Engagierte halten das Andenken an ihn wach und setzen sich in seinem Namen gegen Rechtsextremismus und Menschenfeindlichkeit ein. Bereits einen Tag nach seiner Ermordung nahmen mehrere Tausend Menschen an einem Trauermarsch teil. Es erschienen etliche Zeitungsbeiträge über Silvio Meier, über den Mord und die Folgen der Tat. Es hieß, der Mord habe den Friedrichshainer Kiez „erschüttert“.</p>
                             <p>Seit 1992 bis zum Jahr 2014 fand jährlich am Todestag Silvio Meiers eine Gedenkdemonstration in Berlin-Friedrichshain statt, die meist mit aktuellen Anlässen verbunden wurde. Am Tatort, dem U-Bahnhof Samariterstraße, erinnert heute eine Gedenktafel an Silvio Meier. Kurze Zeit nach der Tat von Freund:innen Silvio Meiers angebracht, wurde die Tafel mehrfach beschädigt und entwendet, bis sie im Jahr 2007 schließlich von den Berliner Verkehrsbetrieben fest im Beton verankert wurde.</p>
                             <p>Seit 2013 erinnert zudem eine Straße an Silvio Meier. Auf Druck von Gedenkinitiativen wurde die Gabelsbergerstraße in Berlin-Friedrichshain im Jahr 2013 schließlich umbenannt in Silvio-Meier-Straße. Über dem Straßenschild steht: „Engagiert in der unabhängigen DDR-Friedens- und Menschenrechtsbewegung und Hausbesetzer, wurde aufgrund seines antifaschistischen Auftretens ermordet“. Seine damalige Lebensgefährtin sagte dazu: „Wir Freunde haben […] gesagt, das muss mit auf das Schild. Silvio war eben auch Besetzer. Und noch viel mehr: Freund, Antifaschist, Teil der Opposition in der DDR.“</p>
@@ -254,11 +275,18 @@
                         'locked': true,
                         'image': 'https://upload.wikimedia.org/wikipedia/commons/0/03/Gedenktafel_Eugeniu-Botnari-Platz_%28Rumbg%29_Eugeniu_Botnari.jpg',
                         'description': `
-                            <p>Am 20. September 2016 starb Eugeniu Botnari im Alter von 34 Jahren an den Folgen eines Schädel-Hirn Traumas, das ihm bei einem rassistisch und sozialdarwinistisch motivierten Angriff zugeführt wurde.</p>
-                            <p>Drei Tage zuvor, am Morgen des 17. September 2016, besuchte er eine Edeka-Filiale im Bahnhof Berlin-Lichtenberg. Der Filialleiter André S. beobachtete ihn und warf ihm vor, Ladendiebstahl begangen zu haben. Statt die Polizei zu rufen, führte der Filialleiter Eugeniu Botnari in den Durchgang des Getränkelagers im hinteren Teil des Geschäfts. Dort zog er sich einen Quarzhandschuh an und schlug damit auf Eugeniu Botnari ein. Danach zog der Täter Eugeniu Botnari über eine Hintertür aus dem Geschäft. Die gesamte Tat wurde von der Überwachungskamera des Supermarktes aufgezeichnet. Der Filialleiter filmte das Überwachungsvideo nach der Tat mit seinem Handy ab und verschickte es, versehen mit menschenverachtenden Kommentaren, an seine Mitarbeiter:innen.</p>
-                            <p>Eugeniu Botnari ging nicht zum Arzt, weil er Angst vor Behandlungskosten hatte.</p>
+                            <h4>Der Angriff</h4>
+                            <p>Am 20. September 2016 starb Eugeniu Botnari im Alter von 34 Jahren an den Folgen eines Schädel-Hirn Traumas, das ihm bei einem rassistisch und sozialdarwinistisch motivierten Angriff zugeführt wurde. Drei Tage zuvor, am Morgen des 17. September 2016, besuchte er eine Edeka-Filiale im Bahnhof Berlin-Lichtenberg. Der Filialleiter André S. beobachtete ihn und warf ihm vor, Ladendiebstahl begangen zu haben. Statt die Polizei zu rufen, führte der Filialleiter Eugeniu Botnari in den Durchgang des Getränkelagers im hinteren Teil des Geschäfts. Dort zog er sich einen Quarzhandschuh an und schlug damit auf Eugeniu Botnari ein. Danach zog der Täter Eugeniu Botnari über eine Hintertür aus dem Geschäft. Die gesamte Tat wurde von der Überwachungskamera des Supermarktes aufgezeichnet.</p>
+                            
+                            <h4>Sozialdarwinistisches Motiv</h4>
+                            <p>Der Filialleiter filmte das Überwachungsvideo nach der Tat mit seinem Handy ab und verschickte es, versehen mit menschenverachtenden Kommentaren, an seine Mitarbeiter:innen. Eugeniu Botnari ging nicht zum Arzt, weil er Angst vor Behandlungskosten hatte.</p>
+                            
+                            <h4>Urteil und Einordnung</h4>
                             <p>Am 27. März 2017 wurde André S. vor dem Landgericht Berlin wegen Körperverletzung mit Todesfolge zu einer Haftstrafe von drei Jahren und drei Monaten verurteilt. Laut zivilgesellschaftlichen Initiativen, die den Gerichtsprozess beobachteten, wurde in der Verhandlung klar, dass André S. ähnliche Taten schon mehrfach verübt hatte und seine Quarzhandschuhe regelmäßig gegen vermeintliche Diebe, die er als „Ausländer“ wahrnahm, einsetzte. Die meisten davon waren Wohnungslose.</p>
-                            <p>Vor Gericht sagte André S. aus, er habe Eugeniu Botnari eine Lektion erteilen wollen. Seine Aussagen offenbarten sein rassistisches und sozialdarwinistisches Weltbild. Der Richter nannte das Verschicken des Videos in seiner Urteilsbegründung „zynisch und menschenverachtend“. Trotzdem wurde die Tat offiziell nicht als politische Tat anerkannt. Im April 2023 wurde der zuvor namenslose Vorplatz des Bahnhofs Berlin-Lichtenberg nach Eugeniu Botnari benannt und eine Gedenktafel errichtet.</p>
+                            <p>Vor Gericht sagte André S. aus, er habe Eugeniu Botnari eine Lektion erteilen wollen. Seine Aussagen offenbarten sein rassistisches und sozialdarwinistisches Weltbild. Der Richter nannte das Verschicken des Videos in seiner Urteilsbegründung „zynisch und menschenverachtend“. Trotzdem wurde die Tat offiziell nicht als politische Tat anerkannt.</p>
+                            
+                            <h4>Gedenken</h4>
+                            <p>Im April 2023 wurde der zuvor namenslose Vorplatz des Bahnhofs Berlin-Lichtenberg nach Eugeniu Botnari benannt und eine Gedenktafel errichtet.</p>
                         `,
                         'source': 'Amadeu Antonio Stiftung - Eugeniu Botnari'
                     },
@@ -273,10 +301,16 @@
                         'year': 1943,
                         'image': 'https://upload.wikimedia.org/wikipedia/commons/5/5c/Kaskelkiez_Kaskelstr_Gedenktafel_Tucholla.JPG',
                         'description': `
+                            <h4>Leben und Politisierung</h4>
                             <p>Käthe Scheffler wächst in Berlin-Lichtenberg auf und arbeitet nach der Schulausbildung als Sekretärin. In ihrer Frei­zeit spielt sie Hockey im Ar­bei­ter­sport­ver­ein Sparta Lich­ten­berg. Dort lernt sie auch ihren späteren Mann, den Fußballer und Schlosser Felix Tucholla, kennen. Dieser gehört seit 1928 der KPD an und ist Leiter der KPD-Zelle in der Rümmelsbürger Lessestraße (heute Spittastraße). Die beiden heirateten 1940.</p>
+                            
+                            <h4>Widerstand gegen das NS-Regime</h4>
                             <p>Ab 1939 engagiert sich das Paar in der Widerstandsgruppe um Robert Uhrig. Sie verbreiten Flugschriften und beschaffen Lebensmittelkarten für untergegangene Regimegegner.</p>
-                            <p>Im Juni 1942 unterstützen sie den aus der Sowjetunion über Ostpreußen abgesprungenen Fallschirmjäger Erwin Panndorf nach seinem Eintritt in Berlin und besorgen ihm unter Mit Hilfe von Rudolf Scheffel wechselnde Unterkünfte.</p>
-                            <p>Käthe Tucholla reist mehr­mals nach Meerane in Sach­sen, um für Erwin Panndorf Kon­tak­te wie­der­her­zu­stel­len. Bei einem dieser Treffen wird sie am 25. Juli 1942 festgenommen. Käthe und Felix Tucholla werden am 17. August 1943 vom „Volks­ge­richts­hof” wegen „Vor­be­rei­tung zum Hoch­ver­rat” zum Tode ver­ur­teilt. Ihr Mann wird am 8. September 1943 während der sogenannten Blutnächte und Käthe Tucholla drei Wochen später, am 28. September 1943, im Strafgefängnis Berlin-Plötzensee ermordet.</p>
+                            <p>Im Juni 1942 unterstützen sie den aus der Sowjetunion über Ostpreußen abgesprungenen Fallschirmjäger Erwin Panndorf nach seinem Eintritt in Berlin und besorgen ihm unter Mit Hilfe von Rudolf Scheffel wechselnde Unterkünfte. Käthe Tucholla reist mehr­mals nach Meerane in Sach­sen, um für Erwin Panndorf Kon­tak­te wie­der­her­zu­stel­len.</p>
+                            
+                            <h4>Verhaftung und Ermordung</h4>
+                            <p>Bei einem dieser Treffen wird sie am 25. Juli 1942 festgenommen. Käthe und Felix Tucholla werden am 17. August 1943 vom „Volks­ge­richts­hof” wegen „Vor­be­rei­tung zum Hoch­ver­rat” zum Tode ver­ur­teilt.</p>
+                            <p>Ihr Mann wird am 8. September 1943 während der sogenannten Blutnächte und Käthe Tucholla drei Wochen später, am 28. September 1943, im Strafgefängnis Berlin-Plötzensee ermordet.</p>
                         `,
                         'source': 'Frauen im Widerstand - Käthe Tucholla'
                     },
@@ -294,8 +328,16 @@
                         'locked': true,
                         'image': 'https://raw.githubusercontent.com/gaspardellanuit/Lichtenbergaustellung/refs/heads/main/Bunter_Wind_LOGO-1.jpg',
                         'description': `
-                            <p>Der Bunte Wind setzt seit seiner Gründung 2012 wichtige Impulse für eine offene und demokratische Gesellschaft in Lichtenberg. Angesichts der aktuellen Herausforderungen stärkt die Organisation den Zusammenhalt und die Solidarität in der Zivilgesellschaft, um Vielfalt, Respekt und demokratische Werte zu fördern. Das Ziel lautet: Solidarisch für eine starke und lebendige Demokratie! Mit Solidarität, Zusammenhalt und Gleichberechtigung gegen jede Form von Diskriminierung und Ausgrenzung ein. Es gibt zwar keine einfachen Lösungen für soziale und politische Konflikte, doch werden hier auf gewaltfreie, respektvolle und solidarische Ansätze gesetzt. Jede Person sollte die Möglichkeit haben, ihr Lebensumfeld aktiv mitzugestalten. Meinungsfreiheit bedeutet nicht, dass jede Äußerung unwidersprochen bleibt. Damit alle ein selbstbestimmtes Leben führen können, ist es wichtig, Vielfalt zu schätzen und zu schützen. Der Bunte Wind kennt keine Grenzen. Menschen, die neu nach Lichtenberg kommen, werden willkommen geheißen und mit Respekt begegnet. Was uns verbindet, ist der Einsatz gegen rassistische und diskriminierende Hetze sowie das Engagement für Menschlichkeit und Menschenrechte!</p>
-                            <p>Adresse: Einbecker Straße 85 10315 Berlin</p>
+                            <h4>Engagement für Demokratie</h4>
+                            <p>Der Bunte Wind setzt seit seiner Gründung 2012 wichtige Impulse für eine offene und demokratische Gesellschaft in Lichtenberg. Angesichts der aktuellen Herausforderungen stärkt die Organisation den Zusammenhalt und die Solidarität in der Zivilgesellschaft, um Vielfalt, Respekt und demokratische Werte zu fördern.</p>
+                            
+                            <h4>Ziele und Werte</h4>
+                            <p>Das Ziel lautet: Solidarisch für eine starke und lebendige Demokratie! Mit Solidarität, Zusammenhalt und Gleichberechtigung gegen jede Form von Diskriminierung und Ausgrenzung ein. Es gibt zwar keine einfachen Lösungen für soziale und politische Konflikte, doch werden hier auf gewaltfreie, respektvolle und solidarische Ansätze gesetzt. Jede Person sollte die Möglichkeit haben, ihr Lebensumfeld aktiv mitzugestalten. Meinungsfreiheit bedeutet nicht, dass jede Äußerung unwidersprochen bleibt. Damit alle ein selbstbestimmtes Leben führen können, ist es wichtig, Vielfalt zu schätzen und zu schützen.</p>
+                            
+                            <h4>Willkommenskultur</h4>
+                            <p>Der Bunte Wind kennt keine Grenzen. Menschen, die neu nach Lichtenberg kommen, werden willkommen geheißen und mit Respekt begegnet. Was uns verbindet, ist der Einsatz gegen rassistische und diskriminierende Hetze sowie das Engagement für Menschlichkeit und Menschenrechte!</p>
+                            
+                            <p><strong>Adresse:</strong> Einbecker Straße 85, 10315 Berlin</p>
                         `,
                         'source': 'Bunter Wind für Lichtenberg – Aufruf <a href="https://bunterwind-lichtenberg.org/aufruf/" target="_blank" style="color:#FF00FF">bunterwind-lichtenberg.org</a>'
                     },
@@ -311,9 +353,13 @@
                         'locked': true,
                         'image': 'https://raw.githubusercontent.com/gaspardellanuit/Lichtenbergaustellung/9f9a07301a755529d848be03eccd3ee1e32b91c1/licht%20blicke.png',
                         'description': `
+                            <h4>Netzwerkstelle für Demokratie</h4>
                             <p>Licht-Blicke besteht aus folgenden Projekten: Koordinierungsstelle der Partnerschaften für Demokratie in den Fördergebieten Lichtenberg und Hohenschönhausen, Netzwerkstelle für Kinder- und Jugendpartizipation und die Koordination des bezirklichen Runden Tischs für Politische Bildung. Außerdem ist der Arbeitskreis Stolpersteine Lichtenberg/Hohenschönhausen fachlich und organisatorisch bei Licht-Blicke angesiedelt.</p>
+                            
+                            <h4>Schnittstelle zwischen Zivilgesellschaft und Politik</h4>
                             <p>An der Schnittstelle zwischen Politik, Verwaltung und Zivilgesellschaft sieht die Fach- und Netzwerkstelle zudem eine besondere Aufgabe darin, zur Förderung einer demokratischen Kultur im Gemeinwesen beizutragen. Diese Vernetzung ist ein wichtiges Arbeitsfeld, um bedarfsorientierte Beratung sowie die Entwicklung und Anpassung von Handlungskonzepten zu gewährleisten.</p>
-                            <p>Aufgrund der Erfahrungen und Bedarfe der letzten Jahre umfasst die Arbeit von Licht-Blicke folgende inhaltliche Bereiche:</p>
+                            
+                            <h4>Aufgabenbereiche</h4>
                             <ul>
                                 <li>Förderung der aktiven Beteiligung von Menschen aller Altersgruppen in Lichtenberg für ein offenes und solidarisches Gemeinwesen in engem Kontakt mit den Akteur_innen vor Ort</li>
                                 <li>Unterstützung von Initiativen, Einrichtungen, Fachkräften und Privatpersonen in ihrem Engagement für demokratische Werte und Menschenrechte</li>
@@ -321,9 +367,9 @@
                                 <li>Unterstützung und Begleitung lokalen Engagements gegen extreme Rechte, Rechtspopulismus und Rassismus mit dem Ziel, für extrem rechte und diskriminierende Phänomene zu sensibilisieren</li>
                                 <li>Förderung eines Diversitätsbewusstseins in der Mehrheitsgesellschaft und diskriminierungskritische Begleitung gesellschaftspolitischer Aushandlungsprozesse</li>
                                 <li>Initiierung und vertrauliche Begleitung von Teams und Gruppen im Umgang mit Diskriminierungen (zum Beispiel Verständigungsprozesse und Leitbildentwicklung)</li>
-                                <li>fachliche Initiierung und Begleitung von Kinder- und Jugendpartizipationsstrukturen sowie -projekten gemeinsam mit lokalen Partner_innen</li>
+                                <li>Fachliche Initiierung und Begleitung von Kinder- und Jugendpartizipationsstrukturen sowie -projekten gemeinsam mit lokalen Partner_innen</li>
                                 <li>Begleitung von lokalen Akteuren bei der Recherche zu und der Verlegung von „Stolpersteinen“, die an Opfer des Nationalsozialismus erinnern sowie die Begleitung von Projektschultagen zum Themenfeld</li>
-                                <li>fachliche Koordinierung und Begleitung des Runden Tisches Politische Bildung in Lichtenberg und Umsetzung in lokalspezifischer Maßnahmen in Politische Bildungsarbeit</li>
+                                <li>Fachliche Koordinierung und Begleitung des Runden Tisches Politische Bildung in Lichtenberg und Umsetzung in lokalspezifischer Maßnahmen in Politische Bildungsarbeit</li>
                             </ul>
                         `,
                         'source': 'Licht Blicke'
@@ -340,8 +386,13 @@
                         'locked': true,
                         'image': 'https://raw.githubusercontent.com/gaspardellanuit/Lichtenbergaustellung/9f9a07301a755529d848be03eccd3ee1e32b91c1/berliner%20register.png',
                         'description': `
+                            <h4>Dokumentation von Diskriminierung</h4>
                             <p>Die Berliner Register gehen vor gegen Diskriminierung und Ausgrenzung. Das machen sie, indem sie Vorfälle dokumentieren, die im Alltag in Berlin passieren. Es werden nur Vorfälle aufgenommen, die rassistisch, antisemitisch, LGBTIQ*-feindlich, antiziganistisch, extrem rechts, sozialchauvinistisch, behindertenfeindlich oder antifeministisch sind. Die Vorfälle werden von Bürger*innen über verschiedene Wege an das Register des jeweiligen Berliner Bezirks geschickt. Die Berliner Register sammeln und prüfen die Meldungen, veröffentlichen sie als Einträge in einer Chronik und werten sie einmal jährlich aus. Die Ergebnisse können Politiker*innen, Mitarbeiter*innen der Verwaltung oder politisch engagierte Initiativen in ihre Entscheidungen einbeziehen und dann Maßnahmen entwickeln, um gezielt gegen Diskriminierung und Ausgrenzung vorzugehen.</p>
+                            
+                            <h4>Was wird dokumentiert?</h4>
                             <p>In die Dokumentation der Berliner Register fließen Vorfälle ein, die Bürger*innen im Alltag beobachten oder selbst erleben. Bei den Vorfällen handelt es sich um Aktivitäten der extremen Rechten, um rassistische Vorfälle im Alltag und Diskriminierung an verschiedenen Orten. Im Gegensatz zur Kriminalitätsstatistik der Polizei beziehen die Register auch Vorfälle in die Dokumentation ein, die keine Straftaten sind oder die nicht angezeigt wurden. Dazu gehören Gewalttaten, Beleidigungen und Bedrohungen, Brandstiftungen, Sachbeschädigungen, Veranstaltungen, Aufkleber, Sprühereien oder diskriminierende Sprüche.</p>
+                            
+                            <h4>Solidarität und Sichtbarkeit</h4>
                             <p>Berliner*innen leben, bewegen und engagieren sich in ihren Kiezen. Mit der Veröffentlichung eines Vorfalls wird für alle sichtbar, auf welche Weise Menschen in Berlin im Alltag Ausgrenzung erleben. Solche Vorfälle aufzunehmen ermöglicht den Betroffenen, ihre Erlebnisse zu schildern und mit ihren Problemen nicht allein zu sein. Durch die Veröffentlichung der Vorfälle und die aktive Beteiligung der Bürger*innen am Register wächst das Interesse für die Problematik der Diskriminierung, insbesondere in der eigenen Nachbarschaft. Das Gefühl, auch selbst betroffen sein zu können, die Betroffenen zu kennen oder den Tatort, erzeugt Solidarität mit jenen Menschen, die Diskriminierung und Ausgrenzung erfahren.</p>
                         `,
                         'source': 'Berliner Register'
@@ -359,9 +410,18 @@
                         'year': 1933,
                         'image': 'https://upload.wikimedia.org/wikipedia/commons/7/71/Skulptur_Hauptstr_8_%28Rumbg%29_Gef%C3%A4ngnis_Rummelsburg%26Helga_Lieser%262015.jpg',
                         'description': `
+                            <h4>NS-Zeit: Verfolgung von "Asozialen"</h4>
                             <p>1879 eröffnete in Rummelsburg ein „Arbeitshaus“, um Angehörige sozialer Randgruppen wie Bettler, Obdachlose und Prostituierte unterzubringen und als billige Arbeitskräfte zu nutzen. Diese Randgruppen wurden mit dem Machtantritt der Nationalsozialisten 1933 als „Asoziale“ massiv verfolgt und in Rummelsburg gegen ihren Willen festgehalten. 1939 waren in Rummelsburg etwa 2.000 Menschen inhaftiert.</p>
+                            
+                            <h4>"Euthanasie"-Verbrechen</h4>
                             <p>Am 13. Januar 1941 wurden alle 30 jüdischen Insassen im Rahmen einer »Sonderaktion« der NS-»Euthanasie« in ein Krankenhaus nach Buch verlegt. Vier Tage später wurden sie mit einem Bus zur Heilanstalt Bernburg gebracht, wo sie mit Gas ermordet wurden. Bernburg war zu diesem Zeitpunkt eine Tötungsanstalt der »Aktion T4«, die sich gezielt gegen Patienten und Kranke richtete. Es wurden Sonderabteilungen eingerichtet, etwa für Homosexuelle, zudem sind 124 Zwangssterilisierungen dokumentiert.</p>
-                            <p>Im Januar 1942 besuchte eine die im Rahmen der NS-»Euthanasie« gebildete Kommission Rummelsburg und selektierte 314 Insassen zur Tötung. Dieser geplante Massenmord wurde schließlich nicht umgesetzt. Nach 1945 einige Jahre wieder als Arbeitshaus benutzt, wurde Rummelsburg in der Zeit der DDR in ein Gefängnis umgebaut. In der DDR galt »Asozialität« weiterhin als Verhaftungsgrund. Unter den Häftlingen von Rummelsburg waren viele aus politischen Gründen inhaftiert, insbesondere nach dem Volksaufstand 1953, dem Mauerbau 1961 und während der Wochen der Friedlichen Revolution von 1989. Im Oktober 1990 wurde das marode Gefängnis geschlossen. Nach jahrelangem Lehrstand setzten sich zivilgesellschaftliche Initiativen wie Marginalisierte – Gestern und Heute für die Aufarbeitung dieser Geschichte ein. 2015 eröffnete ein Gedenk- und Informationsort. Die Häuser wurden zu Wohnraum umfunktioniert.</p>
+                            <p>Im Januar 1942 besuchte eine die im Rahmen der NS-»Euthanasie« gebildete Kommission Rummelsburg und selektierte 314 Insassen zur Tötung. Dieser geplante Massenmord wurde schließlich nicht umgesetzt.</p>
+                            
+                            <h4>DDR-Zeit: Politisches Gefängnis</h4>
+                            <p>Nach 1945 einige Jahre wieder als Arbeitshaus benutzt, wurde Rummelsburg in der Zeit der DDR in ein Gefängnis umgebaut. In der DDR galt »Asozialität« weiterhin als Verhaftungsgrund. Unter den Häftlingen von Rummelsburg waren viele aus politischen Gründen inhaftiert, insbesondere nach dem Volksaufstand 1953, dem Mauerbau 1961 und während der Wochen der Friedlichen Revolution von 1989.</p>
+                            
+                            <h4>Gedenkort</h4>
+                            <p>Im Oktober 1990 wurde das marode Gefängnis geschlossen. Nach jahrelangem Lehrstand setzten sich zivilgesellschaftliche Initiativen wie Marginalisierte – Gestern und Heute für die Aufarbeitung dieser Geschichte ein. 2015 eröffnete ein Gedenk- und Informationsort. Die Häuser wurden zu Wohnraum umfunktioniert.</p>
                         `,
                         'source': 'Memorial Museums - Gedenkort Rummelsburg'
                     },
@@ -376,7 +436,17 @@
                         'year': 1940,
                         'image': 'https://upload.wikimedia.org/wikipedia/commons/c/ca/Skulptur_Schulze-Boysen-Str_12_%28Liber%29_B%C3%BCrger_im_Widerstand%26Achim_K%C3%BChn%2620112.jpg',
                         'description': `
-                            <p>1879 eröffnete in Rummelsburg ein „Arbeitshaus“, um Angehörige sozialer Randgruppen wie Bettler, Obdachlose und Prostituierte unterzubringen und als billige Arbeitskräfte zu nutzen. Diese Randgruppen wurden mit dem Machtantritt der Nationalsozialisten 1933 als „Asoziale“ massiv verfolgt und in Rummelsburg gegen ihren Willen festgehalten. 1939 waren in Rummelsburg etwa 2.000 Menschen inhaftiert. Am 13. Januar 1941 wurden alle 30 jüdischen Insassen im Rahmen einer »Sonderaktion« der NS-»Euthanasie« in ein Krankenhaus nach Buch verlegt. Vier Tage später wurden sie mit einem Bus zur Heilanstalt Bernburg gebracht, wo sie mit Gas ermordet wurden. Bernburg war zu diesem Zeitpunkt eine Tötungsanstalt der »Aktion T4«, die sich gezielt gegen Patienten und Kranke richtete. Es wurden Sonderabteilungen eingerichtet, etwa für Homosexuelle, zudem sind 124 Zwangssterilisierungen dokumentiert. Im Januar 1942 besuchte eine die im Rahmen der NS-»Euthanasie« gebildete Kommission Rummelsburg und selektierte 314 Insassen zur Tötung. Dieser geplante Massenmord wurde schließlich nicht umgesetzt. Nach 1945 einige Jahre wieder als Arbeitshaus benutzt, wurde Rummelsburg in der Zeit der DDR in ein Gefängnis umgebaut. In der DDR galt »Asozialität« weiterhin als Verhaftungsgrund. Unter den Häftlingen von Rummelsburg waren viele aus politischen Gründen inhaftiert, insbesondere nach dem Volksaufstand 1953, dem Mauerbau 1961 und während der Wochen der Friedlichen Revolution von 1989. Im Oktober 1990 wurde das marode Gefängnis geschlossen. Nach jahrelangem Lehrstand setzten sich zivilgesellschaftliche Initiativen wie Marginalisierte – Gestern und Heute für die Aufarbeitung dieser Geschichte ein. 2015 eröffnete ein Gedenk- und Informationsort. Die Häuser wurden zu Wohnraum umfunktioniert.</p>
+                            <h4>Ein breites Netzwerk</h4>
+                            <p>Die Rote Kapelle gehörte zu den größten antifaschistischen Widerstandsgruppierungen. Durch persönliche Kontakte bildete sich 1940/41 ein loses Netzwerk von sieben Berliner Freundes- und Widerstandskreisen heraus. Ihnen gehörten mehr als 150 Regimegegner unterschiedlicher sozialer Herkunft und Weltanschauungen an, darunter sehr viele Frauen. Freundschaft und Nazigegnerschaft gehörten oftmals zusammen. Arbeiter, Angestellte, Unternehmer, Intellektuelle, Künstler, Ärzte, Soldaten und Offiziere, Marxisten und Christen diskutierten politische und künstlerische Fragen, halfen politisch und jüdisch Verfolgten sowie Zwangsarbeitern, dokumentierten NS-Gewaltverbrechen und riefen in Flugschriften und Zettelklebeaktionen zum Widerstand auf.</p>
+                            
+                            <h4>Warnung an die Alliierten</h4>
+                            <p>Der Oberregierungsrat im Wirtschaftsministerium, Arvid Harnack, unterhielt Kontakte zur amerikanischen und sowjetischen Botschaft. Gemeinsam mit dem Oberleutnant im Reichsluftwaffenministerium Harro Schulze-Boysen informierte er über die Vorbereitungen des Angriffs auf die Sowjetunion. Ihre Warnungen wurden von Stalin als Desinformationen bezeichnet.</p>
+                            
+                            <h4>Verfolgung und Hinrichtung</h4>
+                            <p>Im Herbst 1942 nahm die Gestapo über 120 Verdächtige fest und ordnete sie unter dem Namen „Rote Kapelle“ einem besonderen Fahndungskomplex zu. Das Reichskriegsgericht und der Volksgerichtshof verurteilten über 90 Frauen und Männer. Von ihnen wurden 50 zum Tode verurteilt, ermordet oder starben in der Haft. Viele waren jung und alle liebten das Leben. Hilde Coppi und Liane Berkowitz hatten zuvor im Frauengefängnis Barnimstraße ihre Kinder zur Welt gebracht.</p>
+                            
+                            <h4>Erinnerung</h4>
+                            <p>Heute ist die Rote Kapelle Sinnbild für Zivilcourage und engagiertes Eintreten für Menschlichkeit und Menschenwürde. Dieser Gedenkort entstand auf Anregung der Bürgerschaft dieses Wohngebietes, in dem seit 1972 drei Schulen und sechs Straßen die Namen von Mitstreitern der Rote Kapelle Hilde und Hans Coppi, Wilhelm Guddorf, Mildred und Arvid Harnack, Albert Hößler, Libertas und Harro Schulze-Boysen sowie John Sieg tragen.</p>
                         `,
                         'source': 'Gedenktafeln in Berlin'
                     },
@@ -391,8 +461,12 @@
                         'year': 1948,
                         'image': 'https://upload.wikimedia.org/wikipedia/commons/f/fe/Loeperplatz_VDN_1.jpg',
                         'description': `
+                            <h4>Ein frühes Denkmal</h4>
                             <p>Auf dem Loeperplatz, dem Dorfanger des früheren Dorfes Lichtenberg, befindet sich gegenüber der Alten Pfarrkirche Lichtenberg ein Denkmal für die Opfer des Faschismus. Dieses Denkmal wurde vermutlich bereits 1948 errichtet und gehört damit zu einem der ersten Denkmäler für die Opfer des Faschismus in Berlin überhaupt. Vermutlich erfolgte der Bau des Denkmals auf Initiative der Vereinigung der Verfolgten des Naziregimes (VVN). Über die weiteren Zusammenhänge der Entstehung des Denkmals ist trotz intensiver Nachforschungen nichts bekannt.</p>
-                            <p>Das Denkmal besteht aus einem großen Steinquader, auf dem eine auf die Spitze gestellte rote Pyramide steht. Auf ihr stehen die Buchstaben »KZ«. Die Pyramide symbolisiert den roten Winkel, mit dem politische Häftlinge in den Konzentrationslagern (KZ) von der SS gekennzeichnet wurden. Der rote Winkel mit den Buchstaben »KZ« war ein gebräuchliches Symbol auf Plakaten, Publikationen und Denkmälern der OdF-Hauptausschüsse (OdF: Opfer des Faschismus), einem Zusammenschluss Überlebender, die von den Nationalsozialisten verfolgt wurden, und Vorläufer der VVN. Das Denkmal wurde vermutlich 1948 errichtet und in den 1960er Jahren erneuert. Am Denkmal finden regelmäßig Gedenkveranstaltungen statt.</p>
+                            
+                            <h4>Symbolik des roten Winkels</h4>
+                            <p>Das Denkmal besteht aus einem großen Steinquader, auf dem eine auf die Spitze gestellte rote Pyramide steht. Auf ihr stehen die Buchstaben »KZ«. Die Pyramide symbolisiert den roten Winkel, mit dem politische Häftlinge in den Konzentrationslagern (KZ) von der SS gekennzeichnet wurden. Der rote Winkel mit den Buchstaben »KZ« war ein gebräuchliches Symbol auf Plakaten, Publikationen und Denkmälern der OdF-Hauptausschüsse (OdF: Opfer des Faschismus), einem Zusammenschluss Überlebender, die von den Nationalsozialisten verfolgt wurden, und Vorläufer der VVN.</p>
+                            <p>Das Denkmal wurde vermutlich 1948 errichtet und in den 1960er Jahren erneuert. Am Denkmal finden regelmäßig Gedenkveranstaltungen statt.</p>
                         `,
                         'source': 'Memorial Museums'
                     },
@@ -407,8 +481,13 @@
                         'year': 1933,
                         'image': 'https://upload.wikimedia.org/wikipedia/commons/0/02/Rathaus_Lichtenberg_West-_und_Hauptfassade_2021.jpg',
                         'description': `
+                            <h4>Verfolgung von Amtsinhabern</h4>
                             <p>Rechts neben dem Eingangsportal zum Ratssaal befindet sich eine Gedenktafel. Sie erinnert an diejenigen Bezirks- und Stadtverordneten Lichtenbergs, die von den Nationalsozialisten ihrer Ämter enthoben und verfolgt wurden. Bereits unmittelbar nach der Ernennung Adolf Hitlers zum Reichskanzler am 30. Januar 1933 erlebten kommunistische, sozialdemokratische und jüdische Amtsträger Gewalt und Verfolgung. So wurde beispielsweise der kommunistische Bezirkspolitiker und Reichstagsabgeordnete Ernst Torgler im Reichstagsbrandprozess angeklagt, mangels Beweise jedoch freigesprochen. Er saß dennoch bis 1936 im Konzentrationslager in „Schutzhaft“.</p>
+                            
+                            <h4>Säuberung der Verwaltung</h4>
                             <p>Nach den Kommunalwahlen in Berlin am 12. März 1933 begann eine umfassende Säuberung der kommunalen und bezirklichen Verwaltung. Davon waren auch Mitglieder republikanischer Parteien betroffen, die nicht bereit waren, sich anzupassen. Dazu zählt unter anderem Johannes Fest, Bezirksverordneter und Mitglied des Vorstands der Berliner Zentrums-Partei. Er wurde beurlaubt und mit einem Berufsverbot belegt, weil er sich weigerte, in die NSDAP einzutreten.</p>
+                            
+                            <h4>Widerstand und Opfer</h4>
                             <p>Viele der auf der Gedenktafel genannten Personen waren im Widerstand gegen den Nationalsozialismus aktiv und zahlten dafür oft einen hohen Preis. Die Sozialfürsorgerin Frieda Rosenthal wurde 1936 verhaftet. Sie nahm sich im Gefängnis das Leben, nachdem sie unter Folter den Kontakt zu einem weiteren Widerstandskämpfer zugegeben hatte.</p>
                         `,
                         'source': 'Bezirksamt Lichtenberg'
@@ -617,4 +696,3 @@
     </script>
 </body>
 </html>
-
