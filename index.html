@@ -98,6 +98,8 @@
         
         header { position: absolute; top: 30px; left: 30px; pointer-events: auto; text-shadow: 0 0 10px rgba(0,0,0,0.8); }
         .museum-label { font-family: var(--font-head); font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase; color: #aaa; margin-bottom: 5px; font-weight: 500; border-left: 3px solid var(--c-widerstand); padding-left: 10px; }
+        
+        /* TITLE COLOR BACK TO WHITE */
         h1 { font-family: var(--font-head); font-size: 3rem; margin: 0; line-height: 0.9; font-weight: 700; color: white; letter-spacing: -1px; }
 
         #timeline-ui { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); width: 80%; max-width: 900px; min-width: 320px; pointer-events: auto; text-align: center; background: rgba(10, 10, 10, 0.85); padding: 15px 40px; border-radius: 40px; border: 1px solid rgba(255,255,255,0.15); backdrop-filter: blur(8px); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
@@ -127,12 +129,25 @@
         .close-btn:hover { background: white; color: black; }
         
         .sidebar-content { padding: 40px; padding-top: 0; }
-        .hero-img { width: 100%; height: 300px; object-fit: cover; border-bottom: 4px solid #333; margin-bottom: 25px; }
+        
+        /* IMAGE SCALING FIX */
+        .hero-img { 
+            width: 100%; 
+            height: auto;           
+            max-height: 400px;      
+            object-fit: contain;    
+            border-bottom: 4px solid #333; 
+            margin-bottom: 25px; 
+            background: #000;       
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
         .cat-tag { font-family: var(--font-head); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; display: inline-block; padding: 4px 8px; border: 1px solid #444; color: #fff; }
         
         h2 { font-family: var(--font-head); font-size: 2.2rem; line-height: 1.1; margin: 0 0 25px 0; font-weight: 700; color: white; }
         
-        /* UPDATED TYPOGRAPHY FOR BRIGHT WHITE TEXT */
         .article { font-size: 1.05rem; line-height: 1.7; color: #ffffff; font-weight: 300; margin-bottom: 40px; }
         .article h3 { color: #ffffff; font-family: var(--font-head); font-size: 1.2rem; margin-top: 30px; margin-bottom: 10px; font-weight: 500; border-left: 3px solid var(--c-path); padding-left: 10px; }
         .article h4 { color: #ffffff; font-family: var(--font-head); font-size: 1.0rem; margin-top: 25px; margin-bottom: 5px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
