@@ -29,9 +29,6 @@
             
             /* Kategorie 3: Gedenken (Historisch) -> Neon Blue */
             --c-gedenken: #00BFFF;     
-            
-            /* Kategorie 4: Anlaufstellen -> Neon Pink */
-            --c-anlaufstelle: #FF00FF;
 
             --c-path: #00FFFF;         /* Cyan Path */
 
@@ -184,7 +181,6 @@
             <div class="legend-item"><div class="dot" style="background:var(--c-erinnerung)"></div> Orte der Erinnerung</div>
             <div class="legend-item"><div class="dot" style="background:var(--c-gedenken)"></div> Gedenken</div>
             <div class="legend-item"><div class="dot" style="background:var(--c-widerstand)"></div> Widerstand</div>
-            <div class="legend-item"><div class="dot" style="background:var(--c-anlaufstelle)"></div> Anlaufstellen</div>
         </div>
 
         <div id="timeline-ui">
@@ -274,8 +270,8 @@
                         'title': 'Bunter Wind für Lichtenberg (seit 2012)',
                         'year': 2012,
                         'locked': true,
-                        'image': 'https://upload.wikimedia.org/wikipedia/commons/0/02/Rathaus_Lichtenberg_West-_und_Hauptfassade_2021.jpg',
-                        'description': `<h3>Seit 2012</h3><p>Der Bunte Wind setzt seit seiner Gründung 2012 wichtige Impulse für eine offene und demokratische Gesellschaft in Lichtenberg. Angesichts der aktuellen Herausforderungen stärkt die Organisation den Zusammenhalt und die Solidarität in der Zivilgesellschaft, um Vielfalt, Respekt und demokratische Werte zu fördern. Das Ziel lautet: Solidarisch für eine starke und lebendige Demokratie! Mit Solidarität, Zusammenhalt und Gleichberechtigung gegen jede Form von Diskriminierung und Ausgrenzung ein. Es gibt zwar keine einfachen Lösungen für soziale und politische Konflikte, doch werden hier auf gewaltfreie, respektvolle und solidarische Ansätze gesetzt. Jede Person sollte die Möglichkeit haben, ihr Lebensumfeld aktiv mitzugestalten. Meinungsfreiheit bedeutet nicht, dass jede Äußerung unwidersprochen bleibt. Damit alle ein selbstbestimmtes Leben führen können, ist es wichtig, Vielfalt zu schätzen und zu schützen. Der Bunte Wind kennt keine Grenzen. Menschen, die neu nach Lichtenberg kommen, werden willkommen geheißen und mit Respekt begegnet. Was uns verbindet, ist der Einsatz gegen rassistische und diskriminierende Hetze sowie das Engagement für Menschlichkeit und Menschenrechte!</p><h3>Quelle</h3><p>Bunter Wind</p>`,
+                        'image': 'https://raw.githubusercontent.com/gaspardellanuit/Lichtenbergaustellung/refs/heads/main/Bunter_Wind_LOGO-1.jpg',
+                        'description': `<h3>Seit 2012</h3><p>Der Bunte Wind setzt seit seiner Gründung 2012 wichtige Impulse für eine offene und demokratische Gesellschaft in Lichtenberg. Angesichts der aktuellen Herausforderungen stärkt die Organisation den Zusammenhalt und die Solidarität in der Zivilgesellschaft, um Vielfalt, Respekt und demokratische Werte zu fördern. Das Ziel lautet: Solidarisch für eine starke und lebendige Demokratie! Mit Solidarität, Zusammenhalt und Gleichberechtigung gegen jede Form von Diskriminierung und Ausgrenzung ein. Es gibt zwar keine einfachen Lösungen für soziale und politische Konflikte, doch werden hier auf gewaltfreie, respektvolle und solidarische Ansätze gesetzt. Jede Person sollte die Möglichkeit haben, ihr Lebensumfeld aktiv mitzugestalten. Meinungsfreiheit bedeutet nicht, dass jede Äußerung unwidersprochen bleibt. Damit alle ein selbstbestimmtes Leben führen können, ist es wichtig, Vielfalt zu schätzen und zu schützen. Der Bunte Wind kennt keine Grenzen. Menschen, die neu nach Lichtenberg kommen, werden willkommen geheißen und mit Respekt begegnet. Was uns verbindet, ist der Einsatz gegen rassistische und diskriminierende Hetze sowie das Engagement für Menschlichkeit und Menschenrechte!</p><h3>Quelle</h3><p>Bunter Wind für Lichtenberg – Aufruf <a href="https://bunterwind-lichtenberg.org/aufruf/" target="_blank" style="color:#00E676">bunterwind-lichtenberg.org</a></p>`,
                         'source': 'Bunter Wind für Lichtenberg'
                     },
                     'geometry': { 'type': 'Point', 'coordinates': [13.5055, 52.5115] }
@@ -284,7 +280,7 @@
                     'type': 'Feature',
                     'properties': {
                         'id': 'licht_blicke',
-                        'category': 'anlaufstelle',
+                        'category': 'widerstand',
                         'title': 'Licht-Blicke (seit 2002)',
                         'year': 2002,
                         'locked': true,
@@ -361,22 +357,6 @@
                         'source': 'Bezirksamt Lichtenberg'
                     },
                     'geometry': { 'type': 'Point', 'coordinates': [13.4798, 52.5155] }
-                },
-
-                // === KATEGORIE 4: ANLAUFSTELLEN (NEU) ===
-                {
-                    'type': 'Feature',
-                    'properties': {
-                        'id': 'reachout',
-                        'category': 'anlaufstelle',
-                        'title': 'ReachOut Berlin',
-                        'year': 2026,
-                        'locked': true,
-                        'image': 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Gudrunstra%C3%9Fe_Berlin-Lichtenberg.jpg/800px-Gudrunstra%C3%9Fe_Berlin-Lichtenberg.jpg', // Generic placeholder
-                        'description': `<h3>Beratung für Opfer</h3><p>ReachOut Berlin bietet Beratung und Unterstützung für Opfer rechter, rassistischer und antisemitischer Gewalt sowie für deren Angehörige und Freunde.</p><p>Adresse: Kopernikusstr. 23, 10245 Berlin.</p>`,
-                        'source': 'Reach Out Berlin'
-                    },
-                    'geometry': { 'type': 'Point', 'coordinates': [13.4575, 52.5113] }
                 }
             ]
         };
@@ -580,3 +560,4 @@
     </script>
 </body>
 </html>
+}
