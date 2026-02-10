@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="referrer" content="no-referrer">
-    <title>Museum Lichtenberg: Orte des Widerstands</title>
+    
+    <title>Museum Lichtenberg</title>
     
     <script src='https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js'></script>
     <link href='https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css' rel='stylesheet' />
@@ -18,27 +19,17 @@
     <style>
         :root {
             /* Colors */
-            --bg-color: #050505;
-            --text-main: #ffffff;
-            --c-erinnerung: #D4AF37;   /* Gold - Memory */
-            --c-gedenken: #A0A0A0;     /* Silver - Commemoration */
-            --c-widerstand: #00E676;   /* Neon Green - Resistance */
-            --c-heute: #FF3D00;        /* Neon Red - Today */
-            --c-path: #00FFFF;         /* Cyan Path */
-
-            /* Fonts */
-            --font-head: 'Space Grotesk', sans-serif;
-            --font-body: 'Inter', sans-serif;
-            
-            /* Dimensions */
+            --bg-color: #050505; --text-main: #ffffff;
+            --c-erinnerung: #D4AF37; --c-gedenken: #A0A0A0;
+            --c-widerstand: #00E676; --c-heute: #FF3D00; --c-path: #00FFFF;
+            --font-head: 'Space Grotesk', sans-serif; --font-body: 'Inter', sans-serif;
             --sidebar-width: 500px;
         }
 
         body { margin: 0; padding: 0; background: var(--bg-color); color: var(--text-main); font-family: var(--font-body); overflow: hidden; }
-
         #map { position: absolute; top: 0; bottom: 0; width: 100%; z-index: 1; }
 
-        /* --- START SCREEN --- */
+        /* --- START SCREEN (Wichtig für Browser-Rechte) --- */
         #start-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.95); z-index: 9999;
@@ -55,81 +46,50 @@
         }
         .start-btn:active { transform: scale(0.95); }
 
-        /* --- UI LAYER --- */
-        #ui-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10; }
-        
-        /* Vignette for cinematic look */
-        .vignette-overlay { 
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
-            pointer-events: none; z-index: 5; 
-            background: radial-gradient(circle at center, transparent 30%, rgba(0,0,0,0.8) 60%, rgba(0,0,0,1) 90%); 
-        }
-
-        /* HEADER */
-        header { 
-            position: absolute; top: 30px; left: 30px; pointer-events: auto;
-            text-shadow: 0 0 10px rgba(0,0,0,0.8);
-            z-index: 20;
-        }
-        .museum-label { 
-            font-family: var(--font-head); font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase; 
-            color: #aaa; margin-bottom: 5px; font-weight: 500; border-left: 3px solid var(--c-widerstand); padding-left: 10px;
-        }
-        h1 { 
-            font-family: var(--font-head); font-size: 3rem; margin: 0; line-height: 0.9; font-weight: 700;
-            color: white; letter-spacing: -1px;
-        }
-
-        /* --- MINI SCANNER (Lowered Position) --- */
-        #mini-scanner-wrapper {
+        /* --- MINI SCANNER (Positioned Lower) --- */
+        #mini-scanner {
             position: absolute; 
-            top: 260px; /* Moved down to avoid covering title */
+            top: 260px; /* Position tiefer, unter dem Titel */
             left: 30px; 
-            width: 140px; height: 140px;
+            width: 120px; height: 120px; 
             background: #000;
             border: 2px solid #444;
             border-radius: 12px;
             overflow: hidden;
-            z-index: 50; 
-            pointer-events: auto;
-            box-shadow: 0 20px 50px rgba(0,0,0,1);
-            display: flex; flex-direction: column;
+            z-index: 50;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
             transition: border-color 0.3s;
         }
-        
-        #reader { flex: 1; width: 100%; height: 100%; object-fit: cover; }
+        #reader { width: 100%; height: 100%; object-fit: cover; }
         
         .scanner-label {
             position: absolute; bottom: 0; left: 0; width: 100%;
-            background: rgba(0,0,0,0.7); color: #fff;
-            font-size: 10px; text-align: center; padding: 4px;
+            background: rgba(0,0,0,0.6); color: #aaa;
+            font-size: 9px; text-align: center; padding: 3px;
             font-family: var(--font-head); letter-spacing: 1px;
             pointer-events: none;
         }
 
-        /* HIT OVERLAY (Inside Scanner) */
+        /* Overlay bei Treffer */
         #scan-hit-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 230, 118, 0.9); /* Green */
+            background: rgba(0, 230, 118, 0.95); /* Green */
             display: none; flex-direction: column; align-items: center; justify-content: center;
-            cursor: pointer; z-index: 55;
+            cursor: pointer;
         }
-        .hit-icon { font-size: 30px; color: black; font-weight: bold; }
-        .hit-text { font-size: 12px; color: black; font-family: var(--font-head); font-weight: bold; margin-top: 5px; }
+        .hit-icon { font-size: 24px; color: black; font-weight: bold; }
+        .hit-text { font-size: 10px; color: black; font-family: var(--font-head); font-weight: bold; margin-top: 2px; }
 
-        /* TIMELINE */
-        #timeline-ui {
-            position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
-            width: 80%; max-width: 900px; min-width: 320px; 
-            pointer-events: auto; text-align: center;
-            background: rgba(10, 10, 10, 0.85); padding: 15px 40px; border-radius: 40px;
-            border: 1px solid rgba(255,255,255,0.15); backdrop-filter: blur(8px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-        #year-display { 
-            font-family: var(--font-head); font-size: 2.5rem; font-weight: 700; display: block; 
-            margin-bottom: 5px; line-height: 1; color: white;
-        }
+        /* UI LAYER */
+        #ui-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10; }
+        .vignette-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5; background: radial-gradient(circle at center, transparent 30%, rgba(0,0,0,0.8) 60%, rgba(0,0,0,1) 90%); }
+        
+        header { position: absolute; top: 30px; left: 30px; pointer-events: auto; text-shadow: 0 0 10px rgba(0,0,0,0.8); }
+        .museum-label { font-family: var(--font-head); font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase; color: #aaa; margin-bottom: 5px; font-weight: 500; border-left: 3px solid var(--c-widerstand); padding-left: 10px; }
+        h1 { font-family: var(--font-head); font-size: 3rem; margin: 0; line-height: 0.9; font-weight: 700; color: white; letter-spacing: -1px; }
+
+        #timeline-ui { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); width: 80%; max-width: 900px; min-width: 320px; pointer-events: auto; text-align: center; background: rgba(10, 10, 10, 0.85); padding: 15px 40px; border-radius: 40px; border: 1px solid rgba(255,255,255,0.15); backdrop-filter: blur(8px); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        #year-display { font-family: var(--font-head); font-size: 2.5rem; font-weight: 700; display: block; margin-bottom: 5px; line-height: 1; color: white; }
         input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; cursor: pointer; }
         input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; background: #444; border-radius: 2px; }
         input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 20px; width: 20px; border-radius: 50%; background: #fff; border: 2px solid #000; margin-top: -8px; transition: transform 0.1s; }
@@ -138,59 +98,28 @@
         .ticks span:first-child { text-align: left; }
         .ticks span:last-child { text-align: right; }
 
-        /* STATUS */
-        #status-panel {
-            position: absolute; top: 30px; right: 30px; width: 240px; pointer-events: auto;
-            background: rgba(0,0,0,0.6); padding: 15px; border-radius: 8px; border: 1px solid #333;
-        }
+        #status-panel { position: absolute; top: 30px; right: 30px; width: 240px; pointer-events: auto; background: rgba(0,0,0,0.6); padding: 15px; border-radius: 8px; border: 1px solid #333; }
         .status-header { font-size: 0.7rem; text-transform: uppercase; color: #888; letter-spacing: 1px; }
         .progress-bar { width: 100%; height: 4px; background: #333; margin-top: 8px; border-radius: 2px; }
         .progress-fill { height: 100%; background: var(--c-widerstand); width: 0%; transition: width 0.5s; box-shadow: 0 0 8px var(--c-widerstand); }
         .lock-text { text-align: right; font-family: var(--font-head); font-size: 0.9rem; color: #666; margin-top: 5px; }
 
-        /* LEGEND */
-        #legend { 
-            position: absolute; bottom: 30px; left: 30px; pointer-events: auto; 
-            display: flex; flex-direction: column; gap: 8px;
-        }
+        #legend { position: absolute; bottom: 30px; left: 30px; pointer-events: auto; display: flex; flex-direction: column; gap: 8px; }
         .legend-item { display: flex; align-items: center; gap: 10px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: #ccc; }
         .dot { width: 8px; height: 8px; border-radius: 50%; }
 
-        /* SIDEBAR */
-        #sidebar {
-            position: absolute; right: 0; top: 0; bottom: 0; width: var(--sidebar-width);
-            background: #080808; border-left: 1px solid #333; z-index: 60;
-            transform: translateX(100%); transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
-            overflow-y: auto; pointer-events: auto; display: flex; flex-direction: column;
-            box-shadow: -20px 0 50px rgba(0,0,0,0.8);
-        }
+        #sidebar { position: absolute; right: 0; top: 0; bottom: 0; width: var(--sidebar-width); background: #080808; border-left: 1px solid #333; z-index: 60; transform: translateX(100%); transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1); overflow-y: auto; pointer-events: auto; display: flex; flex-direction: column; box-shadow: -20px 0 50px rgba(0,0,0,0.8); }
         #sidebar.open { transform: translateX(0); }
-
-        .close-area {
-            position: sticky; top: 0; width: 100%; height: 70px; z-index: 50;
-            display: flex; justify-content: flex-end; align-items: center; padding-right: 25px;
-            background: linear-gradient(to bottom, rgba(8,8,8,1) 50%, rgba(8,8,8,0));
-        }
-        .close-btn {
-            background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white;
-            width: 44px; height: 44px; border-radius: 50%; font-size: 24px; cursor: pointer;
-            display: flex; align-items: center; justify-content: center; transition: all 0.2s;
-        }
+        .close-area { position: sticky; top: 0; width: 100%; height: 70px; z-index: 50; display: flex; justify-content: flex-end; align-items: center; padding-right: 25px; background: linear-gradient(to bottom, rgba(8,8,8,1) 50%, rgba(8,8,8,0)); }
+        .close-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; width: 44px; height: 44px; border-radius: 50%; font-size: 24px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
         .close-btn:hover { background: white; color: black; }
-
         .sidebar-content { padding: 40px; padding-top: 0; }
         .hero-img { width: 100%; height: 300px; object-fit: cover; border-bottom: 4px solid #333; margin-bottom: 25px; }
-        
-        .cat-tag { 
-            font-family: var(--font-head); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2px; 
-            margin-bottom: 10px; display: inline-block; padding: 4px 8px; border: 1px solid #444; color: #fff;
-        }
-        
+        .cat-tag { font-family: var(--font-head); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; display: inline-block; padding: 4px 8px; border: 1px solid #444; color: #fff; }
         h2 { font-family: var(--font-head); font-size: 2.2rem; line-height: 1.1; margin: 0 0 25px 0; font-weight: 700; color: white; }
         .article { font-size: 1.05rem; line-height: 1.7; color: #ccc; font-weight: 300; margin-bottom: 40px; }
         .article h3 { color: white; font-family: var(--font-head); font-size: 1.2rem; margin-top: 30px; margin-bottom: 10px; font-weight: 500; border-left: 3px solid var(--c-path); padding-left: 10px; }
         .source { font-size: 0.75rem; color: #666; border-top: 1px solid #222; padding-top: 20px; font-style: italic; }
-
         .locked-view { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px; color: #555; }
         .locked-icon { font-size: 4rem; margin-bottom: 20px; opacity: 0.5; }
 
@@ -198,12 +127,10 @@
             :root { --sidebar-width: 100%; }
             #timeline-ui { width: 90%; bottom: 20px; padding: 15px 20px; }
             .sidebar-content { padding: 25px; }
-            #mini-scanner-wrapper { top: 200px; left: 20px; }
+            #mini-scanner { top: 120px; left: 20px; } /* Mobile adjustments */
         }
-
         .mapboxgl-popup-content { background: #000; color: #fff; border: 1px solid #444; font-family: var(--font-body); padding: 10px 14px; }
         .mapboxgl-popup-close-button { display: none; }
-
     </style>
 </head>
 <body class="p-1933">
@@ -211,7 +138,7 @@
     <div id="start-screen">
         <h1 style="color:white; margin-bottom: 10px; text-shadow:0 0 20px black;">Museum Lichtenberg</h1>
         <p style="color:#aaa; font-family:var(--font-head);">Orte des Widerstands</p>
-        <button class="start-btn" onclick="startApp()">Ausstellung Starten</button>
+        <button class="start-btn" onclick="startExhibition()">Ausstellung Starten</button>
     </div>
 
     <div id="map"></div>
@@ -223,10 +150,9 @@
             <h1>Orte des<br>Widerstands</h1>
         </header>
 
-        <div id="mini-scanner-wrapper">
+        <div id="mini-scanner">
             <div id="reader"></div>
             <div class="scanner-label">SCAN QR</div>
-            
             <div id="scan-hit-overlay" onclick="executeScanAction()">
                 <div class="hit-icon">➜</div>
                 <div class="hit-text">ÖFFNEN</div>
@@ -256,142 +182,37 @@
     </div>
 
     <div id="sidebar">
-        <div class="close-area">
-            <button class="close-btn" onclick="closeSidebar()">&times;</button>
-        </div>
+        <div class="close-area"><button class="close-btn" onclick="closeSidebar()">&times;</button></div>
         <div id="sidebar-content"></div>
     </div>
 
     <script>
         // ------------------------------------------------------------------
-        // 1. DATA (UPDATED WITH PDF CONTENT)
+        // CONFIG
         // ------------------------------------------------------------------
+        mapboxgl.accessToken = 'pk.eyJ1IjoiaWxpYXNtZXJhYmloYSIsImEiOiJjbWw5bHNnc3YwM3ZwM2RxdXU5YjdiN201In0.CTiUlh-M4fTkIda8EtP4Yg'; 
+
         const geoData = {
             'type': 'FeatureCollection',
             'features': [
-                // --- CATEGORY 1: ERINNERUNG (RED/GOLD) ---
-                {
-                    'type': 'Feature',
-                    'properties': {
-                        'id': 'kurt_schneider', 'category': 'erinnerung', 'title': 'Kurt Schneider (1961–1999)', 'year': 1999,
-                        'image': 'https://upload.wikimedia.org/wikipedia/commons/0/01/Memorial_plaque_metal_Kurt_Schneider_Berlin%2C_Germany.jpg',
-                        'description': `<h3>Ein Opfer rechter Gewalt</h3><p>Kurt Schneider wurde 1961 in Königs Wusterhausen geboren und arbeitete als Maurer. In der Nacht auf den 6. Oktober 1999 wurde er auf dem Heimweg von vier Neonazis überfallen und ermordet. Die Täter fühlten sich durch einen Gruß "beleidigt" und sahen ihn als "minderwertigen Menschen" an.</p><h3>Späte Anerkennung</h3><p>Lange wurde die Tat entpolitisiert und als Vertuschung eines Raubes gedeutet. Erst 2018 wurde Kurt Schneider offiziell als Todesopfer rechter Gewalt anerkannt. Eine Gedenktafel in der Rudolf-Reusch-Straße erinnert seit 2021 an ihn.</p>`,
-                        'source': 'Gedenktafeln in Berlin'
-                    },
-                    'geometry': { 'type': 'Point', 'coordinates': [13.4802, 52.5185] }
-                },
-                {
-                    'type': 'Feature',
-                    'properties': {
-                        'id': 'silvio_meier', 'category': 'erinnerung', 'title': 'Silvio Meier (1965–1992)', 'year': 1992,
-                        'image': 'https://upload.wikimedia.org/wikipedia/commons/1/14/Silvio_Meier.jpg',
-                        'description': `<h3>Aktivist und Hausbesetzer</h3><p>Silvio Meier war in der DDR-Opposition aktiv (Kirche von Unten) und nach der Wende Teil der Hausbesetzerszene in der Schreinerstraße. Er wurde am 21. November 1992 im U-Bahnhof Samariterstraße von Neonazis erstochen.</p><h3>Gedenkkultur</h3><p>Sein Tod politisierte eine ganze Generation. Bis 2014 fanden jährliche Gedenkdemonstrationen statt. Der U-Bahnhof und eine Straße tragen heute Gedenkzeichen.</p>`,
-                        'source': 'Amadeu Antonio Stiftung'
-                    },
-                    'geometry': { 'type': 'Point', 'coordinates': [13.4658, 52.5144] }
-                },
-                {
-                    'type': 'Feature',
-                    'properties': {
-                        'id': 'eugeniu_botnari', 'category': 'erinnerung', 'title': 'Eugeniu Botnari (1982–2016)', 'year': 2016,
-                        'image': 'https://upload.wikimedia.org/wikipedia/commons/0/03/Gedenktafel_Eugeniu-Botnari-Platz_%28Rumbg%29_Eugeniu_Botnari.jpg',
-                        'description': `<h3>Tödlicher Sozialdarwinismus</h3><p>Im September 2016 wurde der wohnungslose Eugeniu Botnari im Bahnhof Lichtenberg vom Filialleiter eines Supermarktes beschuldigt, gestohlen zu haben, und brutal misshandelt. Er starb an den Folgen.</p><h3>Ein Ort des Gedenkens</h3><p>Der Täter handelte aus rassistischen und sozialdarwinistischen Motiven. Seit 2023 trägt der Vorplatz des Bahnhofs Lichtenberg Eugeniu Botnaris Namen.</p>`,
-                        'source': 'Amadeu Antonio Stiftung'
-                    },
-                    'geometry': { 'type': 'Point', 'coordinates': [13.4975, 52.5098] }
-                },
-                {
-                    'type': 'Feature',
-                    'properties': {
-                        'id': 'kaethe_tucholla', 'category': 'erinnerung', 'title': 'Käthe Tucholla (1910–1943)', 'year': 1943,
-                        'image': 'https://upload.wikimedia.org/wikipedia/commons/5/5c/Kaskelkiez_Kaskelstr_Gedenktafel_Tucholla.JPG',
-                        'description': `<h3>Widerstand im Kiez</h3><p>Käthe Tucholla, eine Sekretärin und Hockeyspielerin bei Sparta Lichtenberg, engagierte sich in der KPD-Widerstandsgruppe um Robert Uhrig. Sie verbreitete Flugblätter und unterstützte Verfolgte.</p><h3>Ermordung in Plötzensee</h3><p>1942 wurde sie festgenommen und 1943 im Strafgefängnis Plötzensee hingerichtet. Ihr Wohnhaus in der Kaskelstraße erinnert an sie.</p>`,
-                        'source': 'Frauen im Widerstand'
-                    },
-                    'geometry': { 'type': 'Point', 'coordinates': [13.4832, 52.5038] }
-                },
-
-                // --- CATEGORY 3: GEDENKEN (PURPLE/SILVER) ---
-                {
-                    'type': 'Feature',
-                    'properties': {
-                        'id': 'rummelsburg', 'category': 'gedenken', 'title': 'Gedenkort Rummelsburg', 'year': 1933,
-                        'image': 'https://upload.wikimedia.org/wikipedia/commons/5/52/Bundesarchiv_Bild_183-1990-0704-026%2C_Berlin%2C_Rummelsburg%2C_M%C3%A4nnerhaftanstalt.jpg',
-                        'description': `<h3>Ort der Ausgrenzung</h3><p>Das Arbeitshaus Rummelsburg diente im NS-Staat der Verfolgung von sogenannten "Asozialen". 1941 wurden jüdische Häftlinge von hier in den Tod deportiert. In der DDR diente es als Gefängnis, auch für politische Häftlinge.</p><h3>Vom Knast zum Wohnraum</h3><p>Heute ist das Gelände ein Wohngebiet, doch ein Gedenkort erinnert an die düstere Geschichte der Ausgrenzung an diesem Ort.</p>`,
-                        'source': 'Memorial Museums'
-                    },
-                    'geometry': { 'type': 'Point', 'coordinates': [13.4855, 52.4955] }
-                },
-                {
-                    'type': 'Feature',
-                    'properties': {
-                        'id': 'rote_kapelle', 'category': 'gedenken', 'title': 'Die Rote Kapelle', 'year': 1940,
-                        'image': 'https://upload.wikimedia.org/wikipedia/commons/c/ca/Skulptur_Schulze-Boysen-Str_12_%28Liber%29_B%C3%BCrger_im_Widerstand%26Achim_K%C3%BChn%2620112.jpg',
-                        'description': `<h3>Netzwerk des Widerstands</h3><p>Die Rote Kapelle war eines der größten Widerstandsnetzwerke gegen den NS. Über 150 Frauen und Männer unterschiedlicher Herkunft dokumentierten Verbrechen und warnten die Alliierten.</p><h3>Verfolgung</h3><p>1942 wurde die Gruppe zerschlagen, über 50 Mitglieder ermordet. In Lichtenberg tragen heute viele Straßen in der "Schulze-Boysen-Siedlung" ihre Namen.</p>`,
-                        'source': 'Gedenktafeln in Berlin'
-                    },
-                    'geometry': { 'type': 'Point', 'coordinates': [13.4872, 52.5138] }
-                },
-                {
-                    'type': 'Feature',
-                    'properties': {
-                        'id': 'loeperplatz', 'category': 'gedenken', 'title': 'Ehrenmal Loeperplatz', 'year': 1948,
-                        'image': 'https://upload.wikimedia.org/wikipedia/commons/f/fe/Loeperplatz_VDN_1.jpg',
-                        'description': `<h3>Ein frühes Denkmal</h3><p>Bereits 1948 wurde auf dem Loeperplatz dieses Denkmal für die Opfer des Faschismus errichtet. Der rote Winkel an der Spitze symbolisiert die Kennzeichnung politischer Häftlinge in den Konzentrationslagern.</p>`,
-                        'source': 'Memorial Museums'
-                    },
-                    'geometry': { 'type': 'Point', 'coordinates': [13.4795, 52.5238] }
-                },
-                {
-                    'type': 'Feature',
-                    'properties': {
-                        'id': 'rathaus', 'category': 'gedenken', 'title': 'Gedenktafel Rathaus Lichtenberg', 'year': 1933,
-                        'image': 'https://upload.wikimedia.org/wikipedia/commons/0/02/Rathaus_Lichtenberg_West-_und_Hauptfassade_2021.jpg',
-                        'description': `<h3>Verfolgte Demokratie</h3><p>Eine Tafel am Rathaus erinnert an die Bezirks- und Stadtverordneten, die 1933 von den Nazis ihrer Ämter enthoben und verfolgt wurden. Darunter Frieda Rosenthal und Johannes Fest.</p>`,
-                        'source': 'Bezirksamt Lichtenberg'
-                    },
-                    'geometry': { 'type': 'Point', 'coordinates': [13.4798, 52.5155] }
-                },
-
-                // --- CATEGORY 2: WIDERSTAND & HEUTE (GREEN/RED) - LOCKED INITIALLY ---
-                {
-                    'type': 'Feature',
-                    'properties': {
-                        'id': 'bunter_wind', 'category': 'widerstand', 'title': 'LOCKED: Bunter Wind für Lichtenberg', 'year': 2012, 'locked': true,
-                        'image': 'https://upload.wikimedia.org/wikipedia/commons/2/2e/Rathaus_Lichtenberg.jpg', // Placeholder logic used
-                        'description': `<h3>Zivilgesellschaft heute</h3><p>Seit 2012 setzt sich der "Bunte Wind" für eine offene Gesellschaft ein. Das Bündnis organisiert Proteste gegen Rechts und fördert die Vernetzung von Demokraten im Bezirk.</p>`,
-                        'source': 'Bunter Wind'
-                    },
-                    'geometry': { 'type': 'Point', 'coordinates': [13.5055, 52.5115] }
-                },
-                {
-                    'type': 'Feature',
-                    'properties': {
-                        'id': 'licht_blicke', 'category': 'widerstand', 'title': 'LOCKED: Licht-Blicke', 'year': 2002, 'locked': true,
-                        'image': 'https://upload.wikimedia.org/wikipedia/commons/e/e5/Gudrunstra%C3%9Fe_Berlin-Lichtenberg.jpg', // Placeholder location
-                        'description': `<h3>Netzwerk für Demokratie</h3><p>Licht-Blicke ist die zentrale Anlaufstelle für Demokratieförderung in Lichtenberg. Sie koordinieren Stolperstein-Verlegungen und unterstützen Opfer rechter Gewalt.</p>`,
-                        'source': 'Licht-Blicke'
-                    },
-                    'geometry': { 'type': 'Point', 'coordinates': [13.5205, 52.4962] }
-                },
-                {
-                    'type': 'Feature',
-                    'properties': {
-                        'id': 'berliner_register', 'category': 'heute', 'title': 'LOCKED: Berliner Register', 'year': 2005, 'locked': true,
-                        'image': 'https://upload.wikimedia.org/wikipedia/commons/2/2e/Rathaus_Lichtenberg.jpg',
-                        'description': `<h3>Dokumentation des Alltags</h3><p>Das Register dokumentiert rassistische und rechtsextreme Vorfälle im Alltag – auch solche unterhalb der Strafbarkeitsgrenze. Dies macht das Ausmaß der Diskriminierung sichtbar.</p>`,
-                        'source': 'Berliner Register'
-                    },
-                    'geometry': { 'type': 'Point', 'coordinates': [13.5055, 52.5115] }
-                }
+                { 'type': 'Feature', 'properties': { 'id': 'h1', 'category': 'erinnerung', 'title': 'Der Blutbaum am Loeperplatz', 'year': 1934, 'image': 'https://upload.wikimedia.org/wikipedia/commons/c/c5/Gedenkstein_Loeperplatz_%28Berlin-Lichtenberg%29.jpg', 'description': `<h3>Historischer Kontext</h3><p>Der Loeperplatz in Lichtenberg, einst ein belebter Marktplatz, verwandelte sich nach der Machtübernahme der Nationalsozialisten 1933 in einen Ort des Schreckens.</p><h3>Das Ereignis</h3><p>Der Platz wurde zur Richtstätte. Eine alte Eiche, die hier stand, erhielt im Volksmund den Namen "Blutbaum", da an ihr Hinrichtungen stattfanden.</p>`, 'source': 'Gedenkstätte Deutscher Widerstand' }, 'geometry': { 'type': 'Point', 'coordinates': [13.4800, 52.5135] } },
+                { 'type': 'Feature', 'properties': { 'id': 'h2', 'category': 'erinnerung', 'title': 'Zwangsarbeiterlager Rummelsburg', 'year': 1941, 'image': 'https://upload.wikimedia.org/wikipedia/commons/5/52/Bundesarchiv_Bild_183-1990-0704-026%2C_Berlin%2C_Rummelsburg%2C_M%C3%A4nnerhaftanstalt.jpg', 'description': `<h3>Ein Ort der Ausbeutung</h3><p>Das "Arbeitserziehungslager" (AEL) Rummelsburg war ein Instrument des NS-Terrors. Hier wurden Tausende Menschen interniert.</p>`, 'source': 'Museum Lichtenberg' }, 'geometry': { 'type': 'Point', 'coordinates': [13.4850, 52.4950] } },
+                { 'type': 'Feature', 'properties': { 'id': 'h3', 'category': 'erinnerung', 'title': 'Erna Lugebiel', 'year': 1943, 'image': 'https://upload.wikimedia.org/wikipedia/commons/6/66/Stadthaus_Lichtenberg_Berlin.jpg', 'description': `<h3>Zivilcourage im Alltag</h3><p>Erna Lugebiel, eine Schneiderin aus der Möllendorffstraße, zeigte, was Zivilcourage bedeutete. Sie versteckte jüdische Bürger und politisch Verfolgte.</p>`, 'source': 'Gedenkstätte Stille Helden' }, 'geometry': { 'type': 'Point', 'coordinates': [13.4790, 52.5220] } },
+                { 'type': 'Feature', 'properties': { 'id': 'w1', 'category': 'widerstand', 'title': 'Mainzer Straße', 'year': 1990, 'image': 'https://upload.wikimedia.org/wikipedia/commons/6/6d/Mainzer_Stra%C3%9Fe_Berlin-Friedrichshain_1990.jpg', 'description': `<h3>Das Ende eines Freiraums</h3><p>Im November 1990 fand in der Mainzer Straße einer der massivsten Polizeieinsätze der Nachkriegsgeschichte statt.</p>`, 'source': 'Zeitzeugenarchiv Berlin' }, 'geometry': { 'type': 'Point', 'coordinates': [13.4620, 52.5120] } },
+                { 'type': 'Feature', 'properties': { 'id': 'g1', 'category': 'gedenken', 'title': 'Silvio Meier', 'year': 1992, 'image': 'https://upload.wikimedia.org/wikipedia/commons/a/a2/Gedenktafel_Silvio_Meier_%28U-Bhf_Samariterstra%C3%9Fe%29.jpg', 'description': `<h3>Ein traumatisches Ereignis</h3><p>Am 21. November 1992 wurde der Antifaschist Silvio Meier im U-Bahnhof Samariterstraße von Neonazis erstochen.</p>`, 'source': 'Amadeu Antonio Stiftung' }, 'geometry': { 'type': 'Point', 'coordinates': [13.4650, 52.5140] } },
+                { 'type': 'Feature', 'properties': { 'id': 'g2', 'category': 'gedenken', 'title': 'Weitlingstraße', 'year': 1995, 'image': 'https://upload.wikimedia.org/wikipedia/commons/3/36/Berlin%2C_Lichtenberg%2C_Weitlingstrasse.jpg', 'description': `<h3>National Befreite Zone?</h3><p>In den 90er Jahren erlangte der Weitlingkiez traurige Berühmtheit. Neonazi-Kameradschaften versuchten hier, eine sogenannte "National Befreite Zone" zu etablieren.</p>`, 'source': 'Licht-Blicke Podcast' }, 'geometry': { 'type': 'Point', 'coordinates': [13.4985, 52.5075] } },
+                { 'type': 'Feature', 'properties': { 'id': 'g3', 'category': 'gedenken', 'title': 'Eugeniu Botnari', 'year': 2016, 'image': 'https://upload.wikimedia.org/wikipedia/commons/f/f8/Bahnhof_Berlin-Lichtenberg_Empfangsgeb%C3%A4ude_20160808_1.jpg', 'description': `<h3>Tödlicher Sozialdarwinismus</h3><p>Im September 2016 wurde der wohnungslose Eugeniu Botnari im Bahnhof Lichtenberg vom Filialleiter eines Supermarktes tödlich misshandelt.</p>`, 'source': 'Initiative Gedenken an Eugeniu Botnari' }, 'geometry': { 'type': 'Point', 'coordinates': [13.4970, 52.5100] } },
+                { 'type': 'Feature', 'properties': { 'id': 'cur1', 'category': 'heute', 'title': 'LOCKED: Ostkreuz', 'year': 2024, 'locked':true, 'image': 'https://upload.wikimedia.org/wikipedia/commons/c/cf/Bahnhof_Berlin_Ostkreuz_Eingang_Sonntagsstr.jpg', 'description': `<h3>Strategie der Raumnahme</h3><p>2024 ereignete sich ein organisierter Angriff auf Antifaschisten am Ostkreuz durch die Gruppe "NRJ".</p>`, 'source': 'Berliner Register 2024' }, 'geometry': { 'type': 'Point', 'coordinates': [13.4693, 52.5030] } },
+                { 'type': 'Feature', 'properties': { 'id': 'cur2', 'category': 'heute', 'title': 'LOCKED: Code 1161', 'year': 2025, 'locked':true, 'image': 'https://upload.wikimedia.org/wikipedia/commons/1/1a/Berlin_Wartenberg_Woldegker_Stra%C3%9Fe_Grundschule_im_Gr%C3%BCnen_01.jpg', 'description': `<h3>Propaganda auf dem Schulhof</h3><p>Massives Auftreten von Stickern mit dem Code "1161" (Anti-Antifa) an Schulen.</p>`, 'source': 'Lichtenberger Register' }, 'geometry': { 'type': 'Point', 'coordinates': [13.5000, 52.5400] } },
+                { 'type': 'Feature', 'properties': { 'id': 'cur3', 'category': 'heute', 'title': 'LOCKED: Jugendclub', 'year': 2025, 'locked':true, 'image': 'https://upload.wikimedia.org/wikipedia/commons/1/1a/Berlin_Wartenberg_Woldegker_Stra%C3%9Fe_Grundschule_im_Gr%C3%BCnen_01.jpg', 'description': `<h3>Schutzräume in Gefahr</h3><p>Ein Jugendclub wurde mit Reizstoff attackiert.</p>`, 'source': 'Polizei Berlin' }, 'geometry': { 'type': 'Point', 'coordinates': [13.5200, 52.4900] } },
+                { 'type': 'Feature', 'properties': { 'id': 'cur4', 'category': 'widerstand', 'title': 'LOCKED: Bündnis Bunter Wind', 'year': 2026, 'locked':true, 'image': 'https://upload.wikimedia.org/wikipedia/commons/2/2e/Rathaus_Lichtenberg.jpg', 'description': `<h3>Die Brandmauer steht</h3><p>Das Bündnis organisiert den Widerstand gegen rechte Aufmärsche.</p>`, 'source': 'Bündnis für Demokratie' }, 'geometry': { 'type': 'Point', 'coordinates': [13.4815, 52.5160] } },
+                { 'type': 'Feature', 'properties': { 'id': 'cur5', 'category': 'widerstand', 'title': 'LOCKED: Licht-Blicke', 'year': 2026, 'locked':true, 'image': 'https://upload.wikimedia.org/wikipedia/commons/e/e5/Gudrunstra%C3%9Fe_Berlin-Lichtenberg.jpg', 'description': `<h3>Fachstelle gegen Rechts</h3><p>Licht-Blicke unterstützt Betroffene von rechter Gewalt und berät Schulen.</p>`, 'source': 'www.licht-blicke.org' }, 'geometry': { 'type': 'Point', 'coordinates': [13.4880, 52.5120] } }
             ]
         };
 
         // ------------------------------------------------------------------
-        // 2. STATE & CONFIG
+        // 2. STATE
         // ------------------------------------------------------------------
-        mapboxgl.accessToken = 'pk.eyJ1IjoiaWxpYXNtZXJhYmloYSIsImEiOiJjbWw5bHNnc3YwM3ZwM2RxdXU5YjdiN201In0.CTiUlh-M4fTkIda8EtP4Yg'; 
-
         let state = {
             discovered: [],
             required: 3,
@@ -401,49 +222,44 @@
         };
 
         const map = new mapboxgl.Map({
-            container: 'map',
-            style: 'mapbox://styles/mapbox/dark-v11',
-            center: [13.485, 52.51],
-            zoom: 12.5,
-            pitch: 45,
-            bearing: -10,
-            maxBounds: [[13.3, 52.4], [13.7, 52.6]] 
+            container: 'map', style: 'mapbox://styles/mapbox/dark-v11',
+            center: [13.485, 52.51], zoom: 12.5, pitch: 45,
+            bearing: -10
         });
 
         // ------------------------------------------------------------------
-        // 3. START APP SEQUENCE
+        // 3. START EXHIBITION (SAFE INIT)
         // ------------------------------------------------------------------
-        function startApp() {
-            // REMOVE OVERLAY FIRST (Force access)
+        function startExhibition() {
+            // Remove start screen IMMEDIATELY
             document.getElementById('start-screen').style.display = 'none';
             
-            // Try to enable audio context (for beeps)
-            try {
-                new (window.AudioContext || window.webkitAudioContext)().resume();
-            } catch(e) {}
-
-            // Init Scanner quietly
-            initScanner();
+            // Try init scanner, but don't block app if it fails
+            setTimeout(initScanner, 500);
         }
 
         function initScanner() {
             try {
-                if(!state.scanner) state.scanner = new Html5Qrcode("reader");
+                state.scanner = new Html5Qrcode("reader");
+                const config = { fps: 10, qrbox: { width: 80, height: 80 } }; 
+                
                 state.scanner.start(
                     { facingMode: "environment" }, 
-                    { fps: 10, qrbox: 80 }, 
+                    config, 
                     onScanSuccess
-                ).catch(err => console.log("Camera failed to start (silent)", err));
+                ).catch(err => {
+                    console.log("Scanner Error (Camera not allowed?):", err);
+                });
             } catch(e) {
-                console.log("Scanner library error", e);
+                console.log("Scanner Lib Error:", e);
             }
         }
 
         function onScanSuccess(decodedText) {
             let foundId = null;
-            for(let f of geoData.features) {
-                if(decodedText.includes(f.properties.id)) {
-                    foundId = f.properties.id;
+            for(let feat of geoData.features) {
+                if(decodedText.includes(feat.properties.id)) {
+                    foundId = feat.properties.id;
                     break;
                 }
             }
@@ -490,30 +306,36 @@
         // 4. MAP LOGIC
         // ------------------------------------------------------------------
         map.on('load', () => {
-            // 3D Buildings
+            map.addSource('path-source', { 'type': 'geojson', 'data': { 'type': 'Feature', 'geometry': { 'type': 'LineString', 'coordinates': [] } } });
+            map.addLayer({ 'id': 'path-glow', 'type': 'line', 'source': 'path-source', 'paint': { 'line-color': '#00FFFF', 'line-width': 10, 'line-opacity': 0.3, 'line-blur': 4 } });
+            map.addLayer({ 'id': 'path-core', 'type': 'line', 'source': 'path-source', 'paint': { 'line-color': '#00FFFF', 'line-width': 3, 'line-dasharray': [2, 1] } });
+
             const layers = map.getStyle().layers;
             const labelLayerId = layers.find(l => l.type === 'symbol' && l.layout['text-field']).id;
             map.addLayer({ 'id': '3d-buildings', 'source': 'composite', 'source-layer': 'building', 'filter': ['==', 'extrude', 'true'], 'type': 'fill-extrusion', 'paint': { 'fill-extrusion-color': '#222', 'fill-extrusion-height': ['get', 'height'], 'fill-extrusion-opacity': 0.9 } }, labelLayerId);
 
-            // Markers Source
             map.addSource('markers', { 'type': 'geojson', 'data': geoData });
             
-            // GLOW EFFECT (Stronger)
-            map.addLayer({ 'id': 'marker-glow', 'type': 'circle', 'source': 'markers', 'paint': { 'circle-radius': 60, 'circle-color': ['match', ['get', 'category'], 'erinnerung', '#D4AF37', 'gedenken', '#A0A0A0', 'widerstand', '#00E676', 'heute', '#FF3D00', '#fff'], 'circle-opacity': 0.6, 'circle-blur': 0.8 } });
-            
-            // CORE DOT
-            map.addLayer({ 'id': 'marker-core', 'type': 'circle', 'source': 'markers', 'paint': { 'circle-radius': 8, 'circle-color': '#fff', 'circle-stroke-width': 2, 'circle-stroke-color': '#000' } });
+            map.addLayer({ 
+                'id': 'marker-glow', 'type': 'circle', 'source': 'markers', 
+                'paint': { 
+                    'circle-radius': 70, 
+                    'circle-color': ['match', ['get', 'category'], 'erinnerung', '#D4AF37', 'gedenken', '#A0A0A0', 'widerstand', '#00E676', 'heute', '#FF3D00', '#fff'], 
+                    'circle-opacity': 0.5, 'circle-blur': 0.5 
+                } 
+            });
+            map.addLayer({ 'id': 'marker-core', 'type': 'circle', 'source': 'markers', 'paint': { 'circle-radius': 10, 'circle-color': '#fff', 'circle-stroke-width': 2, 'circle-stroke-color': '#000' } });
 
             map.on('click', 'marker-core', (e) => handleMarker(e.features[0].properties, e.features[0].geometry.coordinates));
             map.on('mouseenter', 'marker-core', () => map.getCanvas().style.cursor = 'pointer');
             map.on('mouseleave', 'marker-core', () => map.getCanvas().style.cursor = '');
 
-            // Deep Link Handler
+            // Deep Link (Manual Scan)
             const urlParams = new URLSearchParams(window.location.search);
-            const startEvent = urlParams.get('event');
-            if(startEvent) {
-                document.getElementById('start-screen').style.display = 'none';
-                const t = geoData.features.find(f => f.properties.id === startEvent);
+            const evt = urlParams.get('event');
+            if(evt) {
+                document.getElementById('start-screen').style.display = 'none'; // skip start screen
+                const t = geoData.features.find(f => f.properties.id === evt);
                 if(t) handleMarker(t.properties, t.geometry.coordinates);
             }
 
@@ -523,7 +345,10 @@
         function handleMarker(props, coords) {
             if (props.locked && !state.unlocked) { openSidebarLocked(); return; }
             if (!state.discovered.includes(props.id) && !props.locked) { state.discovered.push(props.id); updateProgress(); }
-            map.flyTo({ center: coords, zoom: 16, pitch: 60, offset: [0, -200], speed: 0.8 });
+            
+            const isPortrait = window.innerHeight > window.innerWidth;
+            const offset = isPortrait ? [0, -200] : [-200, 0];
+            map.flyTo({ center: coords, zoom: 16, pitch: 60, offset: offset, speed: 0.8 });
             openSidebar(props);
         }
 
@@ -537,7 +362,7 @@
 
         function unlockAll() {
             state.unlocked = true;
-            document.getElementById('lock-status').innerText = "ARCHIV ENTSCHLÜSSELT";
+            document.getElementById('lock-status').innerText = "FREIGESCHALTET";
             document.getElementById('lock-status').style.color = "#00E676";
             document.getElementById('progress-bar').style.background = "#00E676";
             document.getElementById('year-slider').value = 2026;
@@ -556,12 +381,17 @@
             const filter = ['<=', ['get', 'year'], year];
             map.setFilter('marker-glow', filter);
             map.setFilter('marker-core', filter);
+            
+            const visible = geoData.features.filter(f => f.properties.year <= year);
+            visible.sort((a,b) => a.properties.year - b.properties.year);
+            const coords = visible.map(f => f.geometry.coordinates);
+            if(map.getSource('path-source')) map.getSource('path-source').setData({ 'type': 'Feature', 'geometry': { 'type': 'LineString', 'coordinates': coords } });
         }
 
         function openSidebar(data) {
             const content = document.getElementById('sidebar-content');
             const colors = { 'erinnerung': '#D4AF37', 'gedenken': '#A0A0A0', 'widerstand': '#00E676', 'heute': '#FF3D00' };
-            content.innerHTML = `<img src="${data.image}" class="hero-img"><div class="sidebar-content"><span class="cat-tag" style="border-color:${colors[data.category]}; color:${colors[data.category]}">${data.category.toUpperCase()}</span><h2>${data.title}</h2><div class="article">${data.description}</div><div class="source">Quelle: ${data.source} • Jahr: ${data.year}</div></div>`;
+            content.innerHTML = `<img src="${data.image}" class="hero-img"><div class="sidebar-content"><span class="cat-tag" style="border-color:${colors[data.category]}; color:${colors[data.category]}">${data.category.toUpperCase()}</span><h2>${data.title}</h2><div class="article">${data.description}</div><div class="source">Quelle: ${data.source}</div></div>`;
             document.getElementById('sidebar').classList.add('open');
         }
 
