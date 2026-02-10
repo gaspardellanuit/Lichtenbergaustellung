@@ -27,10 +27,10 @@
             /* Kategorie 2: Widerstand (Aktuell) -> Neon Green */
             --c-widerstand: #00E676;   
             
-            /* Kategorie 3: Gedenken (Historisch) -> Neon Blue (UPDATED) */
+            /* Kategorie 3: Gedenken (Historisch) -> Neon Blue */
             --c-gedenken: #00BFFF;     
             
-            /* Kategorie 4: Anlaufstellen -> Neon Pink (NEW) */
+            /* Kategorie 4: Anlaufstellen -> Neon Pink */
             --c-anlaufstelle: #FF00FF;
 
             --c-path: #00FFFF;         /* Cyan Path */
@@ -60,7 +60,7 @@
         }
         .start-btn:active { transform: scale(0.95); }
 
-        /* --- MINI SCANNER (Positioned Lower) --- */
+        /* --- MINI SCANNER --- */
         #mini-scanner {
             position: absolute; 
             top: 260px; /* Position tiefer */
@@ -182,8 +182,8 @@
 
         <div id="legend">
             <div class="legend-item"><div class="dot" style="background:var(--c-erinnerung)"></div> Orte der Erinnerung</div>
-            <div class="legend-item"><div class="dot" style="background:var(--c-gedenken)"></div> Orte des Gedenkens</div>
-            <div class="legend-item"><div class="dot" style="background:var(--c-widerstand)"></div> Orte des Widerstands</div>
+            <div class="legend-item"><div class="dot" style="background:var(--c-gedenken)"></div> Gedenken</div>
+            <div class="legend-item"><div class="dot" style="background:var(--c-widerstand)"></div> Widerstand</div>
             <div class="legend-item"><div class="dot" style="background:var(--c-anlaufstelle)"></div> Anlaufstellen</div>
         </div>
 
@@ -205,7 +205,6 @@
         // ------------------------------------------------------------------
         // CONFIG
         // ------------------------------------------------------------------
-        // Updated Mapbox Token
         mapboxgl.accessToken = 'pk.eyJ1IjoiaWxpYXNtZXJhYmloYSIsImEiOiJjbWxneDV4dGgwMWl1M2VzYTBzMHJ0NGZ5In0.MwZMTp_9rIxJfO5kafmr6g'; 
 
         const geoData = {
@@ -245,6 +244,7 @@
                         'category': 'erinnerung',
                         'title': 'Eugeniu Botnari (1982–2016)',
                         'year': 2016,
+                        'locked': true,
                         'image': 'https://upload.wikimedia.org/wikipedia/commons/0/03/Gedenktafel_Eugeniu-Botnari-Platz_%28Rumbg%29_Eugeniu_Botnari.jpg',
                         'description': `<h3>Opfer rassistischer Gewalt</h3><p>Wurde am 17. September 2016 vom Filialleiter eines Edeka-Marktes des Ladendiebstahls bezichtigt, in ein Lager gezerrt und mit Quarzhandschuhen verprügelt. Botnari starb Tage später an einem Schädel-Hirn-Trauma.</p><h3>Kontext</h3><p>Der Täter filmte die Tat und teilte sie mit menschenverachtenden Kommentaren. Motiv war Sozialdarwinismus (Hass auf Obdachlose) und Rassismus. Im April 2023 wurde der Platz nach Botnari benannt.</p>`,
                         'source': 'Amadeu Antonio Stiftung - Eugeniu Botnari'
@@ -273,6 +273,7 @@
                         'category': 'widerstand',
                         'title': 'Bunter Wind für Lichtenberg',
                         'year': 2012,
+                        'locked': true,
                         'image': 'https://upload.wikimedia.org/wikipedia/commons/0/02/Rathaus_Lichtenberg_West-_und_Hauptfassade_2021.jpg',
                         'description': `<h3>Seit 2012</h3><p>Setzt Impulse für eine offene, demokratische Gesellschaft. Stärkt Zusammenhalt und Solidarität gegen Diskriminierung und Ausgrenzung.</p><h3>Motto</h3><p>"Solidarisch für eine starke und lebendige Demokratie!"</p>`,
                         'source': 'Bunter Wind für Lichtenberg'
@@ -282,15 +283,16 @@
                 {
                     'type': 'Feature',
                     'properties': {
-                        'id': 'licht_blicke',
+                        'id': 'auf_lichtenberg',
                         'category': 'widerstand',
-                        'title': 'Licht-Blicke',
-                        'year': 2002,
-                        'image': 'https://github.com/gaspardellanuit/Lichtenbergaustellung/blob/main/licht%20blicke.png',
-                        'description': `<h3>Seit 2002</h3><p>Netzwerkstelle für Demokratiepartnerschaften. Schnittstelle zwischen Politik, Verwaltung und Zivilgesellschaft.</p><h3>Aufgaben</h3><p>Unterstützung lokalen Engagements gegen Rechts, Förderung von Diversitätsbewusstsein, Koordinierung der Stolperstein-Verlegung und Jugendpartizipation.</p>`,
-                        'source': 'Licht Blicke'
+                        'title': 'Auf-Lichtenberg',
+                        'year': 2024,
+                        'locked': true,
+                        'image': 'https://upload.wikimedia.org/wikipedia/commons/0/02/Rathaus_Lichtenberg_West-_und_Hauptfassade_2021.jpg', 
+                        'description': `<h3>Bündnis für Demokratie</h3><p>Auf-Lichtenberg engagiert sich gegen Rechtsextremismus und für ein solidarisches Miteinander im Bezirk.</p><p>Adresse: Boyenstraße 41, 10115 Berlin.</p><p>Website: <a href="https://auf-lichtenberg.de" target="_blank" style="color:#00E676">auf-lichtenberg.de</a></p>`,
+                        'source': 'Auf-Lichtenberg'
                     },
-                    'geometry': { 'type': 'Point', 'coordinates': [13.5205, 52.4962] }
+                    'geometry': { 'type': 'Point', 'coordinates': [13.3680, 52.5360] }
                 },
                 {
                     'type': 'Feature',
@@ -299,7 +301,8 @@
                         'category': 'widerstand',
                         'title': 'Berliner Register',
                         'year': 2005,
-                        'image': 'https://github.com/gaspardellanuit/Lichtenbergaustellung/blob/main/berliner%20register.png',
+                        'locked': true,
+                        'image': 'https://github.com/gaspardellanuit/Lichtenbergaustellung/blob/9f9a07301a755529d848be03eccd3ee1e32b91c1/berliner%20register.png',
                         'description': `<h3>Seit 2005</h3><p>Dokumentation von Diskriminierung und Ausgrenzung im Alltag (rassistisch, antisemitisch, rechts, etc.).</p><h3>Methode</h3><p>Bürger:innen melden Vorfälle (auch solche, die keine Straftaten sind, wie Aufkleber oder Sprüche). Diese werden in einer Chronik veröffentlicht, um Ausgrenzung sichtbar zu machen.</p>`,
                         'source': 'Berliner Register'
                     },
@@ -315,7 +318,7 @@
                         'title': 'Gedenkort Rummelsburg (1933–1990)',
                         'year': 1933,
                         'image': 'https://upload.wikimedia.org/wikipedia/commons/7/71/Skulptur_Hauptstr_8_%28Rumbg%29_Gef%C3%A4ngnis_Rummelsburg%26Helga_Lieser%262015.jpg',
-                        'description': `<h3>Verfolgung von "Asozialen"</h3><p>1879 als Arbeitshaus eröffnet. Im NS-Staat Verfolgung von "Asozialen"; 1941 Deportation jüdischer Insassen zur Ermordung (Aktion T4). In der DDR Nutzung als Gefängnis (auch für politische Häftlinge).</p><h3>Status</h3><p>Gedenkort seit 2015; Gebäude zu Wohnraum umgebaut.</p>`,
+                        'description': `<h3>Geschichte</h3><p>1879 als Arbeitshaus eröffnet. Im NS-Staat Verfolgung von "Asozialen"; 1941 Deportation jüdischer Insassen zur Ermordung (Aktion T4). In der DDR Nutzung als Gefängnis (auch für politische Häftlinge).</p><h3>Status</h3><p>Gedenkort seit 2015; Gebäude zu Wohnraum umgebaut.</p>`,
                         'source': 'Memorial Museums - Gedenkort Rummelsburg'
                     },
                     'geometry': { 'type': 'Point', 'coordinates': [13.4855, 52.4955] }
@@ -364,12 +367,16 @@
                 {
                     'type': 'Feature',
                     'properties': {
-                        'id': 'reachout', 'category': 'anlaufstelle', 'title': 'ReachOut Berlin', 'year': 2026,
-                        'image': 'https://github.com/gaspardellanuit/Lichtenbergaustellung/blob/main/Logo%20ReachOut%20Berlin.png', // Generic placeholder
-                        'description': `<h3>Beratung für Opfer</h3><p>ReachOut Berlin bietet Beratung und Unterstützung für Opfer rechter, rassistischer und antisemitischer Gewalt sowie für deren Angehörige und Freunde.</p><p>Adresse: Kopernikusstr. 23, 10245 Berlin.</p>`,
-                        'source': 'Reach Out Berlin'
+                        'id': 'licht_blicke',
+                        'category': 'anlaufstelle',
+                        'title': 'Licht-Blicke',
+                        'year': 2002,
+                        'locked': true,
+                        'image': 'https://github.com/gaspardellanuit/Lichtenbergaustellung/blob/9f9a07301a755529d848be03eccd3ee1e32b91c1/licht%20blicke.png',
+                        'description': `<h3>Seit 2002</h3><p>Netzwerkstelle für Demokratiepartnerschaften. Schnittstelle zwischen Politik, Verwaltung und Zivilgesellschaft.</p><h3>Aufgaben</h3><p>Unterstützung lokalen Engagements gegen Rechts, Förderung von Diversitätsbewusstsein, Koordinierung der Stolperstein-Verlegung und Jugendpartizipation.</p>`,
+                        'source': 'Licht Blicke'
                     },
-                    'geometry': { 'type': 'Point', 'coordinates': [13.4575, 52.5113] }
+                    'geometry': { 'type': 'Point', 'coordinates': [13.5205, 52.4962] }
                 }
             ]
         };
@@ -533,7 +540,7 @@
             document.getElementById('progress-bar').style.background = "#00E676";
             document.getElementById('year-slider').value = 2026;
             document.getElementById('year-display').innerText = 2026;
-            updateMap(2000);
+            updateMap(2026);
         }
 
         const slider = document.getElementById('year-slider');
@@ -573,7 +580,3 @@
     </script>
 </body>
 </html>
-
-
-
-
