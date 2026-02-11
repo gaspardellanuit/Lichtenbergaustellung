@@ -5,18 +5,17 @@
   "display": "standalone",
   "background_color": "#050505",
   "theme_color": "#00E676",
-  "orientation": "portrait-primary",
+  "orientation": "any",
   "icons": [
     {
-      "src": "https://raw.githubusercontent.com/gaspardellanuit/Lichtenbergaustellung/refs/heads/main/iconapp.jpg",
+      "src": "https://raw.githubusercontent.com/gaspardellanuit/Lichtenbergaustellung/refs/heads/main/Bunter_Wind_LOGO-1.jpg",
       "sizes": "192x192",
       "type": "image/jpeg"
     },
     {
-      "src": "https://raw.githubusercontent.com/gaspardellanuit/Lichtenbergaustellung/refs/heads/main/iconapp.jpg",
+      "src": "https://raw.githubusercontent.com/gaspardellanuit/Lichtenbergaustellung/refs/heads/main/Bunter_Wind_LOGO-1.jpg",
       "sizes": "512x512",
       "type": "image/jpeg"
     }
   ]
-
 }
