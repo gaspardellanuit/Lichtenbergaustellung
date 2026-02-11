@@ -66,7 +66,8 @@
             position: absolute; 
             top: 260px; 
             left: 30px; 
-            width: 120px; height: 120px; 
+            width: 140px; /* Leicht vergrößert für bessere Erkennung */
+            height: 140px; 
             background: #000;
             border: 2px solid #444;
             border-radius: 12px;
@@ -74,6 +75,7 @@
             z-index: 50;
             box-shadow: 0 10px 30px rgba(0,0,0,0.8);
             transition: border-color 0.3s;
+            pointer-events: auto; /* WICHTIG: Erlaubt Klicks! */
         }
         #reader { width: 100%; height: 100%; object-fit: cover; }
         
@@ -91,6 +93,7 @@
             background: rgba(0, 230, 118, 0.95); /* Green */
             display: none; flex-direction: column; align-items: center; justify-content: center;
             cursor: pointer;
+            pointer-events: auto; /* WICHTIG: Erlaubt Klicks! */
         }
         .hit-icon { font-size: 24px; color: black; font-weight: bold; }
         .hit-text { font-size: 10px; color: black; font-family: var(--font-head); font-weight: bold; margin-top: 2px; }
@@ -553,7 +556,7 @@
                 if(!state.scanner) state.scanner = new Html5Qrcode("reader");
                 state.scanner.start(
                     { facingMode: "environment" }, 
-                    { fps: 10, qrbox: 80 }, 
+                    { fps: 15, disableFlip: false }, 
                     onScanSuccess
                 ).catch(err => {
                     console.log("Scanner Error (Camera not allowed?):", err);
@@ -566,7 +569,7 @@
         function onScanSuccess(decodedText) {
             let foundId = null;
             for(let feat of geoData.features) {
-                if(decodedText.includes(feat.properties.id)) {
+                if(decodedText.toLowerCase().includes(feat.properties.id.toLowerCase())) {
                     foundId = feat.properties.id;
                     break;
                 }
@@ -728,4 +731,3 @@
     </script>
 </body>
 </html>
-
