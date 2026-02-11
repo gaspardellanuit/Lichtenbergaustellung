@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="referrer" content="no-referrer">
     
-    <link rel="manifest" href="manifest.json?v=2">
+    <link rel="manifest" href="manifest.json?v=4">
     <meta name="theme-color" content="#00E676">
-    <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/gaspardellanuit/Lichtenbergaustellung/refs/heads/main/Bunter_Wind_LOGO-1.jpg">
+    <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/gaspardellanuit/Lichtenbergaustellung/refs/heads/main/iconapp2.jpg">
     
     <title>Museum Lichtenberg: Orte des Widerstands</title>
     
@@ -66,7 +66,7 @@
             position: absolute; 
             top: 260px; 
             left: 30px; 
-            width: 140px; /* Leicht vergrößert für bessere Erkennung */
+            width: 140px; 
             height: 140px; 
             background: #000;
             border: 2px solid #444;
@@ -75,7 +75,7 @@
             z-index: 50;
             box-shadow: 0 10px 30px rgba(0,0,0,0.8);
             transition: border-color 0.3s;
-            pointer-events: auto; /* WICHTIG: Erlaubt Klicks! */
+            pointer-events: auto; 
         }
         #reader { width: 100%; height: 100%; object-fit: cover; }
         
@@ -93,7 +93,7 @@
             background: rgba(0, 230, 118, 0.95); /* Green */
             display: none; flex-direction: column; align-items: center; justify-content: center;
             cursor: pointer;
-            pointer-events: auto; /* WICHTIG: Erlaubt Klicks! */
+            pointer-events: auto; 
         }
         .hit-icon { font-size: 24px; color: black; font-weight: bold; }
         .hit-text { font-size: 10px; color: black; font-family: var(--font-head); font-weight: bold; margin-top: 2px; }
@@ -147,8 +147,22 @@
         
         .sidebar-content { padding: 40px; padding-top: 0; }
         
-        .hero-img { width: 100%; height: auto; max-height: 400px; object-fit: contain; border-bottom: 4px solid #333; margin-bottom: 25px; background: #000; display: block; margin-left: auto; margin-right: auto; }
+        /* IMAGE SCALING FIX */
+        .hero-img { 
+            width: 100%; 
+            height: auto;           
+            max-height: 400px;      
+            object-fit: contain;    
+            border-bottom: 4px solid #333; 
+            margin-bottom: 25px; 
+            background: #000;       
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
         .cat-tag { font-family: var(--font-head); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; display: inline-block; padding: 4px 8px; border: 1px solid #444; color: #fff; }
+        
         h2 { font-family: var(--font-head); font-size: 2.2rem; line-height: 1.1; margin: 0 0 25px 0; font-weight: 700; color: white; }
         
         .article { font-size: 1.05rem; line-height: 1.7; color: #ffffff; font-weight: 300; margin-bottom: 40px; }
@@ -161,12 +175,58 @@
         .locked-view { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px; color: #555; }
         .locked-icon { font-size: 4rem; margin-bottom: 20px; opacity: 0.5; }
 
+        /* --- RESPONSIVE DESIGN & TABLET FIXES --- */
+        /* Wir setzen den Breakpoint auf 1024px, damit auch Tablets (wie iPads)
+           das optimierte Layout erhalten und keine Überlappungen entstehen. */
         @media (max-width: 1024px) {
             :root { --sidebar-width: 100%; }
-            #timeline-ui { width: 90%; bottom: 20px; padding: 15px 20px; }
+            
+            /* Header verkleinern */
+            h1 { font-size: 2rem; }
+            .museum-label { font-size: 0.7rem; }
+            header { top: 20px; left: 20px; }
+
+            /* Status Panel */
+            #status-panel { top: 20px; right: 20px; width: auto; max-width: 140px; padding: 10px; }
+            .status-header { font-size: 0.6rem; }
+            .lock-text { font-size: 0.7rem; }
+
+            /* Scanner anpassen */
+            #mini-scanner { 
+                top: 130px; 
+                left: 20px; 
+                width: 100px; height: 100px; 
+            }
+
+            /* Timeline: Volle Breite am Boden */
+            #timeline-ui { 
+                bottom: 20px; 
+                width: 95%; 
+                padding: 10px;
+                left: 50%;
+                transform: translateX(-50%);
+            }
+            #year-display { font-size: 2rem; }
+
+            /* Sidebar Inhalt */
             .sidebar-content { padding: 25px; }
-            #mini-scanner { top: 120px; left: 20px; } 
+
+            /* ANTI-OVERLAP: Legende & Home Button nach OBEN verschieben */
+            /* Damit sie nicht von der breiten Timeline verdeckt werden */
+            #legend { 
+                bottom: 160px; /* Nach oben verschoben */
+                left: 20px; 
+                background: rgba(0,0,0,0.6); /* Hintergrund für bessere Lesbarkeit */
+                padding: 10px;
+                border-radius: 8px;
+            }
+
+            #home-btn { 
+                bottom: 160px; /* Nach oben verschoben */
+                right: 20px; 
+            }
         }
+        
         .mapboxgl-popup-content { background: #000; color: #fff; border: 1px solid #444; font-family: var(--font-body); padding: 10px 14px; }
         .mapboxgl-popup-close-button { display: none; }
     </style>
