@@ -106,7 +106,9 @@
         .museum-label { font-family: var(--font-head); font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase; color: #aaa; margin-bottom: 5px; font-weight: 500; border-left: 3px solid var(--c-widerstand); padding-left: 10px; }
         h1 { font-family: var(--font-head); font-size: 3rem; margin: 0; line-height: 0.9; font-weight: 700; color: white; letter-spacing: -1px; }
 
-        #timeline-ui { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); width: 80%; max-width: 900px; min-width: 320px; pointer-events: auto; text-align: center; background: rgba(10, 10, 10, 0.85); padding: 15px 40px; border-radius: 40px; border: 1px solid rgba(255,255,255,0.15); backdrop-filter: blur(8px); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        /* UPDATED: Width changed from 80% to 60% to avoid overlap with legend */
+        #timeline-ui { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); width: 60%; max-width: 900px; min-width: 320px; pointer-events: auto; text-align: center; background: rgba(10, 10, 10, 0.85); padding: 15px 40px; border-radius: 40px; border: 1px solid rgba(255,255,255,0.15); backdrop-filter: blur(8px); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        
         #year-display { font-family: var(--font-head); font-size: 2.5rem; font-weight: 700; display: block; margin-bottom: 5px; line-height: 1; color: white; }
         input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; cursor: pointer; }
         input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; background: #444; border-radius: 2px; }
@@ -266,8 +268,8 @@
 
         <div id="legend">
             <div class="legend-item"><div class="dot" style="background:var(--c-erinnerung)"></div> Orte der Erinnerung</div>
-            <div class="legend-item"><div class="dot" style="background:var(--c-gedenken)"></div> Gedenken</div>
-            <div class="legend-item"><div class="dot" style="background:var(--c-widerstand)"></div> Widerstand</div>
+            <div class="legend-item"><div class="dot" style="background:var(--c-gedenken)"></div> Orte des Gedenkens</div>
+            <div class="legend-item"><div class="dot" style="background:var(--c-widerstand)"></div> Orte des Widerstands</div>
         </div>
 
         <div id="timeline-ui">
@@ -331,7 +333,7 @@
                         'category': 'erinnerung',
                         'title': 'Silvio Meier (*1965 – †1992)',
                         'year': 1992,
-                        'image': 'https://upload.wikimedia.org/wikipedia/commons/1/14/Silvio_Meier.jpg',
+                        'image': 'https://raw.githubusercontent.com/gaspardellanuit/Lichtenbergaustellung/refs/heads/main/211192_umbruch_bildarchiv%20(1).jpg',
                         'description': `
                             <h4>Aktivismus in der DDR</h4>
                             <p>Silvio Meier wurde 1965 in Quedlinburg in Sachsen-Anhalt geboren. Im Jahr 1986 zog er in den Ostteil des damals geteilten Berlins. Hier wurde Silvio Meier politisch aktiv, engagierte sich in den oppositionellen Kreisen der DDR und beteiligte sich am Aufbau von Strukturen gegen das Regime. Er war unter anderem Mitbegründer der „Kirche von Unten“ sowie der Umweltbibliothek in der Zionskirche in Berlin-Mitte – einem der bedeutendsten Treffpunkte der späten DDR-Oppositionsbewegung. Silvio Meier war vom Beginn seines politischen Engagements an dazu gezwungen, sich mit rechter Gewalt auseinanderzusetzen. In der Zionskirche organisierte er am Abend des 18. Oktober 1987 ein Konzert, das von Neonazis überfallen wurde. Der Überfall auf die Zionskirche gilt als Wendepunkt in der Wahrnehmung der rechtsextremen Strömungen in der DDR, die bis dahin von der Führung weitestgehend ignoriert worden waren.</p>
@@ -437,7 +439,7 @@
                         'title': 'Licht-Blicke (seit 2002)',
                         'year': 2002,
                         'locked': true,
-                        'image': 'https://raw.githubusercontent.com/gaspardellanuit/Lichtenbergaustellung/9f9a07301a755529d848be03eccd3ee1e32b91c1/licht%20blicke.png',
+                        'image': 'https://raw.githubusercontent.com/gaspardellanuit/Lichtenbergaustellung/refs/heads/main/LB_Organigramm_2025-2-scaled.jpg',
                         'description': `
                             <h4>Netzwerkstelle für Demokratie</h4>
                             <p>Licht-Blicke besteht aus folgenden Projekten: Koordinierungsstelle der Partnerschaften für Demokratie in den Fördergebieten Lichtenberg und Hohenschönhausen, Netzwerkstelle für Kinder- und Jugendpartizipation und die Koordination des bezirklichen Runden Tischs für Politische Bildung. Außerdem ist der Arbeitskreis Stolpersteine Lichtenberg/Hohenschönhausen fachlich und organisatorisch bei Licht-Blicke angesiedelt.</p>
@@ -791,3 +793,5 @@
     </script>
 </body>
 </html>
+
+}
